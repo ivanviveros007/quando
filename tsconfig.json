@@ -7,7 +7,9 @@
       "@/*": ["./*"],
       "@constants": ["./constants"],
       "@assets/*": ["./assets/*"],
-      "@helpers": ["./helpers"]
+      "@helpers": ["./helpers"],
+      "@hooks": ["./hooks"],
+      "@theme": ["./theme"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
