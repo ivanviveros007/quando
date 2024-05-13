@@ -49,6 +49,14 @@ export default function OnboardingScreen() {
     </View>
   );
 
+  const goLogin = () => {
+    router.push("login");
+  };
+
+  const goSignUp = () => {
+    router.push("register");
+  };
+
   return (
     <ThemedView style={styles.container}>
       <FlatList
@@ -82,15 +90,9 @@ export default function OnboardingScreen() {
       <View style={lastStep ? styles.lastStepButtons : styles.containerButtons}>
         {lastStep ? (
           <>
-            <Button
-              title="Iniciar sesión"
-              onPress={() => {
-                router.push("(tabs)/create_events");
-              }}
-              mode="contained"
-            />
+            <Button title="Iniciar sesión" onPress={goLogin} mode="contained" />
 
-            <Button title="Registrarse" onPress={() => {}} mode="outlined" />
+            <Button title="Registrarse" onPress={goSignUp} mode="outlined" />
           </>
         ) : (
           <>

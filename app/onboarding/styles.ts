@@ -14,21 +14,21 @@ export const styles = StyleSheet.create({
     height: verticalScale(500),
   },
   containerDescription: {
-    marginTop: verticalScale(30),
+    marginTop: verticalScale(20),
     alignSelf: "center",
     paddingHorizontal: horizontalScale(50),
+    maxHeight: verticalScale(200),
   },
   title: {
     fontSize: moderateScale(20),
     fontWeight: "bold",
     marginTop: verticalScale(10),
     textAlign: "center",
+    marginBottom: verticalScale(10),
   },
   description: {
     textAlign: "center",
     fontSize: moderateScale(18),
-    top: verticalScale(5),
-    lineHeight: verticalScale(25),
   },
   container: {
     flex: 1,
