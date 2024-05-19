@@ -23,7 +23,7 @@ export const DATA_CAROUSEL_ONBOARDING = [
     },
     {
       id: 2,
-      title: "Chequea los datos de tu plan",
+      title: "Chequea los \ndatos de tu plan",
       description: "Quién, cuándo, dónde",
       image: Images.Onboarding.Onboarding2,
     },

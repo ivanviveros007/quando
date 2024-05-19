@@ -38,4 +38,8 @@ export const createGlobalStyles = (theme: any) =>
     jcontent: {
       justifyContent: "space-between",
     },
+    flex:{
+      flex: 1,
+    
+    }
   });

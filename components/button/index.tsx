@@ -5,6 +5,8 @@ import { globalStyles } from "@theme";
 
 import { styles } from "./styles";
 
+import { TextStyle } from "react-native";
+
 interface Props {
   title?: string | undefined | null;
   onPress?: () => void;
@@ -12,6 +14,7 @@ interface Props {
   disabled?: boolean;
   customStyle?: React.CSSProperties;
   loading?: boolean;
+  labelStyle?: TextStyle;
 }
 
 export const Button = ({
@@ -20,19 +23,20 @@ export const Button = ({
   mode,
   disabled,
   loading,
-  ...props
+  labelStyle,
+  ...rest
 }: PropsWithChildren<Props>) => {
   return (
     <>
       {mode === "contained" && (
         <RNPButton
           style={[styles.container, disabled && styles.disabled]}
-          labelStyle={[globalStyles.text_fs16_white, styles.labelStyle]}
+          labelStyle={[globalStyles.text_fs16_white, styles.labelStyle, labelStyle]}
           uppercase={false}
           onPress={onPress}
           disabled={disabled}
           loading={loading}
-          {...props}
+          {...rest}
         >
           {loading ? loading : title}
         </RNPButton>
@@ -40,11 +44,11 @@ export const Button = ({
       {mode === "outlined" && (
         <RNPButton
           style={[disabled && styles.disabled]}
-          labelStyle={[globalStyles.text_fs16_black]}
+          labelStyle={[globalStyles.text_fs16_black, labelStyle]}
           uppercase={false}
           onPress={onPress}
           disabled={disabled}
-          {...props}
+          {...rest}
         >
           {title}
         </RNPButton>

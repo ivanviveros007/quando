@@ -5,7 +5,8 @@ export default function InitalScreen() {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
 
   if (userLoggedIn) {
-    return <Redirect href="(tabs)/create_events" />;
+    // return <Redirect href="(tabs)/create_events" />;
+    return <Redirect href="login" />;
   } else {
     return <Redirect href="onboarding" />;
   }

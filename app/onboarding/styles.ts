@@ -6,39 +6,39 @@ import { WINDOW_WIDTH } from "@constants";
 export const styles = StyleSheet.create({
   containerRender: {
     width: WINDOW_WIDTH,
-    alignItems: "center",
-    justifyContent: "center",
+    flex: 1,
   },
   image: {
     width: "100%",
     height: verticalScale(500),
   },
-  containerDescription: {
-    marginTop: verticalScale(20),
+
+  containerTitle: {
     alignSelf: "center",
-    paddingHorizontal: horizontalScale(50),
-    maxHeight: verticalScale(200),
   },
   title: {
-    fontSize: moderateScale(20),
+    fontSize: moderateScale(30),
     fontWeight: "bold",
-    marginTop: verticalScale(10),
+
     textAlign: "center",
-    marginBottom: verticalScale(10),
+  },
+  containerDescription: {
+    alignSelf: "center",
+    marginTop: verticalScale(10),
   },
   description: {
     textAlign: "center",
     fontSize: moderateScale(18),
+    lineHeight: verticalScale(25),
   },
   container: {
     flex: 1,
   },
   pagination: {
     flexDirection: "row",
-    position: "absolute",
     gap: moderateScale(10),
     alignSelf: "center",
-    bottom: verticalScale(160),
+    marginTop: verticalScale(30),
   },
   dot: {
     height: verticalScale(10),
@@ -66,5 +66,11 @@ export const styles = StyleSheet.create({
     gap: moderateScale(30),
     width: "100%",
     paddingHorizontal: horizontalScale(20),
+  },
+  containerOne: {
+    flex: 3,
+  },
+  containerTwo: {
+    flex: 1,
   },
 });
