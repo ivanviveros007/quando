@@ -11,6 +11,7 @@ interface Props {
   title?: string | undefined | null;
   onPress?: () => void;
   mode?: "contained" | "outlined";
+  variant?: "black";
   disabled?: boolean;
   customStyle?: React.CSSProperties;
   loading?: boolean;
@@ -24,6 +25,7 @@ export const Button = ({
   disabled,
   loading,
   labelStyle,
+  variant,
   ...rest
 }: PropsWithChildren<Props>) => {
   return (
@@ -31,7 +33,11 @@ export const Button = ({
       {mode === "contained" && (
         <RNPButton
           style={[styles.container, disabled && styles.disabled]}
-          labelStyle={[globalStyles.text_fs16_white, styles.labelStyle, labelStyle]}
+          labelStyle={[
+            globalStyles.text_fs16_white,
+            styles.labelStyle,
+            labelStyle,
+          ]}
           uppercase={false}
           onPress={onPress}
           disabled={disabled}
@@ -51,6 +57,23 @@ export const Button = ({
           {...rest}
         >
           {title}
+        </RNPButton>
+      )}
+      {variant === "black" && (
+        <RNPButton
+          style={[disabled && styles.disabled, styles.variant]}
+          labelStyle={[
+            globalStyles.text_fs16_white,
+            styles.labelStyle,
+            labelStyle,
+          ]}
+          uppercase={false}
+          onPress={onPress}
+          disabled={disabled}
+          loading={loading}
+          {...rest}
+        >
+          {loading ? loading : title}
         </RNPButton>
       )}
     </>

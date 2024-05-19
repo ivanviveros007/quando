@@ -11,6 +11,7 @@ export const FontSize13 = moderateScale(13);
 export const FontSize14 = moderateScale(14);
 export const FontSize16 = moderateScale(16);
 export const FontSize18 = moderateScale(18);
+export const FontSize20 = moderateScale(20);
 export const FontSize24 = moderateScale(24);
 export const FontSize32 = moderateScale(32);
 

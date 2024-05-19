@@ -30,8 +30,13 @@ export default function LoginScreen() {
     }, [])
   );
 
-  const goTorRegister = () => {
+  const goToRegister = () => {
     router.push("register");
+  };
+
+  const login = () => {
+    console.log("Login Process");
+    router.push("(tabs)/create_events");
   };
   return (
     <Background>
@@ -115,7 +120,7 @@ export default function LoginScreen() {
           <View style={styles.login}>
             <Button
               mode="contained"
-              onPress={() => console.log("Login Process")}
+              onPress={login}
               title={"Iniciar sesión"}
               labelStyle={styles.labelLogin}
             />
@@ -124,7 +129,7 @@ export default function LoginScreen() {
           <View style={styles.register}>
             <Button
               mode="outlined"
-              onPress={goTorRegister}
+              onPress={goToRegister}
               title={"Quiero crear una cuenta"}
               labelStyle={styles.labelRegister}
             />

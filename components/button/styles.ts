@@ -21,4 +21,12 @@ export const styles = StyleSheet.create({
   outlined: {
     fontSize: moderateScale(12),
   },
+
+  variant:{
+    backgroundColor: theme.colors.black,
+    height: verticalScale(50),
+    borderRadius: 10,
+    justifyContent: "center",
+    flex:1,
+  }
 });

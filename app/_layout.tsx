@@ -45,11 +45,11 @@ export default function RootLayout() {
   return (
     <PaperProvider theme={theme} settings={{ rippleEffectEnabled: false }}>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <Stack initialRouteName="onboarding">
-          {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
+        <Stack initialRouteName="(tabs)">
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="onboarding" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
-          {/* <Stack.Screen
+          <Stack.Screen
             name="login"
             options={{
               headerTransparent: true,
@@ -64,7 +64,7 @@ export default function RootLayout() {
               headerBackTitleVisible: false,
               headerTintColor: "white",
             }}
-          /> */}
+          />
           <Stack.Screen
             name="register"
             options={{

@@ -1,23 +1,19 @@
-import { StyleSheet } from "react-native";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
+import { useState } from "react";
+import { View, Text } from "react-native";
+
+import { EmptyStatePlan } from "@/components/emptyState";
 
 export default function CreateEventsScreen() {
+  const [plan, setPlan] = useState(false);
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText style={styles.title}>Create Events Screen</ThemedText>
-    </ThemedView>
+    <>
+      {!plan ? (
+        <EmptyStatePlan />
+      ) : (
+        <View>
+          <Text>Plan</Text>
+        </View>
+      )}
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-});

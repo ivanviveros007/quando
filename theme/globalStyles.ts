@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-import { FontSize12, FontSize16 } from "@constants";
+import { FontSize12, FontSize16, FontSize20, FontSize18 } from "@constants";
 
 export const createGlobalStyles = (theme: any) =>
   StyleSheet.create({
@@ -22,6 +22,26 @@ export const createGlobalStyles = (theme: any) =>
       color: theme.colors.black,
       ...theme.fonts.medium,
     },
+    text_fs20_black: {
+      fontSize: FontSize20,
+      color: theme.colors.black,
+      ...theme.fonts.medium,
+    },
+    text_fs18_black: {
+      fontSize: FontSize18,
+      color: theme.colors.black,
+      ...theme.fonts.medium,
+    },
+    text_fs20_black_bold: {
+      fontSize: FontSize20,
+      color: theme.colors.black,
+      ...theme.fonts.bold,
+    },
+    text_fs18_black_bold: {
+      fontSize: FontSize18,
+      color: theme.colors.black,
+      ...theme.fonts.bold,
+    },
 
     containerTitle: {
       alignSelf: "center",
@@ -38,8 +58,7 @@ export const createGlobalStyles = (theme: any) =>
     jcontent: {
       justifyContent: "space-between",
     },
-    flex:{
+    flex: {
       flex: 1,
-    
-    }
+    },
   });

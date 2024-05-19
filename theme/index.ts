@@ -8,7 +8,7 @@ export const theme = {
   colors: {
     ...DefaultTheme.colors,
     white: "#FFFFFF",
-    black: "#564f4b",
+    black: "#000000",
     grey: "grey",
     blue: "#1A73E7",
     orange: "#fd7100",
@@ -22,23 +22,23 @@ export const theme = {
   fonts: {
     ...DefaultTheme.fonts,
     regular: {
-      fontFamily: "Roboto-Regular",
+      fontFamily: "RobotoRegular",
       fontWeight: "400" as Font["fontWeight"],
     },
     medium: {
-      fontFamily: "Roboto-Medium",
+      fontFamily: "RobotoMedium",
       fontWeight: "500" as Font["fontWeight"],
     },
     light: {
-      fontFamily: "Roboto-Light",
+      fontFamily: "RobotoLight",
       fontWeight: "300" as Font["fontWeight"],
     },
-    semibold: {
-      fontFamily: "Roboto-Bold",
+    bold: {
+      fontFamily: "RobotoBold",
       fontWeight: "600" as Font["fontWeight"],
     },
     black: {
-      fontFamily: "Roboto-Black",
+      fontFamily: "RobotoBlack",
       fontWeight: "700" as Font["fontWeight"],
     },
   },
