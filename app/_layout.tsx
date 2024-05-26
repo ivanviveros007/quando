@@ -15,8 +15,9 @@ import { Provider as PaperProvider } from "react-native-paper";
 
 import { theme } from "@theme";
 
-import { moderateScale } from "@helpers";
-
+export const unstable_settings = {
+  initialRouteName: "index",
+};
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
@@ -42,44 +43,22 @@ export default function RootLayout() {
     return null;
   }
 
+  const defaultScreenOptions: React.ComponentProps<
+    typeof Stack.Screen
+  >["options"] = {
+    headerShown: false,
+  };
+
   return (
     <PaperProvider theme={theme} settings={{ rippleEffectEnabled: false }}>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <Stack initialRouteName="(tabs)">
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+        <Stack>
+          <Stack.Screen name="index" options={defaultScreenOptions} />
+          {/* Auth Screens */}
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+          {/* App Screens */}
+          <Stack.Screen name="app" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
-          <Stack.Screen
-            name="login"
-            options={{
-              headerTransparent: true,
-              headerTitle: "Quando",
-              title: "Quando",
-              headerTitleStyle: {
-                fontFamily: "RobotoMedium",
-                fontSize: moderateScale(24),
-                color: theme.colors.white,
-              },
-              headerBackTitle: "",
-              headerBackTitleVisible: false,
-              headerTintColor: "white",
-            }}
-          />
-          <Stack.Screen
-            name="register"
-            options={{
-              headerTitle: "Quando",
-              title: "Quando",
-              headerTitleStyle: {
-                fontFamily: "RobotoMedium",
-                fontSize: moderateScale(24),
-                color: theme.colors.black,
-              },
-              headerBackTitle: "",
-              headerBackTitleVisible: false,
-              headerTintColor: "black",
-            }}
-          />
         </Stack>
       </ThemeProvider>
     </PaperProvider>

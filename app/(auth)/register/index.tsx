@@ -7,7 +7,7 @@ import { theme } from "@/theme";
 
 import { styles } from "./styles";
 
-export default function RegisterScreen() {
+export default function Register() {
   const [otp, setOtp] = useState(Array(4).fill(""));
   const textInputRefs = useRef(Array(4).fill(null));
 

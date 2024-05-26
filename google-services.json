@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "71368554478",
+    "project_id": "quando-7baba",
+    "storage_bucket": "quando-7baba.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:71368554478:android:ca9c9c83c99be43ce200ff",
+        "android_client_info": {
+          "package_name": "com.quandoapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "71368554478-p3cdsi27g14bg3unh58vklntmr5j1nn3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.quandoapp",
+            "certificate_hash": "cae7d7695f3c28872f34d363019c0f2f92f97411"
+          }
+        },
+        {
+          "client_id": "71368554478-u8v2vt616r4nndovv4rc0t0nlk2noerq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.quandoapp",
+            "certificate_hash": "65bbe1efdccc55c14d8dba40d61ecca3ff315692"
+          }
+        },
+        {
+          "client_id": "71368554478-1pe1fde22abtrq2konaofcfn9en77ive.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBE_59_XCrpg29OhKPzoKc0uGkSh5rACcM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "71368554478-1pe1fde22abtrq2konaofcfn9en77ive.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "71368554478-sku0irb3r29l12snk7lfa7frv78ep0cp.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.quandoapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

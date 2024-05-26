@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Image, FlatList, View, ImageSourcePropType, Text } from "react-native";
+import { Image, FlatList, View, ImageSourcePropType, Text, SafeAreaView } from "react-native";
 
 import { WINDOW_WIDTH, DATA_CAROUSEL_ONBOARDING as data } from "@constants";
 
@@ -63,7 +63,7 @@ export default function OnboardingScreen() {
   };
 
   return (
-    <View style={globalStyles.flex}>
+    <View style={[globalStyles.flex, { backgroundColor: "white" }]}>
       <View style={styles.containerOne}>
         <FlatList
           ref={flatListRef}

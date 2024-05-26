@@ -12,7 +12,7 @@ import { theme, globalStyles } from "@/theme";
 import { styles } from "./styles";
 import { router, useFocusEffect } from "expo-router";
 
-export default function LoginScreen() {
+export default function Login() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [areaCode, setAreaCode] = useState("+54");
   const [menuVisible, setMenuVisible] = useState(false);
