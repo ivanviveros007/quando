@@ -13,25 +13,8 @@ export default function InitialScreen() {
   // }
 
   return (
-    // <View style={{ backgroundColor: "red" , flex:1}}>
-    //   <Redirect href="/(auth)/onboarding" />
-    // </View>
     <>
-      <Stack.Screen
-        options={{
-          headerTitle: "Quando",
-          title: "Quando",
-          headerTitleStyle: {
-            fontFamily: "RobotoMedium",
-            fontSize: 40,
-            color: "red",
-          },
-          headerBackTitle: "",
-          headerBackTitleVisible: false,
-          headerTintColor: "white",
-        }}
-      />
-      <Redirect href="/onboarding" />
+      <Redirect href="/login" />
     </>
   );
 }

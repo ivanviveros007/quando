@@ -7,11 +7,12 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     padding: moderateScale(20),
-    bottom: verticalScale(50),
   },
   containerTitle: {
     alignSelf: "center",
-    top: verticalScale(80),
+    marginTop: verticalScale(30),
+    flex: 1,
+    marginBottom: verticalScale(40),
   },
   title: {
     fontFamily: "RobotoBold",
