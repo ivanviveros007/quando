@@ -14,15 +14,16 @@ export default function AuthLayout() {
           headerTitleStyle: {
             fontFamily: "RobotoMedium",
             fontSize: moderateScale(24),
-            color: theme.colors.white,
+            color: theme.colors.black,
           },
           headerBackTitle: "",
           headerBackTitleVisible: false,
           headerTintColor: "white",
+          headerTransparent: true,
         }}
       />
       <Stack.Screen
-        name="register/index"
+        name="otp/index"
         options={{
           headerTitle: "Quando",
           title: "Quando",
