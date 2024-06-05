@@ -1,9 +1,17 @@
 import { Drawer } from "./drawer";
 import { DrawerToggleButton } from "@react-navigation/drawer";
+import { DrawerContentScrollView } from "@react-navigation/drawer";
+import Profile from "./profile";
 
 export default function AppLayout() {
   return (
-    <Drawer>
+    <Drawer
+      drawerContent={(props) => (
+        <DrawerContentScrollView {...props}>
+          <Profile />
+        </DrawerContentScrollView>
+      )}
+    >
       <Drawer.Screen
         name="(tabs)"
         options={{
@@ -13,6 +21,7 @@ export default function AppLayout() {
           headerStyle: { backgroundColor: "#fff" },
         }}
       />
+      <Drawer.Screen name="profile" />
     </Drawer>
   );
 }
