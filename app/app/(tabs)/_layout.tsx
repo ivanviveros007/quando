@@ -7,12 +7,15 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 
 import { Images } from "@constants";
 import { verticalScale } from "@helpers";
+import { EvilIcons } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
     <Tabs
+      initialRouteName="create_events"
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         // Disable the static render of the header on web
@@ -37,6 +40,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="calendar" color={color} />
           ),
+          headerShadowVisible: false,
         }}
       />
       <Tabs.Screen
@@ -48,6 +52,7 @@ export default function TabLayout() {
               <Images.TabBar.PlusSvg />
             </View>
           ),
+          headerShadowVisible: false,
         }}
       />
       <Tabs.Screen
@@ -57,6 +62,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="envelope-o" color={color} />
           ),
+          headerShadowVisible: false,
         }}
       />
     </Tabs>
