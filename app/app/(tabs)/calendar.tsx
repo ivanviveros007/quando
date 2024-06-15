@@ -1,11 +1,48 @@
-import { StyleSheet } from "react-native";
+import { useState } from "react";
+import { StyleSheet, View } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import CalendarHeader from "@/components/calendar";
+import { format, startOfMonth, isSameDay } from "date-fns";
+import { es } from "date-fns/locale";
+import { capitalizeFirstLetter } from "@/utils";
 
 export default function CalendarScreen() {
+  const [currentDate, setCurrentDate] = useState<Date | null>(new Date());
+
+  const handleDatePress = (date: Date) => {
+    if (currentDate && isSameDay(currentDate, date)) {
+      setCurrentDate(null); // Deseleccionar si el mismo día es presionado
+    } else {
+      setCurrentDate(date);
+    }
+  };
+
+  const handleMonthChange = (newMonth: Date) => {
+    setCurrentDate(startOfMonth(newMonth));
+  };
+  const formattedDate = currentDate
+  ? capitalizeFirstLetter(format(currentDate, 'd MMMM yyyy', { locale: es }))
+  : capitalizeFirstLetter(format(new Date(), 'MMMM yyyy', { locale: es }));
+
+
   return (
     <ThemedView style={styles.container}>
-      <ThemedText style={styles.title}>Calendar Screen</ThemedText>
+      <CalendarHeader
+        currentDate={currentDate}
+        onDatePress={handleDatePress}
+        onMonthChange={handleMonthChange}
+      />
+      {currentDate ? (
+        <ThemedText style={styles.currentDateText}>
+          {formattedDate}
+        </ThemedText>
+      ) : (
+        <ThemedText style={styles.currentDateText}>
+          Ninguna fecha seleccionada
+        </ThemedText>
+      )}
+      {/* Aquí puedes agregar tus eventos del día */}
     </ThemedView>
   );
 }
@@ -13,11 +50,15 @@ export default function CalendarScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
   },
   title: {
     fontSize: 20,
     fontWeight: "bold",
+  },
+  currentDateText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginVertical: 10,
   },
 });

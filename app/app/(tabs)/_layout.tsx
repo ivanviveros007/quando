@@ -7,8 +7,6 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 
 import { Images } from "@constants";
 import { verticalScale } from "@helpers";
-import { EvilIcons } from "@expo/vector-icons";
-import { router } from "expo-router";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -18,8 +16,7 @@ export default function TabLayout() {
       initialRouteName="create_events"
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
+        headerShown: false,
         tabBarStyle: {
           shadowOffset: {
             width: 0,
