@@ -32,9 +32,10 @@ export default function AuthLayout() {
             fontSize: moderateScale(24),
             color: theme.colors.black,
           },
-          headerBackTitle: "",
-          headerBackTitleVisible: false,
+          headerBackTitle: "Login",
+          headerBackTitleVisible: true,
           headerTintColor: "black",
+          headerBackVisible: true,
         }}
       />
     </Stack>

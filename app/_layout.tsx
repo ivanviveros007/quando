@@ -60,6 +60,9 @@ export default function RootLayout() {
           <Stack.Screen name="app" options={{ headerShown: false }} />
          
           <Stack.Screen name="+not-found" />
+
+          <Stack.Screen name="template"  />
+          <Stack.Screen name="contacts"  />
         </Stack>
       </ThemeProvider>
     </PaperProvider>

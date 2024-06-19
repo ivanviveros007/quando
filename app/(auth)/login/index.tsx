@@ -1,27 +1,23 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import {
   View,
   Text,
   SafeAreaView,
   TextInput as RNTextInput,
   ScrollView,
+  Alert,
 } from "react-native";
 import { Background } from "@/components/container";
 import { Button } from "@/components/button";
 import { TextInput, Menu, Button as RNPButton } from "react-native-paper";
-import { theme, globalStyles } from "@/theme";
+import { theme } from "@/theme";
 import { styles } from "./styles";
 import { router, useFocusEffect } from "expo-router";
 
 import { useAuthStore } from "@/store/useAuthStore";
 
 export default function Login() {
-  // const [phoneNumber, setPhoneNumber] = useState("");
-  // const [areaCode, setAreaCode] = useState("+54");
   const [menuVisible, setMenuVisible] = useState(false);
-
-  // const [code, setCode] = useState("");
-  const [confirm, setConfirm] = useState(null);
 
   const {
     phoneNumber,
@@ -29,9 +25,6 @@ export default function Login() {
     setPhoneNumber,
     setAreaCode,
     signInWithPhoneNumber,
-    confirmCode,
-    code,
-    setCode,
     loading,
   } = useAuthStore();
 
@@ -47,30 +40,31 @@ export default function Login() {
       }
     }, [])
   );
-  const handleLogin = async () => {
-    const confirmation = await signInWithPhoneNumber();
-    if (confirmation) {
-      router.push("otp");
-    }
+  const isValidPhoneNumber = (phone: string) => {
+    const phoneRegex = /^[0-9]{10}$/;
+    return phoneRegex.test(phone);
   };
 
-  // const handleConfirmCode = async () => {
-  //   const result = await confirmCode();
-  //   if (result === "EXISTING_USER") {
-  //     router.push("home");
-  //   } else {
-  //     router.push("home");
-  //   }
-  // };
+  const handleLogin = async () => {
+    if (!isValidPhoneNumber(phoneNumber)) {
+      Alert.alert(
+        "Número Inválido",
+        "Por favor, ingresa un número de teléfono válido"
+      );
+      return;
+    }
+
+    const result = await signInWithPhoneNumber();
+    if (result.success) {
+      router.push("otp");
+    } else {
+      Alert.alert(result.title, result.message);
+    }
+  };
 
   const goToRegister = () => {
     router.push("register");
   };
-
-  // const login = () => {
-  //   console.log("Login Process");
-  //   router.push("(tabs)/create_events");
-  // };
 
   return (
     <Background>

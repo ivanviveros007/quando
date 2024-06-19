@@ -1,5 +1,5 @@
 import { PropsWithChildren } from "react";
-import { Button as RNPButton } from "react-native-paper";
+import { Button as RNPButton, ActivityIndicator } from "react-native-paper";
 
 import { globalStyles } from "@theme";
 
@@ -44,7 +44,7 @@ export const Button = ({
           loading={loading}
           {...rest}
         >
-          {loading ? loading : title}
+          {loading ? <ActivityIndicator color="white" /> : title}
         </RNPButton>
       )}
       {mode === "outlined" && (
@@ -73,7 +73,7 @@ export const Button = ({
           loading={loading}
           {...rest}
         >
-          {loading ? loading : title}
+          {loading ? <ActivityIndicator color="white" /> : title}
         </RNPButton>
       )}
     </>

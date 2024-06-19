@@ -17,7 +17,7 @@ interface AuthState {
   setCode: (code: string) => void;
   setLoading: (loading: boolean) => void;
   signInWithPhoneNumber: () => Promise<any | null>;
-  confirmCode: () => Promise<string | null>;
+  confirmCode: () => Promise<{ status: string; message?: string }>;
   checkUserToken: () => Promise<boolean>;
   logout: () => Promise<void>;
 }
@@ -45,12 +45,25 @@ const useAuthStore = create<AuthState>((set, get) => ({
       const confirmation = await auth().signInWithPhoneNumber(fullPhoneNumber);
       console.log("Confirmación recibida:", confirmation);
       set({ confirm: confirmation, loading: false });
-      return confirmation;
-    } catch (error) {
+      return { success: true, confirmation };
+    } catch (error: unknown) {
       console.error("Error al enviar el código de verificación:", error);
       set({ loading: false });
-      return null;
+
+      if (error?.code === "auth/too-many-requests") {
+        return {
+          success: false,
+          title: "Demasiadas Solicitudes",
+          message: "Por favor, inténtelo más tarde.",
+        };
+      }
     }
+    return {
+      success: false,
+      title: "Error de Verificación",
+      message:
+        "Error al enviar el código de verificación. Por favor, intenta nuevamente.",
+    };
   },
 
   confirmCode: async () => {
@@ -75,7 +88,7 @@ const useAuthStore = create<AuthState>((set, get) => ({
         set({ user, loading: false });
         await AsyncStorage.setItem("userToken", token);
         console.log("Token almacenado en AsyncStorage:", token);
-        return "EXISTING_USER";
+        return { status: "EXISTING_USER" };
       } else {
         console.log(
           "Usuario no existe en la base de datos. Creando nuevo usuario."
@@ -99,12 +112,19 @@ const useAuthStore = create<AuthState>((set, get) => ({
         set({ user, loading: false });
         await AsyncStorage.setItem("userToken", token);
         console.log("Token almacenado en AsyncStorage:", token);
-        return "NEW_USER";
+        return { status: "NEW_USER" };
       }
     } catch (error) {
       console.error("Error al confirmar el código:", error);
       set({ loading: false });
-      return null;
+
+      if (error?.code === "auth/invalid-verification-code") {
+        return { status: "ERROR", message: "Código de verificación inválido." };
+      }
+      return {
+        status: "ERROR",
+        message: "Error al confirmar el código. Por favor, intenta nuevamente.",
+      };
     }
   },
 

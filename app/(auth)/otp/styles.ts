@@ -45,13 +45,14 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
   },
-
+  button: {
+    flex: 1,
+    width: "100%",
+  },
   buttonLabel: {
     fontSize: 16,
   },
-  exitButton: {
-    backgroundColor: theme.colors.red,
-  },
+
   underlineStyle: {
     borderWidth: moderateScale(1),
     borderRadius: moderateScale(10),
@@ -61,5 +62,11 @@ export const styles = StyleSheet.create({
   cointainerButton: {
     flex: 1,
     width: "100%",
+  },
+  errorText: {
+    color: theme.colors.error,
+    textAlign: "center",
+    fontSize: moderateScale(16),
+    bottom: verticalScale(10),
   },
 });

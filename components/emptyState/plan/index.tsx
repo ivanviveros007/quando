@@ -2,6 +2,7 @@ import { StyleSheet, View, Text } from "react-native";
 import { Button } from "@/components/button";
 import { AntDesign } from "@expo/vector-icons";
 import { globalStyles } from "@theme";
+import { router } from "expo-router";
 
 import { theme } from "@theme";
 
@@ -26,7 +27,13 @@ export const EmptyStatePlan = () => {
         </View>
       </View>
       <View style={styles.containerButton}>
-        <Button title="Crear plan" variant="black" />
+        <Button
+          title="Crear plan"
+          variant="black"
+          onPress={() => {
+            router.push("template");
+          }}
+        />
       </View>
     </View>
   );

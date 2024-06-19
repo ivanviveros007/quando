@@ -10,16 +10,19 @@ import { Button } from "@/components/button";
 import { TextInput } from "react-native-paper";
 import { theme } from "@/theme";
 import { styles } from "./styles";
-import { useAuthStore } from "@/store/useAuthStore";4
+import { useAuthStore } from "@/store/useAuthStore";
+4;
 import { useRouter } from "expo-router";
 
 export default function Otp() {
   const [otp, setOtp] = useState(Array(6).fill(""));
   const textInputRefs = useRef(Array(6).fill(null));
   const router = useRouter();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const { setCode, confirmCode, loading } = useAuthStore();
-
+  const { setCode, confirmCode, loading, areaCode, phoneNumber } =
+    useAuthStore();
+  console.log("phoneNumber", phoneNumber);
   useFocusEffect(
     useCallback(() => {
       if (textInputRefs.current[0]) {
@@ -28,7 +31,7 @@ export default function Otp() {
     }, [])
   );
 
-  const handleOtpChange = (index, value) => {
+  const handleOtpChange = (index: number, value: string) => {
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
@@ -38,14 +41,25 @@ export default function Otp() {
     }
   };
 
+  const handleKeyPress = (index: number, key: string) => {
+    if (key === "Backspace" && otp[index] === "" && index > 0) {
+      textInputRefs.current[index - 1]?.focus();
+    }
+  };
+
   const handleContinue = async () => {
     const otpCode = otp.join("");
     setCode(otpCode);
     const result = await confirmCode();
-    if (result === "EXISTING_USER") {
-      router.push("(tabs)/create_events");
-    } else {
-      router.push("register");
+    // if (result?.status === "EXISTING_USER") {
+    //   router.push("(tabs)/create_events");
+    // } else if (result.status === "NEW_USER") {
+    //   router.push("register");
+    // } else if (result.status === "ERROR") {
+    //   setErrorMessage(result?.message);
+    // }
+    if (result) {
+      router.push("app/(tabs)/create_events");
     }
   };
 
@@ -59,7 +73,7 @@ export default function Otp() {
       <View style={styles.containerTitle}>
         <Text style={styles.title}>Iniciar sesión</Text>
         <Text style={styles.subtitle}>
-          {`Te enviamos un SMS a \n+54 011 1234 1234 con un \ncódigo de acceso. Ingrésalo abajo.`}
+          {`Te enviamos un SMS a \n ${areaCode} ${phoneNumber} con un \ncódigo de acceso. Ingrésalo abajo.`}
         </Text>
       </View>
       <View style={styles.otpContainer}>
@@ -70,6 +84,9 @@ export default function Otp() {
             style={styles.otpInput}
             value={digit}
             onChangeText={(value) => handleOtpChange(index, value)}
+            onKeyPress={({ nativeEvent }) =>
+              handleKeyPress(index, nativeEvent.key)
+            }
             keyboardType="number-pad"
             maxLength={1}
             theme={{
@@ -83,14 +100,19 @@ export default function Otp() {
           />
         ))}
       </View>
+      {errorMessage && <Text style={styles.errorText}>{errorMessage}</Text>}
       <View style={styles.buttonContainer}>
-        <Button
-          mode="contained"
-          onPress={handleContinue}
-          title="Continuar"
-          labelStyle={styles.buttonLabel}
-          disabled={loading}
-        />
+        <View style={styles.button}>
+          <Button
+            mode="contained"
+            onPress={handleContinue}
+            title="Continuar"
+            labelStyle={styles.buttonLabel}
+            disabled={loading}
+            loading={loading}
+          />
+        </View>
+
         {loading && (
           <ActivityIndicator
             size="large"
