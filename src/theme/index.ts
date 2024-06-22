@@ -17,6 +17,7 @@ export const theme = {
     backdropColor: "rgba(0, 0, 0, 0.3)",
     light_blue: "#00B2EE",
     purple: "#8767F2",
+    placeholder: "#BDBDBD",
   },
 
   fonts: {

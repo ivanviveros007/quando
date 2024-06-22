@@ -38,6 +38,22 @@ export default function AuthLayout() {
           headerBackVisible: true,
         }}
       />
+       <Stack.Screen
+        name="register/index"
+        options={{
+          headerTitle: "Quando",
+          title: "Quando",
+          headerTitleStyle: {
+            fontFamily: "RobotoMedium",
+            fontSize: moderateScale(24),
+            color: theme.colors.black,
+          },
+          headerBackTitle: "Login",
+          headerBackTitleVisible: true,
+          headerTintColor: "black",
+          headerBackVisible: true,
+        }}
+      />
     </Stack>
   );
 }

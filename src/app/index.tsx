@@ -24,6 +24,6 @@ export default function InitialScreen() {
   if (userLoggedIn) {
     return <Redirect href="app/(tabs)" />;
   } else {
-    return <Redirect href="(auth)/onboarding" />;
+    return <Redirect href="(auth)/register" />;
   }
 }
