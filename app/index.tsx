@@ -1,29 +1,34 @@
-import { useState, useEffect } from "react";
-import { View } from "react-native";
-import { Redirect } from "expo-router";
-import { useAuthStore } from "@/store/useAuthStore";
+import { StyleSheet, Text, View } from "react-native";
 
-export default function InitialScreen() {
-  const [userLoggedIn, setUserLoggedIn] = useState<boolean | null>(null);
-  const checkUserToken = useAuthStore((state) => state.checkUserToken);
-
-  useEffect(() => {
-    const checkToken = async () => {
-      const tokenExists = await checkUserToken();
-      setUserLoggedIn(tokenExists);
-    };
-
-    checkToken();
-  }, []);
-
-  if (userLoggedIn === null) {
-    // Return a loading screen or null while checking the token
-    return null;
-  }
-
-  if (userLoggedIn) {
-    return <Redirect href="/app/(tabs)" />;
-  } else {
-    return <Redirect href="/(auth)/onboarding" />;
-  }
+export default function Page() {
+  return (
+    <View style={styles.container}>
+      <View style={styles.main}>
+        <Text style={styles.title}>Hello World</Text>
+        <Text style={styles.subtitle}>This is the first page of your app.</Text>
+      </View>
+    </View>
+  );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    padding: 24,
+  },
+  main: {
+    flex: 1,
+    justifyContent: "center",
+    maxWidth: 960,
+    marginHorizontal: "auto",
+  },
+  title: {
+    fontSize: 64,
+    fontWeight: "bold",
+  },
+  subtitle: {
+    fontSize: 36,
+    color: "#38434D",
+  },
+});

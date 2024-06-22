@@ -5,11 +5,11 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
-      "@constants": ["./constants"],
+      "@constants": ["src/constants"],
       "@assets/*": ["./assets/*"],
-      "@helpers": ["./helpers"],
-      "@hooks": ["./hooks"],
-      "@theme": ["./theme"]
+      "@helpers": ["src/helpers"],
+      "@hooks": ["src/hooks"],
+      "@theme": ["src/theme"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
