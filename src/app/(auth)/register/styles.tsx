@@ -13,6 +13,7 @@ export const styles = StyleSheet.create({
   },
   input: {
     marginBottom: 8,
+    height: verticalScale(50),
   },
   button: {
     marginTop: 16,
@@ -27,5 +28,22 @@ export const styles = StyleSheet.create({
   },
   errorText: {
     color: "red",
+    fontSize: moderateScale(12),
+  },
+  row: {
+    flexDirection: "row",
+    marginBottom: verticalScale(20),
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: horizontalScale(20),
+  },
+  areaButton: {
+    minWidth: horizontalScale(90),
+    borderColor: "black",
+    height: verticalScale(49),
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: moderateScale(10),
+    bottom:3
   },
 });

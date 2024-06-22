@@ -137,7 +137,7 @@ export default function Login() {
                     placeholder: theme.colors.white,
                     text: theme.colors.white,
                   },
-                  roundness: theme.spacing.lg,
+                  roundness: 20,
                 }}
                 placeholderTextColor={theme.colors.white}
                 activeOutlineColor={theme.colors.white}

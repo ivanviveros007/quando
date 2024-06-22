@@ -10,14 +10,21 @@ interface AuthState {
   user: any | null;
   code: string;
   loading: boolean;
+  registered: boolean;
+  name: string;
+  email: string;
   setPhoneNumber: (phoneNumber: string) => void;
   setAreaCode: (areaCode: string) => void;
   setConfirm: (confirm: any | null) => void;
   setUser: (user: any | null) => void;
   setCode: (code: string) => void;
   setLoading: (loading: boolean) => void;
+  setRegistered: (registered: boolean) => void;
+  setName: (name: string) => void;
+  setEmail: (email: string) => void;
   signInWithPhoneNumber: () => Promise<any | null>;
   confirmCode: () => Promise<{ status: string; message?: string }>;
+  registerUser: () => Promise<{ status: string; message?: string }>;
   checkUserToken: () => Promise<boolean>;
   logout: () => Promise<void>;
 }
@@ -29,12 +36,18 @@ const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   code: "",
   loading: false,
+  registered: false,
+  name: "",
+  email: "",
   setPhoneNumber: (phoneNumber) => set({ phoneNumber }),
   setAreaCode: (areaCode) => set({ areaCode }),
   setConfirm: (confirm) => set({ confirm }),
   setUser: (user) => set({ user }),
   setCode: (code) => set({ code }),
   setLoading: (loading) => set({ loading }),
+  setRegistered: (registered) => set({ registered }),
+  setName: (name) => set({ name }),
+  setEmail: (email) => set({ email }),
 
   signInWithPhoneNumber: async () => {
     const { phoneNumber, areaCode } = get();
@@ -85,7 +98,7 @@ const useAuthStore = create<AuthState>((set, get) => ({
 
       if (userDocument.exists) {
         console.log("Usuario ya existe en la base de datos");
-        set({ user, loading: false });
+        set({ user, loading: false, registered: true });
         await AsyncStorage.setItem("userToken", token);
         console.log("Token almacenado en AsyncStorage:", token);
         return { status: "EXISTING_USER" };
@@ -124,6 +137,39 @@ const useAuthStore = create<AuthState>((set, get) => ({
       return {
         status: "ERROR",
         message: "Error al confirmar el código. Por favor, intenta nuevamente.",
+      };
+    }
+  },
+
+  registerUser: async () => {
+    const { name, email, phoneNumber, user } = get();
+    set({ loading: true });
+    try {
+      await firestore()
+        .collection("users")
+        .doc(user.uid)
+        .set({
+          uid: user.uid,
+          phoneNumber: user.phoneNumber,
+          displayName: name,
+          email: email,
+          emailVerified: user.emailVerified,
+          isAnonymous: user.isAnonymous,
+          metadata: {
+            creationTime: user.metadata.creationTime,
+            lastSignInTime: user.metadata.lastSignInTime,
+          },
+          registered: true,
+        });
+      set({ registered: true, loading: false });
+      return { status: "SUCCESS" };
+    } catch (error) {
+      console.error("Error al registrar el usuario:", error);
+      set({ loading: false });
+      return {
+        status: "ERROR",
+        message:
+          "Error al registrar el usuario. Por favor, intenta nuevamente.",
       };
     }
   },

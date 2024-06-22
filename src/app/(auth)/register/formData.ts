@@ -9,9 +9,4 @@ export const formFields: FormField[] = [
   { name: "firstName", label: "Nombre", keyboardType: "default" },
   { name: "lastName", label: "Apellido", keyboardType: "default" },
   { name: "email", label: "Correo Electrónico", keyboardType: "email-address" },
-  {
-    name: "phoneNumber",
-    label: "Número de Teléfono",
-    keyboardType: "phone-pad",
-  },
 ];
