@@ -9,7 +9,7 @@ import { FormValues } from "./types";
 import { globalStyles } from "@/src/theme";
 import { ThemedText as Text } from "@/src/components/ThemedText";
 import { router } from "expo-router";
-import { useAuthStore } from "@/src/store/useAuthStore";
+import { useAuthStore } from "@/src/store/authStore";
 import { themeTextInput } from "@/src/theme/themeInput";
 import { isValidPhoneNumber } from "@/src/utils";
 

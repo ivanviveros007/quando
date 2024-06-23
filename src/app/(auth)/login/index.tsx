@@ -15,7 +15,7 @@ import { styles } from "./styles";
 import { router, useFocusEffect } from "expo-router";
 import { isValidPhoneNumber } from "@/src/utils";
 
-import { useAuthStore } from "@/src/store/useAuthStore";
+import { useAuthStore } from "@/src/store/authStore";
 
 export default function Login() {
   const [menuVisible, setMenuVisible] = useState(false);

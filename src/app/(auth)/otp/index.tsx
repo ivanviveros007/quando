@@ -10,7 +10,7 @@ import { Button } from "@/src/components/button";
 import { TextInput } from "react-native-paper";
 import { theme } from "@/src/theme";
 import { styles } from "./styles";
-import { useAuthStore } from "@/src/store/useAuthStore";
+import { useAuthStore } from "@/src/store/authStore";
 4;
 import { useRouter } from "expo-router";
 

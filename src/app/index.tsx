@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 import { Redirect } from "expo-router";
-import { useAuthStore } from "@/src/store/useAuthStore";
+import { useAuthStore } from "@/src/store/authStore";
 
 export default function InitialScreen() {
   const [userLoggedIn, setUserLoggedIn] = useState<boolean | null>(null);

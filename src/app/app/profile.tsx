@@ -1,5 +1,5 @@
 import { View, Text } from "react-native";
-import { useAuthStore } from "@/src/store/useAuthStore";
+import { useAuthStore } from "@/src/store/authStore";
 import { MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 

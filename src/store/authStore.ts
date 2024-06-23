@@ -3,6 +3,8 @@ import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import { useUserStore } from "./userStore";
+
 interface AuthState {
   phoneNumber: string;
   areaCode: string;
