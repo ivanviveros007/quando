@@ -54,5 +54,6 @@ export const styles = StyleSheet.create({
   },
   menuItem:{
     backgroundColor: theme.colors.white,
+  
   }
 });

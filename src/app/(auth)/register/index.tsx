@@ -11,6 +11,7 @@ import { ThemedText as Text } from "@/src/components/ThemedText";
 import { router } from "expo-router";
 import { useAuthStore } from "@/src/store/useAuthStore";
 import { themeTextInput } from "@/src/theme/themeInput";
+import { isValidPhoneNumber } from "@/src/utils";
 
 const initialValues: FormValues = {
   firstName: "",
@@ -55,10 +56,7 @@ const Register = () => {
     }
   };
 
-  const isValidPhoneNumber = (phone: string) => {
-    const phoneRegex = /^[0-9]{10}$/;
-    return phoneRegex.test(phone);
-  };
+ 
 
   return (
     <View style={styles.container}>
@@ -124,7 +122,7 @@ const Register = () => {
                       />
                     </Menu>
                     <TextInput
-                      ref={(ref) => (refs.current[index] = ref)}
+                      ref={(ref: any) => (refs.current[index] = ref)}
                       style={[styles.input, globalStyles.flex]}
                       mode="outlined"
                       focusable={true}
@@ -174,7 +172,7 @@ const Register = () => {
               return (
                 <View key={index} style={styles.inputContainer}>
                   <TextInput
-                    ref={(ref) => (refs.current[index] = ref)}
+                    ref={(ref: any) => (refs.current[index] = ref)}
                     label={field.label}
                     onChangeText={handleChange(field.name)}
                     onBlur={handleBlur(field.name)}
