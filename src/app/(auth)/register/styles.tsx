@@ -44,6 +44,15 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: moderateScale(10),
-    bottom:3
   },
+  outlineStyle: {
+    borderWidth: 1,
+  },
+  containerError: {
+    position: "absolute",
+    top: 60,
+  },
+  menuItem:{
+    backgroundColor: theme.colors.white,
+  }
 });
