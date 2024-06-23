@@ -6,7 +6,7 @@ interface UserState {
   loading: boolean;
   setUser: (user: any | null) => void;
   setLoading: (loading: boolean) => void;
-  getUserInfo: (uid: string) => Promise<any>;
+  getUserInfo: (uid: string) => Promise<{ status: string; user?: any }>;
 }
 
 const useUserStore = create<UserState>((set) => ({
@@ -20,8 +20,9 @@ const useUserStore = create<UserState>((set) => ({
     try {
       const userDoc = await firestore().collection("users").doc(uid).get();
       if (userDoc.exists) {
-        set({ user: userDoc.data(), loading: false });
-        return { status: "SUCCESS", user: userDoc.data() };
+        const userData = userDoc.data();
+        set({ user: userData, loading: false });
+        return { status: "SUCCESS", user: userData };
       } else {
         set({ loading: false });
         return { status: "ERROR", message: "User not found" };

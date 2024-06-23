@@ -6,15 +6,21 @@ import { useAuthStore } from "@/src/store/authStore";
 export default function InitialScreen() {
   const [userLoggedIn, setUserLoggedIn] = useState<boolean | null>(null);
   const checkUserToken = useAuthStore((state) => state.checkUserToken);
-
+  const getUserData = useAuthStore((state) => state.getUserData);
+  const user = useAuthStore((state) => state.user);
   useEffect(() => {
     const checkToken = async () => {
       const tokenExists = await checkUserToken();
-      setUserLoggedIn(tokenExists);
+      if (tokenExists) {
+        await getUserData();
+        setUserLoggedIn(true);
+      } else {
+        setUserLoggedIn(false);
+      }
     };
 
     checkToken();
-  }, []);
+  }, [user]);
 
   if (userLoggedIn === null) {
     // Return a loading screen or null while checking the token

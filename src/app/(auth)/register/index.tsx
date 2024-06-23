@@ -176,7 +176,11 @@ const Register = () => {
                     label={field.label}
                     onChangeText={handleChange(field.name)}
                     onBlur={handleBlur(field.name)}
-                    value={values[field.name]}
+                    value={
+                      field.type === "email"
+                        ? values[field.name].toLocaleLowerCase()
+                        : values[field.name]
+                    }
                     mode="outlined"
                     keyboardType={field.keyboardType}
                     error={

@@ -9,7 +9,12 @@ type FormField = {
 export const formFields: FormField[] = [
   { name: "firstName", label: "Nombre", keyboardType: "default" },
   { name: "lastName", label: "Apellido", keyboardType: "default" },
-  { name: "email", label: "Correo Electrónico", keyboardType: "email-address" },
+  {
+    name: "email",
+    label: "Correo Electrónico",
+    keyboardType: "email-address",
+    type: "email",
+  },
   { name: "areaCode", label: "Código de Área", type: "menu" },
   {
     name: "phoneNumber",

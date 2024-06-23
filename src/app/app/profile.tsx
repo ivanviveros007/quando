@@ -1,4 +1,5 @@
-import { View, Text } from "react-native";
+import { View, Pressable } from "react-native";
+import { ThemedText as Text } from "@/src/components/ThemedText";
 import { useAuthStore } from "@/src/store/authStore";
 import { MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
@@ -6,20 +7,17 @@ import { router } from "expo-router";
 export default function Profile() {
   const { user, logout } = useAuthStore();
 
+  console.log("user desde profile", user);
+
   const data = [
     {
-      id: 1,
-      title: "Nombre de usuario",
-      icon: <MaterialIcons name="person" size={24} color="black" />,
-    },
-    {
       id: 2,
-      title: "Correo electrónico",
+      title: ` ${user?.email}`,
       icon: <MaterialIcons name="email" size={24} color="black" />,
     },
     {
       id: 3,
-      title: "Teléfono",
+      title: ` ${user?.phoneNumber}`,
       icon: <MaterialIcons name="phone" size={24} color="black" />,
     },
     {
@@ -46,8 +44,8 @@ export default function Profile() {
           }}
         />
       </View>
-      <Text style={{ textAlign: "center", marginTop: 20 }}>
-        Nombre de usuario
+      <Text style={{ textAlign: "center", marginTop: 20 }} type="subtitle">
+        {user?.displayName}
       </Text>
       <Text style={{ textAlign: "center", marginTop: 10, fontSize: 12 }}>
         10 eventos creados
@@ -55,7 +53,10 @@ export default function Profile() {
 
       <View style={{ flex: 1, marginTop: 50 }}>
         {data.map((item) => (
-          <View key={item.id} style={{ flexDirection: "row", padding: 10 }}>
+          <View
+            key={item.id}
+            style={{ flexDirection: "row", padding: 10, alignItems: "center" }}
+          >
             {item.icon}
             <Text style={{ marginLeft: 10 }}>{item.title}</Text>
           </View>
@@ -63,15 +64,13 @@ export default function Profile() {
       </View>
 
       <View style={{ flex: 1, justifyContent: "flex-end", marginTop: 100 }}>
-        <View style={{ flexDirection: "row", padding: 10 }}>
-          <MaterialIcons
-            name="logout"
-            size={24}
-            color="black"
-            onPress={logOut}
-          />
+        <Pressable
+          style={{ flexDirection: "row", padding: 10, alignItems: "center" }}
+          onPress={logOut}
+        >
+          <MaterialIcons name="logout" size={24} color="black" />
           <Text style={{ marginLeft: 10 }}>Cerrar sesión</Text>
-        </View>
+        </Pressable>
       </View>
     </View>
   );
