@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View } from "react-native";
+
 import { Redirect } from "expo-router";
 import { useAuthStore } from "@/src/store/useAuthStore";
 
@@ -24,6 +24,6 @@ export default function InitialScreen() {
   if (userLoggedIn) {
     return <Redirect href="app/(tabs)" />;
   } else {
-    return <Redirect href="(auth)/register" />;
+    return <Redirect href="(auth)/onboarding" />;
   }
 }

@@ -40,11 +40,13 @@ export const styles = StyleSheet.create({
     height: verticalScale(50),
     justifyContent: "center",
     alignItems: "center",
+    borderRadius: 10,
   },
   input: {
     flexGrow: 1,
     fontFamily: "RobotoRegular",
     textAlign: "center",
+    height: verticalScale(50),
   },
   button: {
     marginBottom: verticalScale(10),

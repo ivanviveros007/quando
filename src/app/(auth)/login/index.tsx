@@ -13,6 +13,7 @@ import { TextInput, Menu, Button as RNPButton } from "react-native-paper";
 import { theme } from "@/src/theme";
 import { styles } from "./styles";
 import { router, useFocusEffect } from "expo-router";
+import { isValidPhoneNumber } from "@/src/utils";
 
 import { useAuthStore } from "@/src/store/useAuthStore";
 
@@ -26,6 +27,7 @@ export default function Login() {
     setAreaCode,
     signInWithPhoneNumber,
     loading,
+    checkUserExists,
   } = useAuthStore();
 
   const textInputRef = useRef<RNTextInput>(null);
@@ -40,10 +42,6 @@ export default function Login() {
       }
     }, [])
   );
-  const isValidPhoneNumber = (phone: string) => {
-    const phoneRegex = /^[0-9]{10}$/;
-    return phoneRegex.test(phone);
-  };
 
   const handleLogin = async () => {
     if (!isValidPhoneNumber(phoneNumber)) {
@@ -54,11 +52,19 @@ export default function Login() {
       return;
     }
 
-    const result = await signInWithPhoneNumber();
-    if (result.success) {
-      router.push("otp");
+    const fullPhoneNumber = areaCode + phoneNumber;
+    const userExists = await checkUserExists(fullPhoneNumber);
+
+    if (userExists) {
+      const result = await signInWithPhoneNumber();
+
+      if (result.success) {
+        router.push("otp");
+      } else {
+        Alert.alert("Error", result.error.message);
+      }
     } else {
-      Alert.alert(result.title, result.message);
+      router.push("register");
     }
   };
 
@@ -91,9 +97,6 @@ export default function Login() {
                     {areaCode}
                   </RNPButton>
                 }
-                theme={{
-                  roundness: 20,
-                }}
               >
                 <Menu.Item
                   onPress={() => {
@@ -137,13 +140,14 @@ export default function Login() {
                     placeholder: theme.colors.white,
                     text: theme.colors.white,
                   },
-                  roundness: 20,
+                  roundness: 10,
                 }}
                 placeholderTextColor={theme.colors.white}
                 activeOutlineColor={theme.colors.white}
                 outlineColor={theme.colors.white}
                 textColor={theme.colors.white}
                 keyboardAppearance="dark"
+                outlineStyle={{borderWidth:0.9}}
               />
             </View>
             <View style={styles.login}>
@@ -153,6 +157,7 @@ export default function Login() {
                 title={"Iniciar sesión"}
                 labelStyle={styles.labelLogin}
                 disabled={loading}
+                loading={loading}
               />
             </View>
 

@@ -13,16 +13,17 @@ import { useAuthStore } from "@/src/store/useAuthStore";
 import { themeTextInput } from "@/src/theme/themeInput";
 import { isValidPhoneNumber } from "@/src/utils";
 
-const initialValues: FormValues = {
-  firstName: "",
-  lastName: "",
-  email: "",
-  phoneNumber: "",
-  areaCode: "+54",
-};
-
 const Register = () => {
   const [menuVisible, setMenuVisible] = useState(false);
+
+  const initialValues: FormValues = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: useAuthStore.getState().phoneNumber || "",
+    areaCode: useAuthStore.getState().areaCode || "+54",
+  };
+
   const {
     setPhoneNumber,
     setAreaCode,
@@ -30,8 +31,7 @@ const Register = () => {
     setEmail,
     registerUser,
     loading,
-    areaCode,
-    phoneNumber,
+    signInWithPhoneNumber,
   } = useAuthStore();
 
   const refs = useRef<any[]>([]);
@@ -40,23 +40,23 @@ const Register = () => {
   const closeMenu = () => setMenuVisible(false);
 
   const handleRegister = async (values: any) => {
-    if (!isValidPhoneNumber(values.phoneNumber)) {
-      Alert.alert(
-        "Número Inválido",
-        "Por favor, ingresa un número de teléfono válido"
-      );
-      return;
-    }
+    setPhoneNumber(values.phoneNumber);
+    setAreaCode(values.areaCode);
+    setName(`${values.firstName} ${values.lastName}`);
+    setEmail(values.email);
 
-    const result = await registerUser();
-    if (result.status === "SUCCESS") {
-      router.push("home");
+    const registerResult = await registerUser();
+    if (registerResult.status === "SUCCESS") {
+      const signInResult = await signInWithPhoneNumber();
+      if (signInResult.success) {
+        router.push("otp");
+      } else {
+        Alert.alert("Error", signInResult.message);
+      }
     } else {
-      Alert.alert("Error", result.message);
+      Alert.alert("Error", registerResult.message);
     }
   };
-
- 
 
   return (
     <View style={styles.container}>
@@ -216,6 +216,8 @@ const Register = () => {
               onPress={() => handleSubmit()}
               style={styles.button}
               labelStyle={styles.labelStyle}
+              loading={loading}
+              disabled={loading}
             >
               Registrarse
             </Button>

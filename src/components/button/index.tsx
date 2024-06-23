@@ -44,7 +44,7 @@ export const Button = ({
           loading={loading}
           {...rest}
         >
-          {loading ? <ActivityIndicator color="white" /> : title}
+          {!loading && title}
         </RNPButton>
       )}
       {mode === "outlined" && (
