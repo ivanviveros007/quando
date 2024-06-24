@@ -1,13 +1,65 @@
-import { View, Pressable } from "react-native";
+import React, { useEffect } from "react";
+import {
+  View,
+  Pressable,
+  Alert,
+  Image,
+  ActivityIndicator,
+  StyleSheet,
+} from "react-native";
 import { ThemedText as Text } from "@/src/components/ThemedText";
 import { useAuthStore } from "@/src/store/authStore";
+import { useUserStore } from "@/src/store/userStore";
 import { MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import * as ImagePicker from "expo-image-picker";
+
+import { globalStyles } from "@/src/theme";
+import { moderateScale, verticalScale, horizontalScale } from "@/src/helpers";
 
 export default function Profile() {
   const { user, logout } = useAuthStore();
+  const { additionalInfo, fetchAdditionalInfo, uploadProfilePicture, loading } =
+    useUserStore();
 
-  console.log("user desde profile", user);
+  useEffect(() => {
+    fetchAdditionalInfo();
+  }, []);
+
+  const pickImage = async () => {
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permissionResult.granted === false) {
+      Alert.alert(
+        "Permiso requerido",
+        "Se requiere permiso para acceder a la galería."
+      );
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets.length > 0) {
+      const selectedImage = result.assets[0];
+      if (selectedImage.uri) {
+        try {
+          await uploadProfilePicture(selectedImage.uri);
+        } catch (error) {
+          Alert.alert("Error", error.message);
+        }
+      } else {
+        Alert.alert(
+          "Error",
+          "No se pudo obtener la URI de la imagen seleccionada."
+        );
+      }
+    }
+  };
 
   const data = [
     {
@@ -28,50 +80,108 @@ export default function Profile() {
   ];
 
   const logOut = async () => {
-    await logout();
-    router.push("/");
+    try {
+      await Alert.alert(
+        "Cerrar sesión",
+        "¿Estás seguro de que deseas cerrar sesión?",
+        [
+          {
+            text: "Cancelar",
+            style: "cancel",
+          },
+          {
+            text: "Cerrar sesión",
+            onPress: async () => {
+              await logout();
+              router.push("/");
+            },
+          },
+        ]
+      );
+    } catch (error) {
+      console.log("Error al cerrar sesión:", error);
+    }
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      <View style={{ alignSelf: "center" }}>
-        <View
-          style={{
-            backgroundColor: "grey",
-            height: 100,
-            width: 100,
-            borderRadius: 50,
-          }}
-        />
-      </View>
-      <Text style={{ textAlign: "center", marginTop: 20 }} type="subtitle">
+    <View style={globalStyles.flex}>
+      <Pressable onPress={pickImage} style={globalStyles.containerTitle}>
+        <View style={styles.emptyImage}>
+          {loading ? (
+            <ActivityIndicator size="large" color="white" />
+          ) : additionalInfo.photoURL ? (
+            <Image
+              source={{ uri: additionalInfo.photoURL }}
+              style={styles.image}
+            />
+          ) : (
+            <MaterialIcons name="camera-alt" size={24} color="white" />
+          )}
+        </View>
+      </Pressable>
+      <Text style={styles.name} type="subtitle">
         {user?.displayName}
       </Text>
-      <Text style={{ textAlign: "center", marginTop: 10, fontSize: 12 }}>
+      <Text style={styles.events} type="link">
         10 eventos creados
       </Text>
 
-      <View style={{ flex: 1, marginTop: 50 }}>
+      <View style={styles.containerData}>
         {data.map((item) => (
-          <View
-            key={item.id}
-            style={{ flexDirection: "row", padding: 10, alignItems: "center" }}
-          >
+          <View key={item.id} style={styles.containerItems}>
             {item.icon}
-            <Text style={{ marginLeft: 10 }}>{item.title}</Text>
+            <Text>{item.title}</Text>
           </View>
         ))}
       </View>
 
-      <View style={{ flex: 1, justifyContent: "flex-end", marginTop: 100 }}>
-        <Pressable
-          style={{ flexDirection: "row", padding: 10, alignItems: "center" }}
-          onPress={logOut}
-        >
+      <View style={styles.footer}>
+        <Pressable style={styles.containerItems} onPress={logOut}>
           <MaterialIcons name="logout" size={24} color="black" />
-          <Text style={{ marginLeft: 10 }}>Cerrar sesión</Text>
+          <Text>Cerrar sesión</Text>
         </Pressable>
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  emptyImage: {
+    backgroundColor: "grey",
+    height: moderateScale(100),
+    width: moderateScale(100),
+    borderRadius: moderateScale(50),
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  image: {
+    height: moderateScale(100),
+    width: moderateScale(100),
+    borderRadius: moderateScale(50),
+  },
+  name: {
+    textAlign: "center",
+    marginTop: verticalScale(20),
+  },
+  events: {
+    textAlign: "center",
+    marginTop: verticalScale(10),
+    fontSize: moderateScale(14),
+  },
+  containerData: {
+    flex: 1,
+    marginTop: verticalScale(50),
+  },
+  containerItems: {
+    flexDirection: "row",
+    padding: moderateScale(10),
+    alignItems: "center",
+    gap: moderateScale(10),
+  },
+
+  footer: {
+    flex: 1,
+    justifyContent: "flex-end",
+    marginTop: verticalScale(100),
+  },
+});

@@ -1,3 +1,4 @@
+import { FC } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { Button } from "@/src/components/button";
 import { AntDesign } from "@expo/vector-icons";
@@ -8,7 +9,12 @@ import { theme } from "@/src/theme";
 
 import { moderateScale, verticalScale, horizontalScale } from "@/src/helpers";
 
-export const EmptyStatePlan = () => {
+interface EmptyStatePlanProps {
+  type?: "today" | "next";
+}
+
+export const EmptyStatePlan: FC<EmptyStatePlanProps> = ({ type }) => {
+  const title = type === "today" ? "hoy" : "próximamente";
   return (
     <View style={styles.container}>
       <View>
@@ -19,7 +25,7 @@ export const EmptyStatePlan = () => {
           style={styles.icon}
         />
         <Text style={[globalStyles.text_fs20_black_bold, styles.title]}>
-          No tienes planes hoy
+          No tienes planes {title}
         </Text>
 
         <View style={styles.containerMessage}>
