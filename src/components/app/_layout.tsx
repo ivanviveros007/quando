@@ -1,7 +1,7 @@
 import { Drawer } from "./drawer";
 import { DrawerToggleButton } from "@react-navigation/drawer";
 import { DrawerContentScrollView } from "@react-navigation/drawer";
-import Profile from "./profile";
+import Profile from "../../app/(home)/profile";
 
 export default function AppLayout() {
   return (

@@ -57,12 +57,8 @@ export default function RootLayout() {
           {/* Auth Screens */}
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
           {/* App Screens */}
-          <Stack.Screen name="app" options={{ headerShown: false }} />
-
+          <Stack.Screen name="(home)" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
-
-          <Stack.Screen name="template" />
-          <Stack.Screen name="contacts" />
         </Stack>
       </ThemeProvider>
     </PaperProvider>
