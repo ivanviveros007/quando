@@ -25,6 +25,7 @@
     "@react-native-firebase/storage": "^20.1.0",
     "@react-navigation/drawer": "^6.6.15",
     "@react-navigation/native": "^6.0.2",
+    "@react-navigation/stack": "^6.3.29",
     "d3-shape": "^3.2.0",
     "date-fns": "^3.6.0",
     "expo": "~51.0.14",
