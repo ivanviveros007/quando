@@ -1,15 +1,12 @@
 import { Tabs } from "expo-router";
 import React from "react";
 import { TabBarIcon } from "@/src/components/tabBar/TabBarIcon";
-import { useColorScheme } from "@/src/hooks/useColorScheme";
 import { View } from "react-native";
 import { Images } from "@/src/constants";
 import { verticalScale } from "@/src/helpers";
 import { Colors } from "@/src/constants";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
       initialRouteName="home/index"
@@ -49,6 +46,7 @@ export default function TabLayout() {
             <TabBarIcon name="calendar-month" color={color} />
           ),
           headerShadowVisible: false,
+          headerShown: true,
         }}
       />
       <Tabs.Screen

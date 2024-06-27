@@ -1,6 +1,7 @@
 import { Text, type TextProps, StyleSheet } from "react-native";
 
 import { useThemeColor } from "@/src/hooks/useThemeColor";
+import { moderateScale } from "../helpers";
 
 export type ThemedTextProps = TextProps & {
   lightColor?: string;
@@ -35,30 +36,30 @@ export function ThemedText({
 
 const styles = StyleSheet.create({
   default: {
-    fontSize: 16,
+    fontSize: moderateScale(16),
     lineHeight: 24,
     fontFamily: "RobotoRegular",
   },
   defaultSemiBold: {
-    fontSize: 16,
+    fontSize: moderateScale(16),
     lineHeight: 24,
     fontWeight: "600",
     fontFamily: "RobotoMedium",
   },
   title: {
-    fontSize: 32,
+    fontSize: moderateScale(25),
     fontWeight: "bold",
     lineHeight: 32,
     fontFamily: "RobotoBold",
   },
   subtitle: {
-    fontSize: 20,
+    fontSize: moderateScale(20),
     fontWeight: "bold",
     fontFamily: "RobotoBold",
   },
   link: {
     lineHeight: 30,
-    fontSize: 16,
+    fontSize: moderateScale(16),
     color: "#0a7ea4",
     fontFamily: "RobotoRegular",
   },
