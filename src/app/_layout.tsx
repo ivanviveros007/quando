@@ -59,8 +59,6 @@ export default function RootLayout() {
           {/* App Screens */}
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
-          <Stack.Screen name="map/index" />
-          <Stack.Screen name="contacts/index" options={{ presentation:'containedModal'}} />
         </Stack>
       </ThemeProvider>
     </PaperProvider>

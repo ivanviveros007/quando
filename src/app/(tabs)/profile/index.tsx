@@ -6,6 +6,7 @@ import {
   Image,
   ActivityIndicator,
   StyleSheet,
+  SafeAreaView,
 } from "react-native";
 import { ThemedText as Text } from "@/src/components/ThemedText";
 import { useAuthStore } from "@/src/store/authStore";
@@ -61,24 +62,6 @@ export default function Profile() {
     }
   };
 
-  const data = [
-    {
-      id: 2,
-      title: ` ${user?.email}`,
-      icon: <MaterialIcons name="email" size={24} color="black" />,
-    },
-    {
-      id: 3,
-      title: ` ${user?.phoneNumber}`,
-      icon: <MaterialIcons name="phone" size={24} color="black" />,
-    },
-    {
-      id: 4,
-      title: "Dirección",
-      icon: <MaterialIcons name="location-on" size={24} color="black" />,
-    },
-  ];
-
   const logOut = async () => {
     try {
       await Alert.alert(
@@ -103,8 +86,33 @@ export default function Profile() {
     }
   };
 
+  const data = [
+    {
+      id: 2,
+      title: ` ${user?.email}`,
+      icon: <MaterialIcons name="email" size={24} color="black" />,
+    },
+    {
+      id: 3,
+      title: ` ${user?.phoneNumber}`,
+      icon: <MaterialIcons name="phone" size={24} color="black" />,
+    },
+    {
+      id: 4,
+      title: "Dirección",
+      icon: <MaterialIcons name="location-on" size={24} color="black" />,
+    },
+    {
+      id: 5,
+      title: "Cerrar sesión",
+      icon: (
+        <MaterialIcons name="logout" size={24} color="black" onPress={logOut} />
+      ),
+    },
+  ];
+
   return (
-    <View style={globalStyles.flex}>
+    <SafeAreaView style={globalStyles.flex}>
       <Pressable onPress={pickImage} style={globalStyles.containerTitle}>
         <View style={styles.emptyImage}>
           {loading ? (
@@ -134,14 +142,7 @@ export default function Profile() {
           </View>
         ))}
       </View>
-
-      <View style={styles.footer}>
-        <Pressable style={styles.containerItems} onPress={logOut}>
-          <MaterialIcons name="logout" size={24} color="black" />
-          <Text>Cerrar sesión</Text>
-        </Pressable>
-      </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -178,10 +179,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: moderateScale(10),
   },
-
-  footer: {
-    flex: 1,
-    justifyContent: "flex-end",
-    marginTop: verticalScale(100),
-  },
-});
+  });

@@ -59,7 +59,7 @@ export default function Otp() {
     //   setErrorMessage(result?.message);
     // }
     if (result) {
-      router.push("(home)/home");
+      router.push("(tabs)/home");
     }
   };
 

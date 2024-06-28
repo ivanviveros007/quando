@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
-import { useLocationStore } from "../../store/locationStore";
+import { useLocationStore } from "@/src/store/locationStore";
 import { useRouter } from "expo-router";
 
 const MapScreen = () => {

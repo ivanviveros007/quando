@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
 import {
+  Modal,
   View,
   Text,
-  Button,
   StyleSheet,
   ScrollView,
-  Image,
   TouchableOpacity,
   SafeAreaView,
-  FlatList,
 } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -17,13 +15,14 @@ import { TextInput as PaperTextInput, useTheme } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import { ThemedText } from "@/src/components/ThemedText";
 import { router } from "expo-router";
-
 import * as Contacts from "expo-contacts";
-
 import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import { useLocationStore } from "@/src/store/locationStore";
+import InviteContacts from "@/src/components/contacts";
+import { Button } from "@/src/components/button";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const validationSchema = Yup.object().shape({
   planType: Yup.string().required("El tipo de plan es obligatorio"),
@@ -34,15 +33,11 @@ const validationSchema = Yup.object().shape({
   description: Yup.string(),
 });
 
-const CrearPlan = () => {
+const CrearPlan: React.FC = () => {
   const [showDropDown, setShowDropDown] = useState(false);
-  const [imageUri, setImageUri] = useState(null);
-
+  const [imageUris, setImageUris] = useState<string[]>([]);
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [showTimePicker, setShowTimePicker] = useState(false);
-
   const theme = useTheme();
 
   const selectedLocation = useLocationStore((state) => state.selectedLocation);
@@ -50,8 +45,10 @@ const CrearPlan = () => {
     (state) => state.setSelectedLocation
   );
 
-  const [contacts, setContacts] = useState([]);
-  const [selectedContacts, setSelectedContacts] = useState([]);
+  const [contacts, setContacts] = useState<Contacts.Contact[]>([]);
+  const [selectedContacts, setSelectedContacts] = useState<Contacts.Contact[]>(
+    []
+  );
 
   const planTypes = [
     { label: "Comida", value: "food" },
@@ -66,25 +63,11 @@ const CrearPlan = () => {
     { label: "Otro", value: "other" },
   ];
 
-  const selectImage = async () => {
-    const result = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (result.granted === false) {
-      alert("Permiso para acceder a la galería es requerido!");
-      return;
-    }
-
-    let pickerResult = await ImagePicker.launchImageLibraryAsync();
-    if (!pickerResult.canceled) {
-      setImageUri(pickerResult.uri);
-    }
-  };
-
   const handleDateChange = (
     event: DateTimePickerEvent,
     selectedDate: Date | undefined
   ) => {
     const currentDate = selectedDate || date;
-    setShowDatePicker(false);
     setDate(currentDate);
   };
 
@@ -93,12 +76,11 @@ const CrearPlan = () => {
     selectedTime: Date | undefined
   ) => {
     const currentTime = selectedTime || time;
-    setShowTimePicker(false);
     setTime(currentTime);
   };
 
   const handleLocationPress = () => {
-    router.push("contacts");
+    router.push("(tabs)/create_events/map");
   };
 
   const handleSelectContacts = async () => {
@@ -117,12 +99,25 @@ const CrearPlan = () => {
     }
   };
 
-  const handleAddContact = (contact) => {
+  const handleAddContact = (contact: Contacts.Contact) => {
     if (contact.phoneNumbers && contact.phoneNumbers.length > 0) {
       setSelectedContacts([
         ...selectedContacts,
         { ...contact, selectedPhoneNumber: contact.phoneNumbers[0].number },
       ]);
+    }
+  };
+
+  const selectImage = async () => {
+    const result = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (result.granted === false) {
+      alert("Permiso para acceder a la galería es requerido!");
+      return;
+    }
+
+    const pickerResult = await ImagePicker.launchImageLibraryAsync();
+    if (!pickerResult.canceled) {
+      setImageUris([...imageUris, pickerResult.uri]);
     }
   };
 
@@ -163,6 +158,12 @@ const CrearPlan = () => {
             }
           }, [selectedLocation]);
 
+          useEffect(() => {
+            if (selectedContacts.length > 0) {
+              setFieldValue("guests", selectedContacts);
+            }
+          }, [selectedContacts]);
+
           return (
             <ScrollView contentContainerStyle={styles.container}>
               <ThemedText
@@ -173,18 +174,30 @@ const CrearPlan = () => {
               </ThemedText>
 
               <View style={{ flexDirection: "column", gap: 20 }}>
-                <DropDown
-                  label={"Tipo de plan *"}
-                  mode={"outlined"}
-                  visible={showDropDown}
-                  showDropDown={() => setShowDropDown(true)}
-                  onDismiss={() => setShowDropDown(false)}
-                  value={values.planType}
-                  setValue={handleChange("planType")}
-                  list={planTypes}
-                  theme={theme}
-                  placeholder="Tipo de plan *"
-                />
+                <View style={{}}>
+                  <DropDown
+                    label={"Tipo de plan *"}
+                    mode={"outlined"}
+                    visible={showDropDown}
+                    showDropDown={() => setShowDropDown(true)}
+                    onDismiss={() => setShowDropDown(false)}
+                    value={values.planType}
+                    setValue={handleChange("planType")}
+                    list={planTypes}
+                    theme={theme}
+                    placeholder="Tipo de plan *"
+                  />
+
+                  <MaterialIcons
+                    name={
+                      showDropDown ? "keyboard-arrow-up" : "keyboard-arrow-down"
+                    }
+                    size={24}
+                    color="black"
+                    style={{ position: "absolute", right: 10, top: 20 }}
+                  />
+                </View>
+
                 {touched.planType && errors.planType && (
                   <Text style={styles.error}>{errors.planType}</Text>
                 )}
@@ -203,72 +216,82 @@ const CrearPlan = () => {
                 )}
               </View>
 
-              <Text style={styles.label}>Fecha *</Text>
-              <TouchableOpacity
-                onPress={() => setShowDatePicker(true)}
-                style={{ flex: 1, backgroundColor: "red" }}
-              >
-                <PaperTextInput
-                  style={styles.input}
-                  mode="outlined"
-                  value={values.date}
-                  editable={false}
-                />
-              </TouchableOpacity>
-              {showDatePicker && (
-                <DateTimePicker
-                  value={date}
-                  mode="date"
-                  display="default"
-                  onChange={(event, selectedDate) => {
-                    handleDateChange(event, selectedDate);
-                    setFieldValue(
-                      "date",
-                      selectedDate?.toISOString().split("T")[0]
-                    );
-                  }}
-                />
-              )}
-              {touched.date && errors.date && (
-                <Text style={styles.error}>{errors.date}</Text>
-              )}
+              <View style={{ flexDirection: "row", gap: 20, marginBottom: 10 }}>
+                <View
+                  style={{
+                    width: "50%",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
 
-              <Text style={styles.label}>Hora *</Text>
-              <TouchableOpacity onPress={() => setShowTimePicker(true)}>
-                <PaperTextInput
-                  style={styles.input}
-                  mode="outlined"
-                  value={values.time}
-                  editable={false}
-                />
-              </TouchableOpacity>
-              {showTimePicker && (
-                <DateTimePicker
-                  value={time}
-                  mode="time"
-                  display="default"
-                  onChange={(event, selectedTime) => {
-                    handleTimeChange(event, selectedTime);
-                    setFieldValue(
-                      "time",
-                      selectedTime.toISOString().split("T")[1].substr(0, 5)
-                    );
+                    height: 50,
+                    alignItems: "center",
+                    borderWidth: 0.5,
+                    borderColor: "black",
+                    borderRadius: 5,
+                    paddingHorizontal: 5,
+                    backgroundColor: "white",
                   }}
-                />
-              )}
-              {touched.time && errors.time && (
-                <Text style={styles.error}>{errors.time}</Text>
-              )}
+                >
+                  <DateTimePicker
+                    value={date}
+                    mode="date"
+                    display="default"
+                    onChange={(event, selectedDate) => {
+                      handleDateChange(event, selectedDate);
+                      setFieldValue(
+                        "date",
+                        selectedDate?.toISOString().split("T")[0]
+                      );
+                    }}
+                  />
+                  <MaterialIcons name="date-range" size={24} color="black" />
 
-              <Text style={styles.label}>¿Dónde? *</Text>
+                  {touched.date && errors.date && (
+                    <Text style={styles.error}>{errors.date}</Text>
+                  )}
+                </View>
+
+                <View
+                  style={{
+                    width: "45%",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    height: 50,
+                    alignItems: "center",
+                    borderWidth: 0.5,
+                    borderColor: "black",
+                    borderRadius: 5,
+                    paddingHorizontal: 10,
+                    backgroundColor: "white",
+                  }}
+                >
+                  <DateTimePicker
+                    value={time}
+                    mode="time"
+                    display="default"
+                    onChange={(event, selectedTime) => {
+                      handleTimeChange(event, selectedTime);
+                      setFieldValue(
+                        "time",
+                        selectedTime?.toISOString().split("T")[1].substr(0, 5)
+                      );
+                    }}
+                  />
+                  <MaterialIcons name="access-time" size={24} color="black" />
+                  {touched.time && errors.time && (
+                    <Text style={styles.error}>{errors.time}</Text>
+                  )}
+                </View>
+              </View>
+
               <PaperTextInput
                 style={styles.input}
                 mode="outlined"
                 onChangeText={handleChange("location")}
                 onBlur={handleBlur("location")}
                 value={values.location}
-                label="Ubicación *"
-                placeholder="Ubicación *"
+                label="¿Dónde? *"
+                placeholder="¿Dónde?"
                 right={
                   <PaperTextInput.Icon
                     icon="map-marker"
@@ -280,19 +303,27 @@ const CrearPlan = () => {
                 <Text style={styles.error}>{errors.location}</Text>
               )}
 
-              <Text style={styles.label}>Agregar imagen</Text>
-              <TouchableOpacity
-                onPress={selectImage}
-                style={styles.imagePicker}
-              >
-                {imageUri ? (
-                  <Image source={{ uri: imageUri }} style={styles.image} />
-                ) : (
-                  <Text style={styles.imagePlaceholder}>
-                    Seleccionar imagen
-                  </Text>
-                )}
-              </TouchableOpacity>
+              <InviteContacts />
+
+              <PaperTextInput
+                style={styles.input}
+                mode="outlined"
+                label="Agregar imagen"
+                placeholder="Agregar imagen"
+                editable={false}
+                right={
+                  <PaperTextInput.Icon
+                    icon="attachment"
+                    onPress={selectImage}
+                    style={{ transform: [{ rotate: "-45deg" }] }}
+                  />
+                }
+              />
+              {imageUris.length > 0 && (
+                <Text style={styles.imageCount}>
+                  {imageUris.length} imagen(es) adjunta(s)
+                </Text>
+              )}
 
               <Text style={styles.label}>Descripción</Text>
               <PaperTextInput
@@ -307,35 +338,11 @@ const CrearPlan = () => {
                 <Text style={styles.error}>{errors.description}</Text>
               )}
 
-              <Text style={styles.label}>Invitados</Text>
               <Button
-                title="Seleccionar Contactos"
-                onPress={handleSelectContacts}
+                onPress={handleSubmit}
+                title="Enviar invitaciones"
+                mode="contained"
               />
-              {contacts.length > 0 && (
-                <FlatList
-                  data={contacts}
-                  keyExtractor={(item) => item.id}
-                  renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => handleAddContact(item)}>
-                      <Text>
-                        {item.name} ({item.phoneNumbers?.[0]?.number})
-                      </Text>
-                    </TouchableOpacity>
-                  )}
-                />
-              )}
-              {selectedContacts.length > 0 && (
-                <View style={styles.selectedContacts}>
-                  {selectedContacts.map((contact, index) => (
-                    <Text key={index}>
-                      {contact.name} ({contact.phoneNumbers?.[0]?.number})
-                    </Text>
-                  ))}
-                </View>
-              )}
-
-              <Button onPress={handleSubmit} title="Enviar invitaciones" />
             </ScrollView>
           );
         }}
@@ -357,26 +364,24 @@ const styles = StyleSheet.create({
   input: {
     marginBottom: 16,
   },
+  inputContainer: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 5,
+    padding: 10,
+    justifyContent: "center",
+  },
+  datePicker: {
+    width: "100%",
+  },
   error: {
     color: "red",
     marginBottom: 16,
   },
-  imagePicker: {
-    alignItems: "center",
-    justifyContent: "center",
-    height: 100,
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 4,
+  imageCount: {
+    fontSize: 14,
     marginBottom: 16,
-  },
-  image: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 4,
-  },
-  imagePlaceholder: {
-    color: "#ccc",
+    color: "grey",
   },
   descriptionInput: {
     height: 100,
