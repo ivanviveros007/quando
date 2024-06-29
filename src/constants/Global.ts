@@ -41,3 +41,16 @@ export const DATA_CAROUSEL_ONBOARDING = [
     image: Images.Onboarding.Onboarding4,
   },
 ];
+
+export const planTypes = [
+  { label: "Comida", value: "food" },
+  { label: "Cena", value: "dinner" },
+  { label: "Fiesta", value: "fest" },
+  { label: "Viaje", value: "travel" },
+  { label: "Deporte", value: "sports" },
+  { label: "Dia de juego", value: "game" },
+  { label: "Cumpleaños", value: "birthday" },
+  { label: "Plan cultural", value: "culture" },
+  { label: "Cita", value: "date" },
+  { label: "Otro", value: "other" },
+];

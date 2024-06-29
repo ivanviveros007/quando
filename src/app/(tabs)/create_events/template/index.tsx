@@ -1,21 +1,12 @@
 import React, { useState, useEffect } from "react";
-import {
-  Modal,
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  SafeAreaView,
-} from "react-native";
+import { View, Text, ScrollView, SafeAreaView } from "react-native";
 import { Formik } from "formik";
-import * as Yup from "yup";
+
 import DropDown from "react-native-paper-dropdown";
 import { TextInput as PaperTextInput, useTheme } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import { ThemedText } from "@/src/components/ThemedText";
 import { router } from "expo-router";
-import * as Contacts from "expo-contacts";
 import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
@@ -23,17 +14,15 @@ import { useLocationStore } from "@/src/store/locationStore";
 import InviteContacts from "@/src/components/contacts";
 import { Button } from "@/src/components/button";
 import { MaterialIcons } from "@expo/vector-icons";
+import { planTypes } from "@/src/constants/Global";
+import { validationSchema } from "@/src/schemas/createEventSchema";
+import { themeTextInput } from "@/src/theme/themeInput";
+import { globalStyles } from "@/src/theme";
+import { moderateScale } from "@/src/helpers";
 
-const validationSchema = Yup.object().shape({
-  planType: Yup.string().required("El tipo de plan es obligatorio"),
-  title: Yup.string().required("El título es obligatorio"),
-  date: Yup.string().required("La fecha es obligatoria"),
-  time: Yup.string().required("La hora es obligatoria"),
-  location: Yup.string().required("La ubicación es obligatoria"),
-  description: Yup.string(),
-});
+import { styles } from "./styles";
 
-const CrearPlan: React.FC = () => {
+const CreatePlan: React.FC = () => {
   const [showDropDown, setShowDropDown] = useState(false);
   const [imageUris, setImageUris] = useState<string[]>([]);
   const [date, setDate] = useState(new Date());
@@ -41,27 +30,6 @@ const CrearPlan: React.FC = () => {
   const theme = useTheme();
 
   const selectedLocation = useLocationStore((state) => state.selectedLocation);
-  const setSelectedLocation = useLocationStore(
-    (state) => state.setSelectedLocation
-  );
-
-  const [contacts, setContacts] = useState<Contacts.Contact[]>([]);
-  const [selectedContacts, setSelectedContacts] = useState<Contacts.Contact[]>(
-    []
-  );
-
-  const planTypes = [
-    { label: "Comida", value: "food" },
-    { label: "Cena", value: "dinner" },
-    { label: "Fiesta", value: "fest" },
-    { label: "Viaje", value: "travel" },
-    { label: "Deporte", value: "sports" },
-    { label: "Dia de juego", value: "game" },
-    { label: "Cumpleaños", value: "birthday" },
-    { label: "Plan cultural", value: "culture" },
-    { label: "Cita", value: "date" },
-    { label: "Otro", value: "other" },
-  ];
 
   const handleDateChange = (
     event: DateTimePickerEvent,
@@ -83,31 +51,6 @@ const CrearPlan: React.FC = () => {
     router.push("(tabs)/create_events/map");
   };
 
-  const handleSelectContacts = async () => {
-    const { status } = await Contacts.requestPermissionsAsync();
-    if (status !== "granted") {
-      alert("Permiso para acceder a contactos fue denegado");
-      return;
-    }
-
-    const { data } = await Contacts.getContactsAsync({
-      fields: [Contacts.Fields.PhoneNumbers],
-    });
-
-    if (data.length > 0) {
-      setContacts(data);
-    }
-  };
-
-  const handleAddContact = (contact: Contacts.Contact) => {
-    if (contact.phoneNumbers && contact.phoneNumbers.length > 0) {
-      setSelectedContacts([
-        ...selectedContacts,
-        { ...contact, selectedPhoneNumber: contact.phoneNumbers[0].number },
-      ]);
-    }
-  };
-
   const selectImage = async () => {
     const result = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (result.granted === false) {
@@ -122,7 +65,7 @@ const CrearPlan: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={globalStyles.container}>
       <Formik
         initialValues={{
           planType: "",
@@ -133,6 +76,7 @@ const CrearPlan: React.FC = () => {
             ? `${selectedLocation.latitude}, ${selectedLocation.longitude}`
             : "",
           description: "",
+          guests: [],
         }}
         validationSchema={validationSchema}
         onSubmit={(values) => {
@@ -158,23 +102,14 @@ const CrearPlan: React.FC = () => {
             }
           }, [selectedLocation]);
 
-          useEffect(() => {
-            if (selectedContacts.length > 0) {
-              setFieldValue("guests", selectedContacts);
-            }
-          }, [selectedContacts]);
-
           return (
             <ScrollView contentContainerStyle={styles.container}>
-              <ThemedText
-                type="title"
-                style={{ textAlign: "center", marginBottom: 30 }}
-              >
+              <ThemedText type="title" style={styles.title}>
                 Crea tu plan
               </ThemedText>
 
-              <View style={{ flexDirection: "column", gap: 20 }}>
-                <View style={{}}>
+              <View style={styles.dropAndTitle}>
+                <View>
                   <DropDown
                     label={"Tipo de plan *"}
                     mode={"outlined"}
@@ -192,9 +127,9 @@ const CrearPlan: React.FC = () => {
                     name={
                       showDropDown ? "keyboard-arrow-up" : "keyboard-arrow-down"
                     }
-                    size={24}
+                    size={moderateScale(24)}
                     color="black"
-                    style={{ position: "absolute", right: 10, top: 20 }}
+                    style={styles.positionArrow}
                   />
                 </View>
 
@@ -216,22 +151,8 @@ const CrearPlan: React.FC = () => {
                 )}
               </View>
 
-              <View style={{ flexDirection: "row", gap: 20, marginBottom: 10 }}>
-                <View
-                  style={{
-                    width: "50%",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-
-                    height: 50,
-                    alignItems: "center",
-                    borderWidth: 0.5,
-                    borderColor: "black",
-                    borderRadius: 5,
-                    paddingHorizontal: 5,
-                    backgroundColor: "white",
-                  }}
-                >
+              <View style={styles.containerDateTime}>
+                <View style={styles.date}>
                   <DateTimePicker
                     value={date}
                     mode="date"
@@ -244,27 +165,14 @@ const CrearPlan: React.FC = () => {
                       );
                     }}
                   />
-                  <MaterialIcons name="date-range" size={24} color="black" />
-
-                  {touched.date && errors.date && (
-                    <Text style={styles.error}>{errors.date}</Text>
-                  )}
+                  <MaterialIcons
+                    name="date-range"
+                    size={moderateScale(24)}
+                    color="black"
+                  />
                 </View>
 
-                <View
-                  style={{
-                    width: "45%",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    height: 50,
-                    alignItems: "center",
-                    borderWidth: 0.5,
-                    borderColor: "black",
-                    borderRadius: 5,
-                    paddingHorizontal: 10,
-                    backgroundColor: "white",
-                  }}
-                >
+                <View style={styles.date}>
                   <DateTimePicker
                     value={time}
                     mode="time"
@@ -277,11 +185,20 @@ const CrearPlan: React.FC = () => {
                       );
                     }}
                   />
-                  <MaterialIcons name="access-time" size={24} color="black" />
-                  {touched.time && errors.time && (
-                    <Text style={styles.error}>{errors.time}</Text>
-                  )}
+                  <MaterialIcons
+                    name="access-time"
+                    size={moderateScale(24)}
+                    color="black"
+                  />
                 </View>
+              </View>
+              <View style={styles.errorsDate}>
+                {touched.date && errors.date && (
+                  <Text style={styles.error}>{errors.date}</Text>
+                )}
+                {touched.time && errors.time && (
+                  <Text style={styles.error}>{errors.time}</Text>
+                )}
               </View>
 
               <PaperTextInput
@@ -303,7 +220,11 @@ const CrearPlan: React.FC = () => {
                 <Text style={styles.error}>{errors.location}</Text>
               )}
 
-              <InviteContacts />
+              <InviteContacts setFieldValue={setFieldValue} />
+
+              {touched.guests && errors.guests && (
+                <Text style={[styles.error]}>{errors.guests}</Text>
+              )}
 
               <PaperTextInput
                 style={styles.input}
@@ -325,7 +246,6 @@ const CrearPlan: React.FC = () => {
                 </Text>
               )}
 
-              <Text style={styles.label}>Descripción</Text>
               <PaperTextInput
                 style={[styles.input, styles.descriptionInput]}
                 mode="outlined"
@@ -333,6 +253,8 @@ const CrearPlan: React.FC = () => {
                 onBlur={handleBlur("description")}
                 value={values.description}
                 multiline
+                label="Descripción"
+                theme={themeTextInput}
               />
               {touched.description && errors.description && (
                 <Text style={styles.error}>{errors.description}</Text>
@@ -351,44 +273,4 @@ const CrearPlan: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    paddingTop: 16,
-    paddingBottom: 106,
-    paddingHorizontal: 20,
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 8,
-  },
-  input: {
-    marginBottom: 16,
-  },
-  inputContainer: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 5,
-    padding: 10,
-    justifyContent: "center",
-  },
-  datePicker: {
-    width: "100%",
-  },
-  error: {
-    color: "red",
-    marginBottom: 16,
-  },
-  imageCount: {
-    fontSize: 14,
-    marginBottom: 16,
-    color: "grey",
-  },
-  descriptionInput: {
-    height: 100,
-  },
-  selectedContacts: {
-    marginTop: 10,
-  },
-});
-
-export default CrearPlan;
+export default CreatePlan;
