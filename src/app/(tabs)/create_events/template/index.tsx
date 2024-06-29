@@ -30,6 +30,7 @@ const CreatePlan: React.FC = () => {
   const theme = useTheme();
 
   const selectedLocation = useLocationStore((state) => state.selectedLocation);
+  const address = useLocationStore((state) => state.address);
 
   const handleDateChange = (
     event: DateTimePickerEvent,
@@ -202,11 +203,11 @@ const CreatePlan: React.FC = () => {
               </View>
 
               <PaperTextInput
-                style={styles.input}
+                style={[styles.input, { height: 50 }]}
                 mode="outlined"
                 onChangeText={handleChange("location")}
                 onBlur={handleBlur("location")}
-                value={values.location}
+                value={address ? address : values.location}
                 label="¿Dónde? *"
                 placeholder="¿Dónde?"
                 right={

@@ -15,7 +15,13 @@
     "ios": {
       "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": true,
-      "bundleIdentifier": "com.quandoapp"
+      "bundleIdentifier": "com.quandoapp",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "This app needs access to your location to show your position on the map."
+      },
+      "config": {
+        "googleMapsApiKey": "AIzaSyCIMQgM_9Ew_Z6LjdDsPhxY9pfPyyDRmag"
+      }
     },
     "android": {
       "adaptiveIcon": {

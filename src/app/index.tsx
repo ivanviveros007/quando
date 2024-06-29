@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-
+import { LogBox } from "react-native";
 import { Redirect } from "expo-router";
 import { useAuthStore } from "@/src/store/authStore";
 
@@ -21,6 +21,10 @@ export default function InitialScreen() {
 
     checkToken();
   }, [user]);
+
+  LogBox.ignoreLogs([
+    "Warning: TextInput.Icon: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.",
+  ]);
 
   if (userLoggedIn === null) {
     // Return a loading screen or null while checking the token
