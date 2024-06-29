@@ -172,7 +172,7 @@ const CreatePlan: React.FC = () => {
                   />
                 </View>
 
-                <View style={styles.date}>
+                <View style={[styles.date, { width: "45%" }]}>
                   <DateTimePicker
                     value={time}
                     mode="time"

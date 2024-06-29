@@ -25,17 +25,7 @@ export default function CreateEventsLayout() {
       <Stack.Screen
         name="map/index"
         options={{
-          headerTitle: "Quando",
-          title: "Quando",
-          headerTitleStyle: {
-            fontFamily: "RobotoMedium",
-            fontSize: moderateScale(24),
-            color: theme.colors.black,
-          },
-          headerBackTitle: "Login",
-          headerBackTitleVisible: true,
-          headerTintColor: "black",
-          headerBackVisible: true,
+          headerShown: false,
           presentation: "modal",
         }}
       />
