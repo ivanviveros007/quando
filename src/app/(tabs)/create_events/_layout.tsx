@@ -8,17 +8,7 @@ export default function CreateEventsLayout() {
       <Stack.Screen
         name="contacts/index"
         options={{
-          headerTitle: "Quando",
-          title: "Quando",
-          headerTitleStyle: {
-            fontFamily: "RobotoMedium",
-            fontSize: moderateScale(24),
-            color: theme.colors.black,
-          },
-          headerBackTitle: "",
-          headerBackTitleVisible: false,
-          headerTintColor: "white",
-          headerTransparent: true,
+          headerShown: false,
           presentation: "modal",
         }}
       />
@@ -39,7 +29,7 @@ export default function CreateEventsLayout() {
             fontSize: moderateScale(24),
             color: theme.colors.black,
           },
-          headerBackTitle: "Login",
+          headerBackTitle: "",
           headerBackTitleVisible: true,
           headerTintColor: "black",
           headerBackVisible: true,

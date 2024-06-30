@@ -1,22 +1,17 @@
 import { create } from "zustand";
+import * as Contacts from "expo-contacts";
 
-interface Contact {
-  id: string;
-  name: string;
-  phoneNumbers?: { number: string }[];
-  photo?: string;
+interface CustomContact extends Contacts.Contact {
   selectedPhoneNumber?: string;
-  imageAvailable?: boolean;
-  image?: { uri: string };
 }
 
 interface ContactsState {
-  contacts: Contact[];
-  selectedContacts: Contact[];
-  setContacts: (contacts: Contact[]) => void;
-  addContact: (contact: Contact) => void;
-  updateContactAtIndex: (index: number, contact: Contact) => void;
-  removeContact: (contact: Contact) => void;
+  contacts: CustomContact[];
+  selectedContacts: CustomContact[];
+  setContacts: (contacts: CustomContact[]) => void;
+  addContact: (contact: CustomContact) => void;
+  updateContactAtIndex: (index: number, contact: CustomContact) => void;
+  removeContact: (contact: CustomContact) => void;
 }
 
 const useContactsStore = create<ContactsState>((set) => ({

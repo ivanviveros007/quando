@@ -1,9 +1,9 @@
 import { Tabs } from "expo-router";
 import React from "react";
 import { TabBarIcon } from "@/src/components/tabBar/TabBarIcon";
-import { View } from "react-native";
-import { Images } from "@/src/constants";
-import { verticalScale } from "@/src/helpers";
+// import { View } from "react-native";
+// import { Images } from "@/src/constants";
+// import { verticalScale } from "@/src/helpers";
 import { Colors } from "@/src/constants";
 
 export default function TabLayout() {
@@ -13,6 +13,7 @@ export default function TabLayout() {
       screenOptions={{
         // tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         tabBarActiveTintColor: Colors.primary_light_blue,
+        tabBarInactiveTintColor: Colors.primary_black,
         headerShown: false,
         tabBarStyle: {
           shadowOffset: {
@@ -53,11 +54,12 @@ export default function TabLayout() {
         name="create_events"
         options={{
           title: "",
-          tabBarIcon: () => (
-            <View style={{ bottom: verticalScale(15) }}>
-              <Images.TabBar.PlusSvg />
-            </View>
-          ),
+          // tabBarIcon: () => (
+          //   <View style={{ bottom: verticalScale(15) }}>
+          //     <Images.TabBar.PlusSvg />
+          //   </View>
+          // ),
+          tabBarIcon: ({ color }) => <TabBarIcon name="add" color={color} />,
           headerShadowVisible: false,
         }}
       />
