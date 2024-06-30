@@ -9,7 +9,8 @@
       "@assets/*": ["./assets/*"],
       "@helpers": ["src/helpers"],
       "@hooks": ["src/hooks"],
-      "@theme": ["src/theme"]
+      "@theme": ["src/theme"],
+      
     }
   },
   "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
