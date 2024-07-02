@@ -72,9 +72,7 @@ export default function CalendarScreen() {
         onDatePress={handleDatePress}
         onMonthChange={handleMonthChange}
       />
-      {currentDate ? (
-        <ThemedText style={styles.currentDateText}>{formattedDate}</ThemedText>
-      ) : (
+      {!currentDate && (
         <ThemedText style={styles.currentDateText}>
           Ninguna fecha seleccionada
         </ThemedText>
@@ -111,5 +109,6 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingHorizontal: 10,
+    marginTop: 30,
   },
 });
