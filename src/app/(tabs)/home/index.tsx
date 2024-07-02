@@ -16,6 +16,7 @@ import { Colors } from "@/src/constants";
 import { router } from "expo-router";
 import { usePlansStore } from "@/src/store/planStore";
 import { isToday, isAfter, parseISO } from "date-fns";
+import { EmptyStatePlan } from "@/src/components/emptyState";
 
 export default function HomeScreen() {
   const fetchPlans = usePlansStore((state) => state.fetchPlans);
@@ -150,6 +151,8 @@ export default function HomeScreen() {
               keyExtractor={(item) => item.id ?? ""}
               renderItem={renderItem}
               contentContainerStyle={styles.listContent}
+              ListEmptyComponent={<EmptyStatePlan />}
+
             />
           )}
         </View>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { View, Text } from "react-native";
 
-import { EmptyStatePlan } from "@/src/components/emptyState";
+
 import TabRouter from "@/src/components/TabRouter";
 import { TodayEvent } from "@/src/components/events/today";
 import { NextEvent } from "@/src/components/events/next";
