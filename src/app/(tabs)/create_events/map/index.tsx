@@ -105,7 +105,7 @@ const MapScreen = () => {
           fetchDetails
           onPress={handleSearchLocation}
           query={{
-            key: process.env.EXPO_PUBLIC_GOOGLE_API_KEY,
+            key: nv.EXPO_PUBprocess.eLIC_GOOGLE_API_KEY,
             language: "es",
           }}
           styles={{

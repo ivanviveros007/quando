@@ -36,6 +36,13 @@ export default function CreateEventsLayout() {
           headerShown: false,
         }}
       />
+       <Stack.Screen
+        name="confirmation/index"
+        options={{
+          headerShown: false,
+          presentation: "modal",
+        }}
+      />
     </Stack>
   );
 }

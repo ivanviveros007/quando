@@ -1,10 +1,15 @@
 import { StyleSheet } from "react-native";
 import { moderateScale, verticalScale, horizontalScale } from "@/src/helpers";
+import { Colors } from "@/src/constants";
 
 export const styles = StyleSheet.create({
+  backgroundSafeArea: {
+    backgroundColor: "#FDF9FC",
+  },
   title: {
     textAlign: "center",
     marginBottom: verticalScale(30),
+    fontFamily:'RobotoBold'
   },
   dropAndTitle: {
     flexDirection: "column",
@@ -19,6 +24,7 @@ export const styles = StyleSheet.create({
     paddingTop: verticalScale(16),
     paddingBottom: verticalScale(106),
     paddingHorizontal: horizontalScale(20),
+    backgroundColor: "#FDF9FC",
   },
   containerDateTime: {
     flexDirection: "row",
@@ -32,14 +38,14 @@ export const styles = StyleSheet.create({
     height: verticalScale(50),
     alignItems: "center",
     borderWidth: moderateScale(0.5),
-    borderColor: "black",
-    borderRadius: moderateScale(5),
+    borderColor: Colors.primary_pruple,
+    borderRadius: moderateScale(10),
     paddingHorizontal: horizontalScale(5),
     backgroundColor: "white",
   },
   errorsDate: {
     flexDirection: "row",
-    gap: moderateScale(50),
+    gap: moderateScale(55),
   },
   label: {
     fontSize: moderateScale(16),
@@ -60,7 +66,7 @@ export const styles = StyleSheet.create({
   },
   error: {
     color: "red",
-    marginBottom: verticalScale(16),
+    marginBottom: verticalScale(5),
   },
   imageCount: {
     fontSize: moderateScale(14),
@@ -72,5 +78,9 @@ export const styles = StyleSheet.create({
   },
   selectedContacts: {
     marginTop: verticalScale(10),
+  },
+  outlineStyle: {
+    borderWidth: 1,
+    borderColor: Colors.primary_pruple,
   },
 });

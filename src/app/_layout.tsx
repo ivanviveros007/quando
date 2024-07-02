@@ -31,6 +31,9 @@ export default function RootLayout() {
     RobotoBold: require("../../assets/fonts/Roboto-Bold.ttf"),
     RobotoThin: require("../../assets/fonts/Roboto-Thin.ttf"),
     RobotoBlack: require("../../assets/fonts/Roboto-Black.ttf"),
+    ManjariBold: require("../../assets/fonts/Manjari-Bold.ttf"),
+    ManjariRegular: require("../../assets/fonts/Manjari-Regular.ttf"),
+    ManjariThin: require("../../assets/fonts/Manjari-Thin.ttf"),
   });
 
   useEffect(() => {

@@ -1,7 +1,9 @@
-import { FC, useState, useEffect } from "react";
+import { FC, useEffect } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { useRouter } from "expo-router";
 import useContactsStore from "@/src/store/contactStore";
+import { ThemedText } from "../ThemedText";
+
 interface InviteContactsProps {
   setFieldValue: (field: string, value: any) => void;
 }
@@ -28,7 +30,10 @@ const InviteContacts: FC<InviteContactsProps> = ({ setFieldValue }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Invitados</Text>
+      <View style={{ top: 5 }}>
+        <ThemedText style={styles.label}>Invitados</ThemedText>
+      </View>
+
       <View style={styles.contactsContainer}>
         {slots.map((slot, index) =>
           slot ? (
@@ -111,15 +116,20 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     backgroundColor: "white",
-    borderWidth: 2,
-    borderColor: "#8e44ad",
+    borderWidth: 1,
+    borderColor: "#825FF1",
     alignItems: "center",
     justifyContent: "center",
     marginRight: 8,
   },
   addButtonText: {
-    fontSize: 24,
+    fontSize: 50,
     color: "#8e44ad",
+    position: "absolute",
+    fontWeight: "200",
+    textAlign: "center",
+    zIndex: 1,
+    top: -8,
   },
 });
 

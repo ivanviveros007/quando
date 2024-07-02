@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
   default: {
     fontSize: moderateScale(16),
     lineHeight: 24,
-    fontFamily: "RobotoRegular",
+    fontFamily: "ManjariRegular",
   },
   defaultSemiBold: {
     fontSize: moderateScale(16),
@@ -49,8 +49,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: moderateScale(25),
     fontWeight: "bold",
-    lineHeight: 32,
-    fontFamily: "RobotoBold",
+    fontFamily: "ManjariBold",
   },
   subtitle: {
     fontSize: moderateScale(20),

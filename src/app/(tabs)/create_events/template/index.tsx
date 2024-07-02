@@ -3,7 +3,7 @@ import { View, Text, ScrollView, SafeAreaView } from "react-native";
 import { Formik } from "formik";
 
 import DropDown from "react-native-paper-dropdown";
-import { TextInput as PaperTextInput, useTheme } from "react-native-paper";
+import { TextInput as PaperTextInput } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import { ThemedText } from "@/src/components/ThemedText";
 import { router } from "expo-router";
@@ -11,14 +11,16 @@ import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import { useLocationStore } from "@/src/store/locationStore";
-import InviteContacts from "@/src/components/contacts";
+import InviteContacts from "@/src/components/contactsButton";
 import { Button } from "@/src/components/button";
 import { MaterialIcons } from "@expo/vector-icons";
 import { planTypes } from "@/src/constants/Global";
 import { validationSchema } from "@/src/schemas/createEventSchema";
-import { themeTextInput } from "@/src/theme/themeInput";
 import { globalStyles } from "@/src/theme";
 import { moderateScale } from "@/src/helpers";
+import { themeTemplate } from "@/src/theme/themeTemplate";
+import { Colors } from "@/src/constants";
+import { geocodeCoordinates } from "@/src/services";
 
 import { styles } from "./styles";
 
@@ -27,7 +29,6 @@ const CreatePlan: React.FC = () => {
   const [imageUris, setImageUris] = useState<string[]>([]);
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
-  const theme = useTheme();
 
   const selectedLocation = useLocationStore((state) => state.selectedLocation);
   const address = useLocationStore((state) => state.address);
@@ -66,7 +67,7 @@ const CreatePlan: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={globalStyles.container}>
+    <SafeAreaView style={[globalStyles.container, styles.backgroundSafeArea]}>
       <Formik
         initialValues={{
           planType: "",
@@ -81,8 +82,19 @@ const CreatePlan: React.FC = () => {
         }}
         validationSchema={validationSchema}
         onSubmit={(values) => {
-          console.log(values);
+          console.log("values form", values);
           // Aquí puedes manejar el envío del formulario
+
+          router.push("(tabs)/create_events/confirmation", {
+            planName: values.title,
+            planType: values.planType,
+            date: values.date,
+            time: values.time,
+            location: values.location,
+            description: values.description,
+            guests: values.guests,
+            imageUris: imageUris,
+          });
         }}
       >
         {({
@@ -95,12 +107,17 @@ const CreatePlan: React.FC = () => {
           setFieldValue,
         }) => {
           useEffect(() => {
-            if (selectedLocation) {
-              setFieldValue(
-                "location",
-                `${selectedLocation.latitude}, ${selectedLocation.longitude}`
-              );
-            }
+            const fetchGeocode = async () => {
+              if (selectedLocation) {
+                const address = await geocodeCoordinates(
+                  selectedLocation.latitude,
+                  selectedLocation.longitude
+                );
+                setFieldValue("location", address);
+              }
+            };
+
+            fetchGeocode();
           }, [selectedLocation]);
 
           return (
@@ -120,7 +137,7 @@ const CreatePlan: React.FC = () => {
                     value={values.planType}
                     setValue={handleChange("planType")}
                     list={planTypes}
-                    theme={theme}
+                    theme={themeTemplate}
                     placeholder="Tipo de plan *"
                   />
 
@@ -134,9 +151,13 @@ const CreatePlan: React.FC = () => {
                   />
                 </View>
 
-                {touched.planType && errors.planType && (
-                  <Text style={styles.error}>{errors.planType}</Text>
-                )}
+                <View style={{ bottom: 15 }}>
+                  {touched.planType && errors.planType && (
+                    <ThemedText style={styles.error}>
+                      {errors.planType}
+                    </ThemedText>
+                  )}
+                </View>
 
                 <PaperTextInput
                   style={styles.input}
@@ -146,10 +167,17 @@ const CreatePlan: React.FC = () => {
                   value={values.title}
                   label="Título *"
                   placeholder="Título *"
+                  theme={themeTemplate}
+                  activeOutlineColor={Colors.primary_black}
+                  outlineColor={Colors.primary_pruple}
+                  outlineStyle={styles.outlineStyle}
                 />
-                {touched.title && errors.title && (
-                  <Text style={styles.error}>{errors.title}</Text>
-                )}
+
+                <View style={{ bottom: 30 }}>
+                  {touched.title && errors.title && (
+                    <ThemedText style={styles.error}>{errors.title}</ThemedText>
+                  )}
+                </View>
               </View>
 
               <View style={styles.containerDateTime}>
@@ -195,10 +223,10 @@ const CreatePlan: React.FC = () => {
               </View>
               <View style={styles.errorsDate}>
                 {touched.date && errors.date && (
-                  <Text style={styles.error}>{errors.date}</Text>
+                  <ThemedText style={styles.error}>{errors.date}</ThemedText>
                 )}
                 {touched.time && errors.time && (
-                  <Text style={styles.error}>{errors.time}</Text>
+                  <ThemedText style={styles.error}>{errors.time}</ThemedText>
                 )}
               </View>
 
@@ -216,15 +244,19 @@ const CreatePlan: React.FC = () => {
                     onPress={handleLocationPress}
                   />
                 }
+                theme={themeTemplate}
+                activeOutlineColor={Colors.primary_black}
+                outlineColor={Colors.primary_pruple}
+                outlineStyle={styles.outlineStyle}
               />
               {touched.location && errors.location && (
-                <Text style={styles.error}>{errors.location}</Text>
+                <ThemedText style={styles.error}>{errors.location}</ThemedText>
               )}
 
               <InviteContacts setFieldValue={setFieldValue} />
 
               {touched.guests && errors.guests && (
-                <Text style={[styles.error]}>{errors.guests}</Text>
+                <ThemedText style={[styles.error]}>{errors.guests}</ThemedText>
               )}
 
               <PaperTextInput
@@ -240,11 +272,15 @@ const CreatePlan: React.FC = () => {
                     style={{ transform: [{ rotate: "-45deg" }] }}
                   />
                 }
+                theme={themeTemplate}
+                activeOutlineColor={Colors.primary_black}
+                outlineColor={Colors.primary_pruple}
+                outlineStyle={styles.outlineStyle}
               />
               {imageUris.length > 0 && (
-                <Text style={styles.imageCount}>
+                <ThemedText style={styles.imageCount}>
                   {imageUris.length} imagen(es) adjunta(s)
-                </Text>
+                </ThemedText>
               )}
 
               <PaperTextInput
@@ -255,10 +291,15 @@ const CreatePlan: React.FC = () => {
                 value={values.description}
                 multiline
                 label="Descripción"
-                theme={themeTextInput}
+                theme={themeTemplate}
+                activeOutlineColor={Colors.primary_black}
+                outlineColor={Colors.primary_pruple}
+                outlineStyle={styles.outlineStyle}
               />
               {touched.description && errors.description && (
-                <Text style={styles.error}>{errors.description}</Text>
+                <ThemedText style={styles.error}>
+                  {errors.description}
+                </ThemedText>
               )}
 
               <Button

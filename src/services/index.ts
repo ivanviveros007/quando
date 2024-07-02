@@ -1,5 +1,5 @@
 export const geocodeCoordinates = async (latitude, longitude) => {
-  const apiKey = "AIzaSyCIMQgM_9Ew_Z6LjdDsPhxY9pfPyyDRmag"; // Reemplaza con tu API key
+  const apiKey = process.env.EXPO_PUBLIC_GOOGLE_API_KEY;
   const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
 
   try {
