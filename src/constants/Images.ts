@@ -5,6 +5,10 @@ import Onboarding2 from "@assets/onboarding/onboarding2.png";
 import Onboarding3 from "@assets/onboarding/onboarding3.png";
 import Onboarding4 from "@assets/onboarding/onboarding4.png";
 
+import LogoHome from "@assets/home/logo_home.svg";
+import User from "@assets/home/user.svg";
+import Calendar from "@assets/home/calendar.svg";
+
 export const Images = {
   Onboarding: {
     Onboarding1,
@@ -14,5 +18,10 @@ export const Images = {
   },
   TabBar: {
     PlusSvg,
+  },
+  Home: {
+    LogoHome,
+    User,
+    Calendar,
   },
 };
