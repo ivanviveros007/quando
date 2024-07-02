@@ -37,7 +37,13 @@ export const CardEvent: FC<CardProps> = ({
     <View style={styles.container}>
       <View style={styles.containerData}>
         <View>
-          <ThemedText style={styles.title}>{title}</ThemedText>
+          <ThemedText
+            style={styles.title}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            {title}
+          </ThemedText>
         </View>
         <View style={styles.containerLocation}>
           <Ionicons
@@ -198,17 +204,15 @@ const styles = StyleSheet.create({
   },
 });
 
-// TODO: si el usuario sube una imagen esa imagen de imageBackground sino queda blanco, 
+// TODO: si el usuario sube una imagen esa imagen de imageBackground sino queda blanco,
 
 //TODO: en invitados, poder agregar varios invitados a la vez, y que se muestren en la cardEvent
 
 //TODO: en la cardEvent si son mas de 4 invitados agregar el + y si son menos agregar la cantidad.
 
-//TODO: en la cardEvent superponer las caras de los invitados y es un solo boton 
-
+//TODO: en la cardEvent superponer las caras de los invitados y es un solo boton
 
 //TODO: en la cardEvent es un solo adjunto.
-
 
 //TODO: en confirmation agrupar los invitados como figma con el + y la cantidad de invitados.
 
