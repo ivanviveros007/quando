@@ -84,7 +84,11 @@ export default function CalendarScreen() {
         keyExtractor={(item) => item.id ?? ""}
         renderItem={renderItem}
         contentContainerStyle={styles.listContent}
-        ListEmptyComponent={<Text>No hay eventos para esta fecha.</Text>}
+        ListEmptyComponent={
+          <Text style={{ textAlign: "center", marginTop: 200 }}>
+            No hay eventos para esta fecha.
+          </Text>
+        }
       />
     </ThemedView>
   );

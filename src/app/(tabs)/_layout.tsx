@@ -1,9 +1,9 @@
 import { Tabs } from "expo-router";
 import React from "react";
 import { TabBarIcon } from "@/src/components/tabBar/TabBarIcon";
-// import { View } from "react-native";
-// import { Images } from "@/src/constants";
-// import { verticalScale } from "@/src/helpers";
+import { View } from "react-native";
+import { Images } from "@/src/constants";
+import { verticalScale } from "@/src/helpers";
 import { Colors } from "@/src/constants";
 
 export default function TabLayout() {

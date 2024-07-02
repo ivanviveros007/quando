@@ -9,6 +9,8 @@ import LogoHome from "@assets/home/logo_home.svg";
 import User from "@assets/home/user.svg";
 import Calendar from "@assets/home/calendar.svg";
 
+import LogoBlack from "@assets/plans/logo_black.svg";
+
 export const Images = {
   Onboarding: {
     Onboarding1,
@@ -23,5 +25,8 @@ export const Images = {
     LogoHome,
     User,
     Calendar,
+  },
+  Plans: {
+    LogoBlack,
   },
 };

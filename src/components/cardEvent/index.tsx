@@ -113,13 +113,16 @@ const styles = StyleSheet.create({
     elevation: 4,
     borderRadius: 10,
     flexDirection: "row",
+    borderWidth: 2,
+    borderColor: Colors.primary_pruple,
   },
   containerData: {
     flex: 1.5,
     paddingHorizontal: 10,
   },
   containerDate: {
-    backgroundColor: theme.colors.placeholder,
+    // backgroundColor: theme.colors.placeholder,
+    backgroundColor: "white",
     flex: 1,
     borderTopEndRadius: 10,
     borderBottomEndRadius: 10,
@@ -194,3 +197,21 @@ const styles = StyleSheet.create({
     color: "#999",
   },
 });
+
+// TODO: si el usuario sube una imagen esa imagen de imageBackground sino queda blanco, 
+
+//TODO: en invitados, poder agregar varios invitados a la vez, y que se muestren en la cardEvent
+
+//TODO: en la cardEvent si son mas de 4 invitados agregar el + y si son menos agregar la cantidad.
+
+//TODO: en la cardEvent superponer las caras de los invitados y es un solo boton 
+
+
+//TODO: en la cardEvent es un solo adjunto.
+
+
+//TODO: en confirmation agrupar los invitados como figma con el + y la cantidad de invitados.
+
+//TODO: en confirmation en ir al Inicio enviar al Home
+
+//TODO: ver bug de eventos con fecha de hoy

@@ -6,6 +6,7 @@ import { Background } from "@/src/components/container";
 import { useNavigation } from "@react-navigation/native";
 import useContactsStore from "@/src/store/contactStore";
 import ContactsItem from "@/src/components/contactItem";
+import { Images } from "@/src/constants";
 
 const Confirmation = () => {
   const navigation = useNavigation();
@@ -38,9 +39,30 @@ const Confirmation = () => {
     <Background>
       <View
         style={{
+          position: "absolute",
+          zIndex: 1000,
+          // backgroundColor: "red",
+          top: 90,
+          alignSelf: "center",
+        }}
+      >
+        <Images.Plans.LogoBlack width={100} height={60} />
+        <ThemedText
+          style={{
+            textAlign: "center",
+            color: "black",
+            fontFamily: "RobotoRegular",
+            fontSize: 40,
+          }}
+          type="title"
+        ></ThemedText>
+      </View>
+      <View
+        style={{
           width: "100%",
           height: 500,
-          backgroundColor: "grey",
+          backgroundColor: "white",
+          opacity: 0.8,
           borderRadius: 200,
           position: "absolute",
           top: -200,

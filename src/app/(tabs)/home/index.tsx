@@ -93,13 +93,13 @@ export default function HomeScreen() {
       <View style={styles.paddingScreen}>
         <View style={styles.header}>
           <Images.Home.LogoHome />
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => {
               router.push("(tabs)/profile");
             }}
           >
             <Images.Home.User />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
         <View style={styles.containerTitle}>
           <ThemedText style={styles.title}>Bienvenido a tu </ThemedText>
@@ -142,7 +142,7 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
 
-        <View style={{ alignSelf: "center", marginTop: 30 }}>
+        <View style={styles.containerFlatList}>
           {loading && <Text>Loading...</Text>}
           {error && <Text>Error: {error}</Text>}
           {!loading && !error && (
@@ -150,9 +150,10 @@ export default function HomeScreen() {
               data={filteredPlans}
               keyExtractor={(item) => item.id ?? ""}
               renderItem={renderItem}
-              contentContainerStyle={styles.listContent}
               ListEmptyComponent={<EmptyStatePlan />}
-
+              contentContainerStyle={styles.contentContainerStyle}
+              contentInset={styles.contentInset}
+              showsVerticalScrollIndicator={false}
             />
           )}
         </View>
@@ -205,5 +206,15 @@ const styles = StyleSheet.create({
   filterText: {
     fontSize: 16,
     fontWeight: "bold",
+  },
+  contentContainerStyle: {
+    flexGrow: 1,
+  },
+  contentInset: {
+    bottom: 150,
+  },
+  containerFlatList: {
+    alignSelf: "center",
+    marginTop: 30,
   },
 });
