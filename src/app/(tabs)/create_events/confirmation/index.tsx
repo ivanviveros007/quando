@@ -13,7 +13,6 @@ const Confirmation = () => {
 
   const { planName } = useLocalSearchParams();
   const router = useRouter();
-  console.log("planName", planName);
 
   useFocusEffect(
     useCallback(() => {
@@ -32,7 +31,7 @@ const Confirmation = () => {
           },
         });
       };
-    }, [navigation])
+    }, [navigation, router])
   );
 
   return (
@@ -71,18 +70,14 @@ const Confirmation = () => {
           </ThemedText>
         </View>
 
-        <View style={{ alignSelf: "center" }}>
+        <View style={{ alignSelf: "center", flexDirection: "row" }}>
           {selectedContacts.map((contact) => (
             <ContactsItem key={contact.id} item={contact} />
           ))}
         </View>
 
         <View style={{ justifyContent: "flex-end", top: 10 }}>
-          <TouchableOpacity
-            onPress={() => {
-              router.push("(tabs)/home");
-            }}
-          >
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <ThemedText
               style={{
                 textAlign: "center",

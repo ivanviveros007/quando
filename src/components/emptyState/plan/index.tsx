@@ -1,11 +1,13 @@
 import { FC } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { Button } from "@/src/components/button";
-import { AntDesign } from "@expo/vector-icons";
+import { ThemedText } from "../../ThemedText";
+
 import { globalStyles } from "@/src/theme";
 import { router } from "expo-router";
 
 import { theme } from "@/src/theme";
+import { Images } from "@/src/constants";
 
 import { moderateScale, verticalScale, horizontalScale } from "@/src/helpers";
 
@@ -18,18 +20,11 @@ export const EmptyStatePlan: FC<EmptyStatePlanProps> = ({ type }) => {
   return (
     <View style={styles.container}>
       <View>
-        <AntDesign
-          name="calendar"
-          size={moderateScale(200)}
-          color="lightgrey"
-          style={styles.icon}
-        />
-        <Text style={[globalStyles.text_fs20_black_bold, styles.title]}>
-          No tienes planes {title}
-        </Text>
+        <Images.Home.Calendar style={{ alignSelf: "center" }} />
+        <ThemedText style={[styles.title]}>No tienes planes {title}</ThemedText>
 
         <View style={styles.containerMessage}>
-          <Text style={globalStyles.text_fs18_black}>¡Empieza ahora!</Text>
+          <Text style={styles.start}>¡Empieza ahora!</Text>
         </View>
       </View>
       <View style={styles.containerButton}>
@@ -37,7 +32,7 @@ export const EmptyStatePlan: FC<EmptyStatePlanProps> = ({ type }) => {
           title="Crear plan"
           variant="black"
           onPress={() => {
-            router.push("template");
+            router.push("create_events/template");
           }}
         />
       </View>
@@ -50,7 +45,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: theme.colors.white,
     flexDirection: "column",
     gap: moderateScale(40),
   },
@@ -60,6 +54,9 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: "center",
+    marginTop: 50,
+    fontSize: 20,
+    fontFamily: "RobotoBold",
   },
   containerMessage: {
     marginTop: verticalScale(20),
@@ -72,6 +69,10 @@ const styles = StyleSheet.create({
   },
   containerButton: {
     flex: 0.1,
-    width: horizontalScale(200),
+    width: horizontalScale(180),
   },
+  start:{
+    fontSize:20,
+    fontFamily:'ManjariRegular',
+  }
 });

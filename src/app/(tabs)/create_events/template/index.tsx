@@ -21,6 +21,7 @@ import { moderateScale } from "@/src/helpers";
 import { themeTemplate } from "@/src/theme/themeTemplate";
 import { Colors } from "@/src/constants";
 import { geocodeCoordinates } from "@/src/services";
+import { usePlansStore } from "@/src/store/planStore";
 
 import { styles } from "./styles";
 
@@ -32,6 +33,7 @@ const CreatePlan: React.FC = () => {
 
   const selectedLocation = useLocationStore((state) => state.selectedLocation);
   const address = useLocationStore((state) => state.address);
+  const addPlan = usePlansStore((state) => state.addPlan);
 
   const handleDateChange = (
     event: DateTimePickerEvent,
@@ -81,10 +83,10 @@ const CreatePlan: React.FC = () => {
           guests: [],
         }}
         validationSchema={validationSchema}
-        onSubmit={(values) => {
+        onSubmit={async (values) => {
           console.log("values form", values);
           // Aquí puedes manejar el envío del formulario
-
+          await addPlan(values);
           router.push("(tabs)/create_events/confirmation", {
             planName: values.title,
             planType: values.planType,
