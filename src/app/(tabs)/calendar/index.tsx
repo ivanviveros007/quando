@@ -60,6 +60,7 @@ export default function CalendarScreen() {
           time={item.time}
           guests={item.guests}
           date={item.date}
+          imageUri={item.imageUri}
         />
       </View>
     );

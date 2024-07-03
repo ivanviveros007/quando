@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -11,7 +12,7 @@ import {
 } from "react-native";
 import * as Contacts from "expo-contacts";
 import useContactsStore from "@/src/store/contactStore";
-import { useRouter, useLocalSearchParams } from "expo-router";
+import { useRouter } from "expo-router";
 import ContactItem from "@/src/components/contactItem";
 import SelectedContactItem from "@/src/components/selectedContact";
 import ChipComponent from "@/src/components/chip";
@@ -24,19 +25,16 @@ const ContactsScreen: React.FC = () => {
     []
   );
   const [selectedFilter, setSelectedFilter] = useState<string>("");
+  const [selectedTempContacts, setSelectedTempContacts] = useState<
+    Contacts.Contact[]
+  >([]);
 
   const contacts = useContactsStore((state) => state.contacts);
   const selectedContacts = useContactsStore((state) => state.selectedContacts);
   const setContacts = useContactsStore((state) => state.setContacts);
-  const addContact = useContactsStore((state) => state.addContact);
-  const updateContactAtIndex = useContactsStore(
-    (state) => state.updateContactAtIndex
-  );
+  const addContacts = useContactsStore((state) => state.addContacts);
 
   const router = useRouter();
-  const { index } = useLocalSearchParams();
-  const contactIndex =
-    index !== undefined && index !== null ? Number(index) : null;
 
   useEffect(() => {
     (async () => {
@@ -63,7 +61,6 @@ const ContactsScreen: React.FC = () => {
       );
       setFilteredContacts(filtered);
     } else if (selectedFilter) {
-      // Filtrar contactos según la categoría seleccionada
       const filtered = contacts.filter((contact) =>
         contact.name.toLowerCase().includes(selectedFilter.toLowerCase())
       );
@@ -74,17 +71,11 @@ const ContactsScreen: React.FC = () => {
   }, [search, selectedFilter, contacts]);
 
   const handleSelectContact = (contact: Contacts.Contact) => {
-    if (selectedContacts.some((c) => c.id === contact.id)) {
+    if (selectedTempContacts.some((c) => c.id === contact.id)) {
       Alert.alert("Error", "Este contacto ya ha sido seleccionado.");
       return;
     }
-
-    if (contactIndex !== null) {
-      updateContactAtIndex(contactIndex, contact);
-    } else {
-      addContact(contact);
-    }
-    router.back();
+    setSelectedTempContacts([...selectedTempContacts, contact]);
   };
 
   const handleFilterPress = (filter: string) => {
@@ -93,6 +84,11 @@ const ContactsScreen: React.FC = () => {
     } else {
       setSelectedFilter(filter);
     }
+  };
+
+  const handleAddSelectedContacts = () => {
+    addContacts(selectedTempContacts);
+    router.back();
   };
 
   const filters = [
@@ -130,7 +126,7 @@ const ContactsScreen: React.FC = () => {
         showsHorizontalScrollIndicator={false}
         style={styles.selectedContactsContainer}
       >
-        {selectedContacts.map((contact, index) => (
+        {selectedTempContacts.map((contact, index) => (
           <SelectedContactItem key={index} contact={contact} />
         ))}
       </ScrollView>
@@ -143,7 +139,10 @@ const ContactsScreen: React.FC = () => {
           <ContactItem item={item} onSelect={handleSelectContact} />
         )}
       />
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={handleAddSelectedContacts}
+      >
         <Text style={styles.buttonText}>Agregar invitados</Text>
       </TouchableOpacity>
     </View>

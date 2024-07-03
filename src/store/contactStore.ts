@@ -1,17 +1,14 @@
 import { create } from "zustand";
 import * as Contacts from "expo-contacts";
 
-interface CustomContact extends Contacts.Contact {
-  selectedPhoneNumber?: string;
-}
-
 interface ContactsState {
-  contacts: CustomContact[];
-  selectedContacts: CustomContact[];
-  setContacts: (contacts: CustomContact[]) => void;
-  addContact: (contact: CustomContact) => void;
-  updateContactAtIndex: (index: number, contact: CustomContact) => void;
-  removeContact: (contact: CustomContact) => void;
+  contacts: Contacts.Contact[];
+  selectedContacts: Contacts.Contact[];
+  setContacts: (contacts: Contacts.Contact[]) => void;
+  addContact: (contact: Contacts.Contact) => void;
+  addContacts: (contacts: Contacts.Contact[]) => void; // Nueva acción
+  updateContactAtIndex: (index: number, contact: Contacts.Contact) => void;
+  resetContacts: () => void;
 }
 
 const useContactsStore = create<ContactsState>((set) => ({
@@ -19,26 +16,20 @@ const useContactsStore = create<ContactsState>((set) => ({
   selectedContacts: [],
   setContacts: (contacts) => set({ contacts }),
   addContact: (contact) =>
-    set((state) => {
-      if (state.selectedContacts.some((c) => c.id === contact.id)) {
-        return state; // Si el contacto ya está en la lista, no lo agregues
-      }
-      return {
-        selectedContacts: [...state.selectedContacts, contact],
-      };
-    }),
+    set((state) => ({
+      selectedContacts: [...state.selectedContacts, contact],
+    })),
+  addContacts: (contacts) =>
+    set((state) => ({
+      selectedContacts: [...state.selectedContacts, ...contacts],
+    })), // Nueva acción
   updateContactAtIndex: (index, contact) =>
     set((state) => {
       const updatedContacts = [...state.selectedContacts];
       updatedContacts[index] = contact;
       return { selectedContacts: updatedContacts };
     }),
-  removeContact: (contact) =>
-    set((state) => ({
-      selectedContacts: state.selectedContacts.filter(
-        (c) => c.id !== contact.id
-      ),
-    })),
+  resetContacts: () => set({ selectedContacts: [] }),
 }));
 
 export default useContactsStore;

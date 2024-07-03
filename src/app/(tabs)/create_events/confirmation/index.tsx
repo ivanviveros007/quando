@@ -1,39 +1,27 @@
-import { useCallback } from "react";
-import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
-import { View, TouchableOpacity } from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { View, TouchableOpacity, StyleSheet, Image, Text } from "react-native";
 import { ThemedText } from "@/src/components/ThemedText";
 import { Background } from "@/src/components/container";
-import { useNavigation } from "@react-navigation/native";
+
 import useContactsStore from "@/src/store/contactStore";
-import ContactsItem from "@/src/components/contactItem";
-import { Images } from "@/src/constants";
+import { Colors } from "@/src/constants";
+
+import { useLocationStore } from "@/src/store/locationStore";
 
 const Confirmation = () => {
-  const navigation = useNavigation();
   const selectedContacts = useContactsStore((state) => state.selectedContacts);
+
+  const resetContacts = useContactsStore((state) => state.resetContacts); // Obtén la acción de restablecer contactos
+  const resetLocation = useLocationStore((state) => state.resetLocation); // Obtén la acción de restabl
 
   const { planName } = useLocalSearchParams();
   const router = useRouter();
 
-  useFocusEffect(
-    useCallback(() => {
-      // Hide the tab bar when this screen is focused
-      navigation.getParent()?.setOptions({
-        tabBarStyle: {
-          display: "none",
-        },
-      });
-
-      return () => {
-        // Show the tab bar again when this screen is unfocused
-        navigation.getParent()?.setOptions({
-          tabBarStyle: {
-            display: "flex",
-          },
-        });
-      };
-    }, [navigation, router])
-  );
+  const goHome = async () => {
+    await resetContacts();
+    await resetLocation();
+    router.navigate("/");
+  };
 
   return (
     <Background>
@@ -41,12 +29,10 @@ const Confirmation = () => {
         style={{
           position: "absolute",
           zIndex: 1000,
-          // backgroundColor: "red",
           top: 90,
           alignSelf: "center",
         }}
       >
-        <Images.Plans.LogoBlack width={100} height={60} />
         <ThemedText
           style={{
             textAlign: "center",
@@ -55,7 +41,9 @@ const Confirmation = () => {
             fontSize: 40,
           }}
           type="title"
-        ></ThemedText>
+        >
+          Quando
+        </ThemedText>
       </View>
       <View
         style={{
@@ -92,14 +80,36 @@ const Confirmation = () => {
           </ThemedText>
         </View>
 
-        <View style={{ alignSelf: "center", flexDirection: "row" }}>
-          {selectedContacts.map((contact) => (
-            <ContactsItem key={contact.id} item={contact} />
+        <View style={styles.contactsContainer}>
+          {selectedContacts.slice(0, 4).map((contact, index) => (
+            <View key={contact.id} style={styles.contactWrapper}>
+              {contact.imageAvailable ? (
+                <Image
+                  source={{ uri: contact.image.uri }}
+                  style={styles.contactImage}
+                />
+              ) : (
+                <View style={styles.contactPlaceholder}>
+                  <Text style={styles.contactInitial}>
+                    {contact.name.charAt(0)}
+                  </Text>
+                </View>
+              )}
+            </View>
           ))}
+          {selectedContacts.length > 4 && (
+            <View style={styles.contactWrapper}>
+              <View style={styles.contactPlaceholder}>
+                <Text style={styles.contactInitial}>
+                  +{selectedContacts.length - 4}
+                </Text>
+              </View>
+            </View>
+          )}
         </View>
 
         <View style={{ justifyContent: "flex-end", top: 10 }}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity onPress={goHome}>
             <ThemedText
               style={{
                 textAlign: "center",
@@ -116,5 +126,34 @@ const Confirmation = () => {
     </Background>
   );
 };
+
+const styles = StyleSheet.create({
+  contactsContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
+  },
+  contactWrapper: {
+    marginHorizontal: -10, // Ajusta este valor según sea necesario para el solapamiento
+  },
+  contactImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  contactPlaceholder: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: "grey",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  contactInitial: {
+    fontSize: 18,
+    color: Colors.white,
+  },
+});
 
 export default Confirmation;

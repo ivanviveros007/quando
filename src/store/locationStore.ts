@@ -14,6 +14,7 @@ interface LocationStoreState {
   setSelectedLocation: (location: Location | null) => void;
   setSearchResults: (results: any[]) => void; // Ajusta `any` a un tipo más específico si sabes la estructura
   setAddress: (address: string) => void;
+  resetLocation: () => void;
 }
 
 export const useLocationStore = create<LocationStoreState>((set) => ({
@@ -24,4 +25,5 @@ export const useLocationStore = create<LocationStoreState>((set) => ({
     set({ selectedLocation: location }),
   setSearchResults: (results: any[]) => set({ searchResults: results }),
   setAddress: (address: string) => set({ address }),
+  resetLocation: () => set({ selectedLocation: null, address: "" }),
 }));

@@ -13,9 +13,8 @@ import { useAuthStore } from "@/src/store/authStore";
 import { Images } from "@/src/constants";
 import { CardEvent } from "@/src/components/cardEvent";
 import { Colors } from "@/src/constants";
-import { router } from "expo-router";
 import { usePlansStore } from "@/src/store/planStore";
-import { isToday, isAfter, parseISO } from "date-fns";
+import { isToday, isAfter, parseISO, compareAsc } from "date-fns";
 import { EmptyStatePlan } from "@/src/components/emptyState";
 
 export default function HomeScreen() {
@@ -25,7 +24,7 @@ export default function HomeScreen() {
   const error = usePlansStore((state) => state.error);
   const user = useAuthStore((state) => state.user);
 
-  const [filter, setFilter] = useState("all");
+  const [filter, setFilter] = useState("today");
   const [filteredPlans, setFilteredPlans] = useState([]);
   const animation = useRef(new Animated.Value(0)).current;
 
@@ -42,10 +41,12 @@ export default function HomeScreen() {
     if (filter === "today") {
       filtered = plans.filter((plan) => isToday(parseISO(plan.date)));
     } else if (filter === "upcoming") {
-      filtered = plans.filter((plan) => {
-        const planDate = parseISO(plan.date);
-        return isAfter(planDate, today) && !isToday(planDate);
-      });
+      filtered = plans
+        .filter((plan) => {
+          const planDate = parseISO(plan.date);
+          return isAfter(planDate, today) && !isToday(planDate);
+        })
+        .sort((a, b) => compareAsc(parseISO(a.date), parseISO(b.date)));
     }
 
     setFilteredPlans(filtered);
@@ -56,6 +57,11 @@ export default function HomeScreen() {
       useNativeDriver: false,
     }).start();
   }, [filter, plans]);
+
+  useEffect(() => {
+    // Ensure initial filter application
+    setFilter("today");
+  }, []);
 
   const backgroundColorToday = animation.interpolate({
     inputRange: [0, 1],
@@ -86,6 +92,7 @@ export default function HomeScreen() {
           time={item.time}
           guests={item.guests}
           date={item.date}
+          imageUri={item.imageUri}
         />
       </View>
     );
@@ -209,7 +216,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   contentInset: {
-    bottom: 150,
+    bottom: 350,
   },
   containerFlatList: {
     alignSelf: "center",

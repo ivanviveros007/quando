@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, SafeAreaView } from "react-native";
 import { Formik } from "formik";
-
 import DropDown from "react-native-paper-dropdown";
 import { TextInput as PaperTextInput } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
@@ -63,10 +62,16 @@ const CreatePlan: React.FC = () => {
     }
 
     const pickerResult = await ImagePicker.launchImageLibraryAsync();
-    if (!pickerResult.canceled) {
-      setImageUris([...imageUris, pickerResult.uri]);
+    if (
+      !pickerResult.canceled &&
+      pickerResult.assets &&
+      pickerResult.assets.length > 0
+    ) {
+      setImageUris([pickerResult.assets[0].uri]); // Asegúrate de que solo se seleccione una imagen
     }
   };
+
+  console.log(" imageUris", imageUris[0]);
 
   return (
     <SafeAreaView style={[globalStyles.container, styles.backgroundSafeArea]}>
@@ -81,12 +86,16 @@ const CreatePlan: React.FC = () => {
             : "",
           description: "",
           guests: [],
+          imageUris: "", // Añadir esto
         }}
         validationSchema={validationSchema}
-        onSubmit={async (values) => {
-          console.log("values form", values);
+        onSubmit={async (values, { setFieldValue }) => {
+          if (imageUris.length > 0) {
+            setFieldValue("imageUri", imageUris[0]);
+          }
+          console.log("values form", { ...values, imageUri: imageUris[0] });
           // Aquí puedes manejar el envío del formulario
-          await addPlan(values);
+          await addPlan({ ...values, imageUri: imageUris[0] });
           router.push("(tabs)/create_events/confirmation", {
             planName: values.title,
             planType: values.planType,
@@ -95,7 +104,7 @@ const CreatePlan: React.FC = () => {
             location: values.location,
             description: values.description,
             guests: values.guests,
-            imageUris: imageUris,
+            imageUri: imageUris[0],
           });
         }}
       >
@@ -318,5 +327,3 @@ const CreatePlan: React.FC = () => {
 };
 
 export default CreatePlan;
-
-

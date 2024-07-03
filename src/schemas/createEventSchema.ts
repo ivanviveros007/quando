@@ -8,4 +8,5 @@ export const validationSchema = Yup.object().shape({
   location: Yup.string().required("La ubicación es obligatoria"),
   description: Yup.string(),
   guests: Yup.array().min(1, "Debes seleccionar al menos un invitado"),
+  imageUris: Yup.array().of(Yup.string().url()).nullable(), 
 });

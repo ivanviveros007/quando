@@ -16,7 +16,7 @@ import { router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 
 import { globalStyles } from "@/src/theme";
-import { moderateScale, verticalScale, horizontalScale } from "@/src/helpers";
+import { moderateScale, verticalScale } from "@/src/helpers";
 
 export default function Profile() {
   const { user, logout } = useAuthStore();
@@ -179,4 +179,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: moderateScale(10),
   },
-  });
+});

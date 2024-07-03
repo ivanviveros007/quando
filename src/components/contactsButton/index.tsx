@@ -4,6 +4,8 @@ import { useRouter } from "expo-router";
 import useContactsStore from "@/src/store/contactStore";
 import { ThemedText } from "../ThemedText";
 
+import { Colors } from "@/src/constants";
+
 interface InviteContactsProps {
   setFieldValue: (field: string, value: any) => void;
 }
@@ -12,17 +14,9 @@ const InviteContacts: FC<InviteContactsProps> = ({ setFieldValue }) => {
   const router = useRouter();
   const selectedContacts = useContactsStore((state) => state.selectedContacts);
 
-  const handleAddContact = (index: number | null = null) => {
-    router.push({
-      pathname: "(tabs)/create_events/contacts",
-      params: { index },
-    });
+  const handleAddContact = () => {
+    router.push("(tabs)/create_events/contacts");
   };
-
-  const slots = new Array(4).fill(null);
-  selectedContacts.forEach((contact, index) => {
-    slots[index] = contact;
-  });
 
   useEffect(() => {
     setFieldValue("guests", selectedContacts);
@@ -35,36 +29,32 @@ const InviteContacts: FC<InviteContactsProps> = ({ setFieldValue }) => {
       </View>
 
       <View style={styles.contactsContainer}>
-        {slots.map((slot, index) =>
-          slot ? (
-            <TouchableOpacity
-              key={index}
-              onPress={() => handleAddContact(index)}
-              style={styles.contact}
-            >
-              {slot.imageAvailable ? (
-                <Image
-                  source={{ uri: slot.image?.uri }}
-                  style={styles.contactImage}
-                />
-              ) : (
-                <View style={styles.contactPlaceholder}>
-                  <Text style={styles.contactInitial}>
-                    {slot.name.charAt(0)}
-                  </Text>
-                </View>
-              )}
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              key={index}
-              onPress={() => handleAddContact(index)}
-              style={styles.addButton}
-            >
-              <Text style={styles.addButtonText}>+</Text>
-            </TouchableOpacity>
-          )
+        {selectedContacts.slice(0, 4).map((contact, index) => (
+          <View key={index} style={styles.contact}>
+            {contact.imageAvailable ? (
+              <Image
+                source={{ uri: contact.image?.uri }}
+                style={styles.contactImage}
+              />
+            ) : (
+              <View style={styles.contactPlaceholder}>
+                <Text style={styles.contactInitial}>
+                  {contact.name.charAt(0)}
+                </Text>
+              </View>
+            )}
+          </View>
+        ))}
+        {selectedContacts.length > 4 && (
+          <View style={styles.moreContacts}>
+            <ThemedText style={styles.moreContactsText}>
+              +{selectedContacts.length - 4}
+            </ThemedText>
+          </View>
         )}
+        <TouchableOpacity onPress={handleAddContact} style={styles.addButton}>
+          <Text style={styles.addButtonText}>+</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -88,7 +78,7 @@ const styles = StyleSheet.create({
   },
   contact: {
     alignItems: "center",
-    marginRight: 8,
+    marginRight: -10, // Solapado de avatares
   },
   contactImage: {
     width: 50,
@@ -107,9 +97,18 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: "#fff",
   },
-  contactName: {
-    marginTop: 5,
-    fontSize: 14,
+  moreContacts: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: "#ccc",
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: -10, // Solapado de avatares
+  },
+  moreContactsText: {
+    fontSize: 16,
+    color: Colors.primary_black,
   },
   addButton: {
     width: 50,
@@ -120,7 +119,7 @@ const styles = StyleSheet.create({
     borderColor: "#825FF1",
     alignItems: "center",
     justifyContent: "center",
-    marginRight: 8,
+    marginLeft: -10, // Solapado de avatares
   },
   addButtonText: {
     fontSize: 50,

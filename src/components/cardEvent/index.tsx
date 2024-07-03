@@ -3,7 +3,6 @@ import { View, StyleSheet, Image } from "react-native";
 import { ThemedText } from "../ThemedText";
 import { verticalScale, moderateScale, horizontalScale } from "@/src/helpers";
 import { Colors } from "@/src/constants";
-import { theme } from "@/src/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { parseISO, format } from "date-fns";
 
@@ -13,13 +12,13 @@ interface Guest {
   imageAvailable: boolean;
   image?: { uri: string };
 }
-
 interface CardProps {
   title: string;
   location: string;
   date: string;
   time: string;
   guests?: Guest[];
+  imageUri?: string;
 }
 
 export const CardEvent: FC<CardProps> = ({
@@ -27,11 +26,51 @@ export const CardEvent: FC<CardProps> = ({
   location,
   date,
   time,
-  guests,
+  guests = [],
+  imageUri,
 }) => {
   const formattedDate = parseISO(date);
   const day = format(formattedDate, "d");
   const month = format(formattedDate, "MMM");
+
+  const renderGuests = () => {
+    const maxGuestsToShow = 4;
+    const guestsToShow = guests.slice(0, maxGuestsToShow);
+    const extraGuestsCount = guests.length - maxGuestsToShow;
+
+    return (
+      <View style={styles.guestContainer}>
+        {guestsToShow.map((guest, index) => (
+          <View key={guest.id} style={[styles.guest, { left: index * 20 }]}>
+            {guest.imageAvailable ? (
+              <Image
+                source={{
+                  uri: guest.image.uri,
+                  cache: "force-cache",
+                }}
+                style={styles.guestImage}
+              />
+            ) : (
+              <View style={styles.guestPlaceholder}>
+                <ThemedText style={styles.guestPlaceholderText}>
+                  {guest.name[0].toUpperCase()}
+                </ThemedText>
+              </View>
+            )}
+          </View>
+        ))}
+        {extraGuestsCount > 0 && (
+          <View style={[styles.guest, { left: guestsToShow.length * 20 }]}>
+            <View style={styles.guestPlaceholder}>
+              <ThemedText style={styles.guestPlaceholderText}>
+                +{extraGuestsCount}
+              </ThemedText>
+            </View>
+          </View>
+        )}
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -68,31 +107,20 @@ export const CardEvent: FC<CardProps> = ({
           <ThemedText style={styles.textLocation}>{time}</ThemedText>
         </View>
         <View style={[styles.containerGuests, { marginTop: 5 }]}>
-          {guests && guests.length > 0 ? (
-            guests.map((guest) => (
-              <View key={guest.id} style={styles.guest}>
-                {guest.imageAvailable ? (
-                  <Image
-                    source={{ uri: guest.image.uri }}
-                    style={styles.guestImage}
-                  />
-                ) : (
-                  <View style={styles.guestPlaceholder}>
-                    <ThemedText style={styles.guestPlaceholderText}>
-                      {guest.name[0].toUpperCase()}
-                    </ThemedText>
-                  </View>
-                )}
-              </View>
-            ))
-          ) : (
-            <ThemedText style={styles.noGuestsText}>
-              No hay invitados
-            </ThemedText>
-          )}
+          {renderGuests()}
         </View>
       </View>
       <View style={styles.containerDate}>
+        {imageUri && (
+          <Image
+            source={{
+              uri: imageUri,
+              cache: "force-cache",
+            }}
+            style={styles.eventImage}
+            resizeMode="cover"
+          />
+        )}
         <View style={styles.date}>
           <View style={{ flexDirection: "column" }}>
             <ThemedText style={styles.number}>{day}</ThemedText>
@@ -122,12 +150,21 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: Colors.primary_pruple,
   },
+  eventImage: {
+    width: horizontalScale(104),
+    height: verticalScale(132),
+    position: "absolute",
+    top: 0,
+    left: 0,
+    zIndex: -1,
+    borderEndEndRadius: 10,
+    borderTopRightRadius: 10,
+  },
   containerData: {
     flex: 1.5,
     paddingHorizontal: 10,
   },
   containerDate: {
-    // backgroundColor: theme.colors.placeholder,
     backgroundColor: "white",
     flex: 1,
     borderTopEndRadius: 10,
@@ -176,12 +213,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 10,
   },
+  guestContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    position: "relative",
+    top: 15,
+    left: -1,
+  },
   guest: {
     width: 30,
     height: 30,
     borderRadius: 15,
     overflow: "hidden",
-    marginRight: 5,
+    position: "absolute",
   },
   guestImage: {
     width: "100%",
@@ -195,8 +239,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   guestPlaceholderText: {
-    color: "#5B5B5B",
-    fontSize: 14,
+    color: Colors.primary_black,
+    fontSize: 12,
   },
   noGuestsText: {
     fontSize: 12,
@@ -204,18 +248,4 @@ const styles = StyleSheet.create({
   },
 });
 
-// TODO: si el usuario sube una imagen esa imagen de imageBackground sino queda blanco,
-
-//TODO: en invitados, poder agregar varios invitados a la vez, y que se muestren en la cardEvent
-
-//TODO: en la cardEvent si son mas de 4 invitados agregar el + y si son menos agregar la cantidad.
-
-//TODO: en la cardEvent superponer las caras de los invitados y es un solo boton
-
-//TODO: en la cardEvent es un solo adjunto.
-
-//TODO: en confirmation agrupar los invitados como figma con el + y la cantidad de invitados.
-
 //TODO: en confirmation en ir al Inicio enviar al Home
-
-//TODO: ver bug de eventos con fecha de hoy
