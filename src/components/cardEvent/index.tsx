@@ -1,11 +1,11 @@
 import React, { FC } from "react";
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { ThemedText } from "../ThemedText";
 import { verticalScale, moderateScale, horizontalScale } from "@/src/helpers";
 import { Colors } from "@/src/constants";
 import { Ionicons } from "@expo/vector-icons";
 import { parseISO, format } from "date-fns";
-
+import { Image } from "expo-image";
 interface Guest {
   id: string;
   name: string;
@@ -115,10 +115,10 @@ export const CardEvent: FC<CardProps> = ({
           <Image
             source={{
               uri: imageUri,
-              cache: "force-cache",
+              cacheKey: imageUri,
             }}
             style={styles.eventImage}
-            resizeMode="cover"
+            contentFit="cover"
           />
         )}
         <View style={styles.date}>
