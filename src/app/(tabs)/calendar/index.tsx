@@ -9,7 +9,8 @@ import { capitalizeFirstLetter } from "@/src/utils";
 import { usePlansStore } from "@/src/store/planStore";
 import { useAuthStore } from "@/src/store/authStore";
 import { CardEvent } from "@/src/components/cardEvent";
-import { isToday, isAfter, parseISO } from "date-fns";
+import { parseISO } from "date-fns";
+import { router } from "expo-router";
 
 export default function CalendarScreen() {
   const [currentDate, setCurrentDate] = useState<Date | null>(new Date());
@@ -52,6 +53,16 @@ export default function CalendarScreen() {
     : capitalizeFirstLetter(format(new Date(), "MMMM yyyy", { locale: es }));
 
   const renderItem = ({ item }) => {
+    const queryParams = {
+      id: item.id,
+      title: item.title,
+      location: item.location,
+      time: item.time,
+      guests: JSON.stringify(item.guests),
+      date: item.date,
+      imageUri: item.imageUri,
+      description: item.description,
+    };
     return (
       <View style={{ marginVertical: 10, alignSelf: "center" }}>
         <CardEvent
@@ -61,6 +72,12 @@ export default function CalendarScreen() {
           guests={item.guests}
           date={item.date}
           imageUri={item.imageUri}
+          onPress={() => {
+            router.push({
+              pathname: "plan_detail",
+              params: queryParams,
+            });
+          }}
         />
       </View>
     );

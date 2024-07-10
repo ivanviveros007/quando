@@ -65,11 +65,23 @@ export default function RootLayout() {
             name="confirmation"
             options={{
               headerShown: false,
-              // presentation: "modal",
-              presentation:'containedModal'
+              presentation: "containedModal",
             }}
           />
           <Stack.Screen name="+not-found" />
+          <Stack.Screen
+            name="plan_detail"
+            options={{
+              headerShown: true,
+              headerBackTitleVisible: false,
+              // headerBackTitle: "",
+              title: "",
+              headerTitle: "",
+              headerTitleStyle: { fontFamily: "RobotoMedium" },
+              headerTintColor: theme.colors.black,
+              headerTransparent: true,
+            }}
+          />
         </Stack>
       </ThemeProvider>
     </PaperProvider>

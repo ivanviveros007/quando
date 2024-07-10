@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Pressable } from "react-native";
 import { ThemedText } from "../ThemedText";
 import { verticalScale, moderateScale, horizontalScale } from "@/src/helpers";
 import { Colors } from "@/src/constants";
@@ -19,6 +19,7 @@ interface CardProps {
   time: string;
   guests?: Guest[];
   imageUri?: string;
+  onPress?: () => void;
 }
 
 export const CardEvent: FC<CardProps> = ({
@@ -28,6 +29,7 @@ export const CardEvent: FC<CardProps> = ({
   time,
   guests = [],
   imageUri,
+  onPress,
 }) => {
   const formattedDate = parseISO(date);
   const day = format(formattedDate, "d");
@@ -75,62 +77,64 @@ export const CardEvent: FC<CardProps> = ({
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.containerData}>
-        <View>
-          <ThemedText
-            style={styles.title}
-            numberOfLines={1}
-            ellipsizeMode="tail"
-          >
-            {title}
-          </ThemedText>
+    <Pressable onPress={onPress}>
+      <View style={styles.container}>
+        <View style={styles.containerData}>
+          <View>
+            <ThemedText
+              style={styles.title}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {title}
+            </ThemedText>
+          </View>
+          <View style={styles.containerLocation}>
+            <Ionicons
+              name="location-outline"
+              size={moderateScale(20)}
+              color="black"
+            />
+            <ThemedText
+              style={styles.textLocation}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {location}
+            </ThemedText>
+          </View>
+          <View style={[styles.containerLocation, { marginTop: 5 }]}>
+            <Ionicons
+              name="time-outline"
+              size={moderateScale(20)}
+              color="black"
+            />
+            <ThemedText style={styles.textLocation}>{formattedTime}</ThemedText>
+          </View>
+          <View style={[styles.containerGuests, { marginTop: 5 }]}>
+            {renderGuests()}
+          </View>
         </View>
-        <View style={styles.containerLocation}>
-          <Ionicons
-            name="location-outline"
-            size={moderateScale(20)}
-            color="black"
-          />
-          <ThemedText
-            style={styles.textLocation}
-            numberOfLines={1}
-            ellipsizeMode="tail"
-          >
-            {location}
-          </ThemedText>
-        </View>
-        <View style={[styles.containerLocation, { marginTop: 5 }]}>
-          <Ionicons
-            name="time-outline"
-            size={moderateScale(20)}
-            color="black"
-          />
-          <ThemedText style={styles.textLocation}>{formattedTime}</ThemedText>
-        </View>
-        <View style={[styles.containerGuests, { marginTop: 5 }]}>
-          {renderGuests()}
-        </View>
-      </View>
-      <View style={styles.containerDate}>
-        {imageUri && (
-          <Image
-            source={{
-              uri: imageUri,
-              cacheKey: imageUri,
-            }}
-            style={styles.eventImage}
-            contentFit="cover"
-          />
-        )}
-        <View style={styles.date}>
-          <View style={{ flexDirection: "column" }}>
-            <ThemedText style={styles.number}>{day}</ThemedText>
-            <ThemedText style={styles.month}>{month}</ThemedText>
+        <View style={styles.containerDate}>
+          {imageUri && (
+            <Image
+              source={{
+                uri: imageUri,
+                cacheKey: imageUri,
+              }}
+              style={styles.eventImage}
+              contentFit="cover"
+            />
+          )}
+          <View style={styles.date}>
+            <View style={{ flexDirection: "column" }}>
+              <ThemedText style={styles.number}>{day}</ThemedText>
+              <ThemedText style={styles.month}>{month}</ThemedText>
+            </View>
           </View>
         </View>
       </View>
-    </View>
+    </Pressable>
   );
 };
 

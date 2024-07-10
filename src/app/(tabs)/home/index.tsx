@@ -16,6 +16,7 @@ import { Colors } from "@/src/constants";
 import { usePlansStore } from "@/src/store/planStore";
 import { isToday, isAfter, parseISO, compareAsc } from "date-fns";
 import { EmptyStatePlan } from "@/src/components/emptyState";
+import { router } from "expo-router";
 
 export default function HomeScreen() {
   const fetchPlans = usePlansStore((state) => state.fetchPlans);
@@ -84,6 +85,16 @@ export default function HomeScreen() {
   });
 
   const renderItem = ({ item }) => {
+    const queryParams = {
+      id: item.id,
+      title: item.title,
+      location: item.location,
+      time: item.time,
+      guests: JSON.stringify(item.guests),
+      date: item.date,
+      imageUri: item.imageUri,
+      description: item.description,
+    };
     return (
       <View style={{ marginVertical: 10 }}>
         <CardEvent
@@ -93,6 +104,12 @@ export default function HomeScreen() {
           guests={item.guests}
           date={item.date}
           imageUri={item.imageUri}
+          onPress={() => {
+            router.push({
+              pathname: "plan_detail",
+              params: queryParams,
+            });
+          }}
         />
       </View>
     );
