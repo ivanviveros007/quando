@@ -5,6 +5,7 @@ import useContactsStore from "@/src/store/contactStore";
 import { ThemedText } from "../ThemedText";
 
 import { Colors } from "@/src/constants";
+import { horizontalScale, moderateScale, verticalScale } from "@/src/helpers";
 
 interface InviteContactsProps {
   setFieldValue: (field: string, value: any) => void;
@@ -81,26 +82,28 @@ const styles = StyleSheet.create({
     marginRight: -10, // Solapado de avatares
   },
   contactImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: horizontalScale(50),
+    height: verticalScale(50),
+    borderRadius: moderateScale(25),
   },
   contactPlaceholder: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: horizontalScale(50),
+    height: verticalScale(50),
+    borderRadius: moderateScale(25),
     backgroundColor: "#ccc",
     alignItems: "center",
     justifyContent: "center",
+    borderWidth: 2,
+    borderColor: "white",
   },
   contactInitial: {
     fontSize: 24,
     color: "#fff",
   },
   moreContacts: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: horizontalScale(50),
+    height: verticalScale(50),
+    borderRadius: moderateScale(25),
     backgroundColor: "#ccc",
     alignItems: "center",
     justifyContent: "center",
@@ -111,9 +114,9 @@ const styles = StyleSheet.create({
     color: Colors.primary_black,
   },
   addButton: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: horizontalScale(50),
+    height: verticalScale(50),
+    borderRadius: moderateScale(25),
     backgroundColor: "white",
     borderWidth: 1,
     borderColor: "#825FF1",

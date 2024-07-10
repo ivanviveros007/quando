@@ -145,7 +145,10 @@ const CreatePlan: React.FC = () => {
           }, [selectedLocation]);
 
           return (
-            <ScrollView contentContainerStyle={styles.container}>
+            <ScrollView
+              contentContainerStyle={styles.container}
+              automaticallyAdjustKeyboardInsets
+            >
               <ThemedText type="title" style={styles.title}>
                 Crea tu plan
               </ThemedText>

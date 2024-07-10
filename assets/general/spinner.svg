@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="74.295" height="75.825" viewBox="0 0 74.295 75.825">
+  <g transform="translate(-12.088 -11.322)">
+    <g transform="translate(80 50)">
+      <circle cx="6.383" cy="6.383" r="6.383" transform="translate(-6.383 -6.383)" fill="#5B5B5B"/>
+    </g>
+    <g transform="translate(71.213 71.213)">
+      <g transform="rotate(45)">
+        <circle cx="6.765" cy="6.765" r="6.765" transform="translate(-6.765 -6.765)" fill="#5B5B5B"/>
+      </g>
+    </g>
+    <g transform="translate(50 80)">
+      <g transform="rotate(90)">
+        <circle cx="7.148" cy="7.148" r="7.148" transform="translate(-7.148 -7.148)" fill="#5B5B5B"/>
+      </g>
+    </g>
+    <g transform="translate(28.787 71.213)">
+      <g transform="rotate(135)">
+        <circle cx="7.53" cy="7.53" r="7.53" transform="translate(-7.53 -7.53)" fill="#5B5B5B"/>
+      </g>
+    </g>
+    <g transform="translate(20 50)">
+      <g transform="rotate(180)">
+        <circle cx="7.912" cy="7.912" r="7.912" transform="translate(-7.912 -7.912)" fill="#5B5B5B"/>
+      </g>
+    </g>
+    <g transform="translate(28.787 28.787)">
+      <g transform="rotate(-135)">
+        <circle cx="8.295" cy="8.295" r="8.295" transform="translate(-8.295 -8.295)" fill="#5B5B5B"/>
+      </g>
+    </g>
+    <g transform="translate(50 20)">
+      <g transform="rotate(-90)">
+        <circle cx="8.677" cy="8.677" r="8.677" transform="translate(-8.677 -8.677)" fill="#5B5B5B"/>
+      </g>
+    </g>
+    <g transform="translate(71.213 28.787)">
+      <g transform="rotate(-45)">
+        <circle cx="9.06" cy="9.06" r="9.06" transform="translate(-9.06 -9.06)" fill="#5B5B5B"/>
+      </g>
+    </g>
+  </g>
+</svg>

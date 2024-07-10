@@ -1,33 +1,48 @@
 import React from "react";
-import { View, Image, Text, StyleSheet } from "react-native";
-import * as Contacts from "expo-contacts";
-import { moderateScale, horizontalScale, verticalScale } from "@/src/helpers";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
+import { Colors } from "@/src/constants";
+import { horizontalScale, moderateScale, verticalScale } from "@/src/helpers";
 
 interface SelectedContactItemProps {
   contact: Contacts.Contact;
+  onSelect: (contact: Contacts.Contact) => void;
 }
 
 const SelectedContactItem: React.FC<SelectedContactItemProps> = ({
   contact,
-}) => (
-  <View style={styles.selectedContact}>
-    {contact.imageAvailable ? (
-      <Image source={{ uri: contact.image.uri }} style={styles.image} />
-    ) : (
-      <View style={styles.placeholder}>
-        <Text style={styles.placeholderText}>
-          {contact.name[0].toUpperCase()}
-        </Text>
-      </View>
-    )}
-    <Text style={styles.contactName}>{contact.name}</Text>
-  </View>
-);
+  onSelect,
+}) => {
+  return (
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() => onSelect(contact)}
+    >
+      {contact.imageAvailable ? (
+        <Image source={{ uri: contact.image.uri }} style={styles.image} />
+      ) : (
+        <View style={styles.placeholder}>
+          <Text style={styles.initial}>{contact.name.charAt(0)}</Text>
+          <View style={styles.checkmark}>
+            <MaterialIcons
+              name="check-circle"
+              size={24}
+              color={Colors.primary_black}
+            />
+          </View>
+        </View>
+      )}
+
+      <Text style={styles.name}>{contact.name}</Text>
+    </TouchableOpacity>
+  );
+};
 
 const styles = StyleSheet.create({
-  selectedContact: {
+  container: {
     alignItems: "center",
-    marginRight: horizontalScale(10),
+    margin: 5,
+    position: "relative",
   },
   image: {
     width: horizontalScale(60),
@@ -38,18 +53,22 @@ const styles = StyleSheet.create({
     width: horizontalScale(60),
     height: verticalScale(60),
     borderRadius: moderateScale(30),
-    backgroundColor: "#EBEBEB",
+    backgroundColor: "#ccc",
     alignItems: "center",
     justifyContent: "center",
   },
-  placeholderText: {
-    color: "#5B5B5B",
-    fontSize: moderateScale(24),
+  initial: {
+    fontSize: 24,
+    color: "#fff",
   },
-  contactName: {
-    fontSize: moderateScale(16),
+  checkmark: {
+    position: "absolute",
+    bottom: 0,
+    right: -5,
+  },
+  name: {
+    marginTop: 5,
     textAlign: "center",
-    marginTop: verticalScale(5),
   },
 });
 

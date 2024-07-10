@@ -9,6 +9,8 @@ import {
 } from "react-native";
 import * as Contacts from "expo-contacts";
 import { moderateScale, verticalScale, horizontalScale } from "@/src/helpers";
+import { MaterialIcons } from "@expo/vector-icons";
+import { Colors } from "@/src/constants";
 
 const { width } = Dimensions.get("window");
 const numColumns = 3;
@@ -17,9 +19,14 @@ const itemWidth = width / numColumns - 20;
 interface ContactItemProps {
   item: Contacts.Contact;
   onSelect: (contact: Contacts.Contact) => void;
+  isSelected: boolean;
 }
 
-const ContactItem: React.FC<ContactItemProps> = ({ item, onSelect }) => (
+const ContactItem: React.FC<ContactItemProps> = ({
+  item,
+  onSelect,
+  isSelected,
+}) => (
   <View style={{ width: itemWidth, padding: moderateScale(10) }}>
     <TouchableOpacity style={styles.contactItem} onPress={() => onSelect(item)}>
       {item.imageAvailable ? (
@@ -29,8 +36,18 @@ const ContactItem: React.FC<ContactItemProps> = ({ item, onSelect }) => (
           <Text style={styles.placeholderText}>
             {item.name[0].toUpperCase()}
           </Text>
+          {isSelected && (
+            <View style={styles.checkmark}>
+              <MaterialIcons
+                name="check-circle"
+                size={24}
+                color={Colors.primary_black}
+              />
+            </View>
+          )}
         </View>
       )}
+
       <Text style={styles.contactName}>{item.name}</Text>
     </TouchableOpacity>
   </View>
@@ -62,6 +79,11 @@ const styles = StyleSheet.create({
   placeholderText: {
     color: "#5B5B5B",
     fontSize: moderateScale(24),
+  },
+  checkmark: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
   },
 });
 

@@ -40,7 +40,7 @@ export const Loading: React.FC = () => {
   );
 };
 
-export const LoadingScreen: React.FC<> = () => {
+export const LoadingScreen = () => {
   return (
     <View style={styles.container}>
       <Loading />

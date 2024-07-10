@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -70,13 +69,13 @@ const ContactsScreen: React.FC = () => {
     }
   }, [search, selectedFilter, contacts]);
 
-  const handleSelectContact = (contact: Contacts.Contact) => {
-    if (selectedTempContacts.some((c) => c.id === contact.id)) {
-      Alert.alert("Error", "Este contacto ya ha sido seleccionado.");
-      return;
-    }
-    setSelectedTempContacts([...selectedTempContacts, contact]);
-  };
+  // const handleSelectContact = (contact: Contacts.Contact) => {
+  //   if (selectedTempContacts.some((c) => c.id === contact.id)) {
+  //     Alert.alert("Error", "Este contacto ya ha sido seleccionado.");
+  //     return;
+  //   }
+  //   setSelectedTempContacts([...selectedTempContacts, contact]);
+  // };
 
   const handleFilterPress = (filter: string) => {
     if (selectedFilter === filter) {
@@ -98,6 +97,15 @@ const ContactsScreen: React.FC = () => {
     { id: "4", name: "Fútbol" },
   ];
 
+  const handleSelectContact = (contact: Contacts.Contact) => {
+    if (selectedTempContacts.some((c) => c.id === contact.id)) {
+      setSelectedTempContacts(
+        selectedTempContacts.filter((c) => c.id !== contact.id)
+      );
+    } else {
+      setSelectedTempContacts([...selectedTempContacts, contact]);
+    }
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Invita a tus contactos</Text>
@@ -127,7 +135,11 @@ const ContactsScreen: React.FC = () => {
         style={styles.selectedContactsContainer}
       >
         {selectedTempContacts.map((contact, index) => (
-          <SelectedContactItem key={index} contact={contact} />
+          <SelectedContactItem
+            key={index}
+            contact={contact}
+            onSelect={handleSelectContact}
+          />
         ))}
       </ScrollView>
       <FlatList
@@ -136,7 +148,11 @@ const ContactsScreen: React.FC = () => {
         numColumns={numColumns}
         contentContainerStyle={styles.contactList}
         renderItem={({ item }) => (
-          <ContactItem item={item} onSelect={handleSelectContact} />
+          <ContactItem
+            item={item}
+            onSelect={handleSelectContact}
+            isSelected={selectedTempContacts.some((c) => c.id === item.id)}
+          />
         )}
       />
       <TouchableOpacity
