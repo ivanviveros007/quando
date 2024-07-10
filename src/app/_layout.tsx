@@ -61,6 +61,14 @@ export default function RootLayout() {
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
           {/* App Screens */}
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="confirmation"
+            options={{
+              headerShown: false,
+              // presentation: "modal",
+              presentation:'containedModal'
+            }}
+          />
           <Stack.Screen name="+not-found" />
         </Stack>
       </ThemeProvider>

@@ -54,14 +54,14 @@ export default function Login() {
 
     const fullPhoneNumber = areaCode + phoneNumber;
     const userExists = await checkUserExists(fullPhoneNumber);
-
+    console.log("userExists", userExists);
     if (userExists) {
       const result = await signInWithPhoneNumber();
-
+      console.log("result", result);
       if (result.success) {
         router.push("otp");
       } else {
-        Alert.alert("Error", result.error.message);
+        Alert.alert("Error", result.message);
       }
     } else {
       router.push("register");
@@ -147,7 +147,7 @@ export default function Login() {
                 outlineColor={theme.colors.white}
                 textColor={theme.colors.white}
                 keyboardAppearance="dark"
-                outlineStyle={{borderWidth:0.9}}
+                outlineStyle={{ borderWidth: 0.9 }}
               />
             </View>
             <View style={styles.login}>

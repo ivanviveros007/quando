@@ -25,7 +25,7 @@ const InviteContacts: FC<InviteContactsProps> = ({ setFieldValue }) => {
   return (
     <View style={styles.container}>
       <View style={{ top: 5 }}>
-        <ThemedText style={styles.label}>Invitados</ThemedText>
+        <ThemedText style={styles.label}>Invitados{"  "}</ThemedText>
       </View>
 
       <View style={styles.contactsContainer}>

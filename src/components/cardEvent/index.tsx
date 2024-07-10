@@ -4,7 +4,7 @@ import { ThemedText } from "../ThemedText";
 import { verticalScale, moderateScale, horizontalScale } from "@/src/helpers";
 import { Colors } from "@/src/constants";
 import { Ionicons } from "@expo/vector-icons";
-import { parseISO, format } from "date-fns";
+import { parse, format, parseISO } from "date-fns";
 import { Image } from "expo-image";
 interface Guest {
   id: string;
@@ -32,6 +32,8 @@ export const CardEvent: FC<CardProps> = ({
   const formattedDate = parseISO(date);
   const day = format(formattedDate, "d");
   const month = format(formattedDate, "MMM");
+  const parsedTime = parse(time, "HH:mm", new Date());
+  const formattedTime = format(parsedTime, "HH:mm");
 
   const renderGuests = () => {
     const maxGuestsToShow = 4;
@@ -46,7 +48,7 @@ export const CardEvent: FC<CardProps> = ({
               <Image
                 source={{
                   uri: guest.image.uri,
-                  cache: "force-cache",
+                  cacheKey: guest.image.uri,
                 }}
                 style={styles.guestImage}
               />
@@ -104,7 +106,7 @@ export const CardEvent: FC<CardProps> = ({
             size={moderateScale(20)}
             color="black"
           />
-          <ThemedText style={styles.textLocation}>{time}</ThemedText>
+          <ThemedText style={styles.textLocation}>{formattedTime}</ThemedText>
         </View>
         <View style={[styles.containerGuests, { marginTop: 5 }]}>
           {renderGuests()}
@@ -247,5 +249,3 @@ const styles = StyleSheet.create({
     color: "#999",
   },
 });
-
-//TODO: en confirmation en ir al Inicio enviar al Home

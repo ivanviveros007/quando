@@ -1,26 +1,28 @@
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, router } from "expo-router";
 import { View, TouchableOpacity, StyleSheet, Image, Text } from "react-native";
 import { ThemedText } from "@/src/components/ThemedText";
 import { Background } from "@/src/components/container";
 
 import useContactsStore from "@/src/store/contactStore";
 import { Colors } from "@/src/constants";
-
-import { useLocationStore } from "@/src/store/locationStore";
+import { useLocationStore } from "../store/locationStore";
 
 const Confirmation = () => {
   const selectedContacts = useContactsStore((state) => state.selectedContacts);
 
-  const resetContacts = useContactsStore((state) => state.resetContacts); // Obtén la acción de restablecer contactos
-  const resetLocation = useLocationStore((state) => state.resetLocation); // Obtén la acción de restabl
-
   const { planName } = useLocalSearchParams();
-  const router = useRouter();
+
+  const resetLocation = useLocationStore((state) => state.resetLocation);
+  const resetContacts = useContactsStore((state) => state.resetContacts);
 
   const goHome = async () => {
-    await resetContacts();
-    await resetLocation();
-    router.navigate("/");
+    try {
+      router.replace("(tabs)/home");
+      await resetLocation();
+      await resetContacts();
+    } catch (error) {
+      console.error("Error al restablecer los contactos y la ubicación", error);
+    }
   };
 
   return (
@@ -82,7 +84,7 @@ const Confirmation = () => {
 
         <View style={styles.contactsContainer}>
           {selectedContacts.slice(0, 4).map((contact, index) => (
-            <View key={contact.id} style={styles.contactWrapper}>
+            <View key={`${contact.id}-${index}`} style={styles.contactWrapper}>
               {contact.imageAvailable ? (
                 <Image
                   source={{ uri: contact.image.uri }}
@@ -98,7 +100,7 @@ const Confirmation = () => {
             </View>
           ))}
           {selectedContacts.length > 4 && (
-            <View style={styles.contactWrapper}>
+            <View key="extra-contacts" style={styles.contactWrapper}>
               <View style={styles.contactPlaceholder}>
                 <Text style={styles.contactInitial}>
                   +{selectedContacts.length - 4}

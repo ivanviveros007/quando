@@ -1,10 +1,8 @@
 import { Tabs } from "expo-router";
 import React from "react";
 import { TabBarIcon } from "@/src/components/tabBar/TabBarIcon";
-import { View } from "react-native";
-import { Images } from "@/src/constants";
-import { verticalScale } from "@/src/helpers";
 import { Colors } from "@/src/constants";
+import { verticalScale } from "@/src/helpers";
 
 export default function TabLayout() {
   return (
@@ -26,6 +24,11 @@ export default function TabLayout() {
           backgroundColor: "#fff",
           position: "absolute",
           borderTopWidth: 0,
+          paddingTop: 5,
+          height: verticalScale(70),
+        },
+        tabBarIconStyle: {
+          marginTop: verticalScale(5),
         },
       }}
     >
@@ -54,11 +57,6 @@ export default function TabLayout() {
         name="create_events"
         options={{
           title: "",
-          // tabBarIcon: () => (
-          //   <View style={{ bottom: verticalScale(15) }}>
-          //     <Images.TabBar.PlusSvg />
-          //   </View>
-          // ),
           tabBarIcon: ({ color }) => <TabBarIcon name="add" color={color} />,
           headerShadowVisible: false,
         }}

@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, SafeAreaView } from "react-native";
+import {
+  View,
+  ScrollView,
+  SafeAreaView,
+  ActivityIndicator,
+} from "react-native";
 import { Formik } from "formik";
 import DropDown from "react-native-paper-dropdown";
 import { TextInput as PaperTextInput } from "react-native-paper";
@@ -22,6 +27,9 @@ import { Colors } from "@/src/constants";
 import { geocodeCoordinates } from "@/src/services";
 import { usePlansStore } from "@/src/store/planStore";
 
+import { LoadingScreen } from "@/src/components/loading";
+import { format } from "date-fns";
+
 import { styles } from "./styles";
 
 const CreatePlan: React.FC = () => {
@@ -29,6 +37,7 @@ const CreatePlan: React.FC = () => {
   const [imageUris, setImageUris] = useState<string[]>([]);
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
+  const [loading, setLoaing] = useState(false);
 
   const selectedLocation = useLocationStore((state) => state.selectedLocation);
   const address = useLocationStore((state) => state.address);
@@ -67,14 +76,23 @@ const CreatePlan: React.FC = () => {
       pickerResult.assets &&
       pickerResult.assets.length > 0
     ) {
-      setImageUris([pickerResult.assets[0].uri]); // Asegúrate de que solo se seleccione una imagen
+      setImageUris([pickerResult.assets[0].uri]);
     }
   };
 
-  console.log(" imageUris", imageUris[0]);
+  const navigateToConfirmation = async (planName) => {
+    const queryParam = { planName };
+    await router.push({
+      pathname: "confirmation",
+      params: queryParam,
+    });
+    setLoaing(false);
+  };
 
   return (
     <SafeAreaView style={[globalStyles.container, styles.backgroundSafeArea]}>
+      {loading && <LoadingScreen />}
+
       <Formik
         initialValues={{
           planType: "",
@@ -86,26 +104,21 @@ const CreatePlan: React.FC = () => {
             : "",
           description: "",
           guests: [],
-          imageUris: "", // Añadir esto
+          imageUris: "",
         }}
         validationSchema={validationSchema}
-        onSubmit={async (values, { setFieldValue }) => {
+        onSubmit={async (values, { setFieldValue, resetForm }) => {
+          setLoaing(true);
           if (imageUris.length > 0) {
             setFieldValue("imageUri", imageUris[0]);
           }
           console.log("values form", { ...values, imageUri: imageUris[0] });
           // Aquí puedes manejar el envío del formulario
           await addPlan({ ...values, imageUri: imageUris[0] });
-          router.push("(tabs)/create_events/confirmation", {
-            planName: values.title,
-            planType: values.planType,
-            date: values.date,
-            time: values.time,
-            location: values.location,
-            description: values.description,
-            guests: values.guests,
-            imageUri: imageUris[0],
-          });
+
+          await navigateToConfirmation(values.title);
+
+          resetForm();
         }}
       >
         {({
@@ -204,6 +217,7 @@ const CreatePlan: React.FC = () => {
                         selectedDate?.toISOString().split("T")[0]
                       );
                     }}
+                    accentColor={Colors.primary_light_blue}
                   />
                   <MaterialIcons
                     name="date-range"
@@ -221,9 +235,10 @@ const CreatePlan: React.FC = () => {
                       handleTimeChange(event, selectedTime);
                       setFieldValue(
                         "time",
-                        selectedTime?.toISOString().split("T")[1].substr(0, 5)
+                        selectedTime ? format(selectedTime, "HH:mm") : time
                       );
                     }}
+                    accentColor={Colors.primary_light_blue}
                   />
                   <MaterialIcons
                     name="access-time"
@@ -317,6 +332,7 @@ const CreatePlan: React.FC = () => {
                 onPress={handleSubmit}
                 title="Enviar invitaciones"
                 mode="contained"
+                disabled={loading}
               />
             </ScrollView>
           );

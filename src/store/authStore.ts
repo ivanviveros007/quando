@@ -60,12 +60,44 @@ const useAuthStore = create<AuthState>((set, get) => ({
     set({ firstName, lastName });
   },
 
+  // registerUser: async () => {
+  //   const { phoneNumber, areaCode, firstName, lastName, email, userId } = get();
+  //   set({ loading: true });
+  //   try {
+  //     const fullPhoneNumber = areaCode + phoneNumber;
+
+  //     const userDocRef = firestore().collection("users").doc(userId);
+  //     const userData = {
+  //       phoneNumber: fullPhoneNumber,
+  //       firstName: firstName,
+  //       lastName: lastName,
+  //       email: email,
+  //       displayName: `${firstName} ${lastName}`,
+  //       emailVerified: false,
+  //       isAnonymous: false,
+  //       createdAt: firestore.FieldValue.serverTimestamp(),
+  //     };
+  //     await userDocRef.set(userData);
+  //     set({ loading: false });
+  //     return { status: "SUCCESS" };
+  //   } catch (error) {
+  //     console.error("Error al registrar el usuario:", error);
+  //     set({ loading: false });
+  //     return { status: "ERROR", message: error.message };
+  //   }
+  // },
   registerUser: async () => {
-    const { phoneNumber, areaCode, firstName, lastName, email, userId } = get();
+    const { phoneNumber, areaCode, firstName, lastName, email } = get();
     set({ loading: true });
     try {
       const fullPhoneNumber = areaCode + phoneNumber;
 
+      // Obtener el ID del usuario actual autenticado
+      const currentUser = auth().currentUser;
+      if (!currentUser) {
+        throw new Error("User not authenticated");
+      }
+      const userId = currentUser.uid;
       const userDocRef = firestore().collection("users").doc(userId);
       const userData = {
         phoneNumber: fullPhoneNumber,
