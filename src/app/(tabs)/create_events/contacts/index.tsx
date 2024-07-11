@@ -15,6 +15,7 @@ import { useRouter } from "expo-router";
 import ContactItem from "@/src/components/contactItem";
 import SelectedContactItem from "@/src/components/selectedContact";
 import ChipComponent from "@/src/components/chip";
+import { Divider } from "react-native-paper";
 
 const numColumns = 3;
 
@@ -91,10 +92,10 @@ const ContactsScreen: React.FC = () => {
   };
 
   const filters = [
-    { id: "1", name: "Mejores amigos" },
+    // { id: "1", name: "Mejores amigos" },
     { id: "2", name: "Recientes" },
-    { id: "3", name: "Favoritos" },
-    { id: "4", name: "Fútbol" },
+    // { id: "3", name: "Favoritos" },
+    // { id: "4", name: "Fútbol" },
   ];
 
   const handleSelectContact = (contact: Contacts.Contact) => {
@@ -142,6 +143,16 @@ const ContactsScreen: React.FC = () => {
           />
         ))}
       </ScrollView>
+      <Divider
+        style={{ bottom: 30, borderWidth: 0.3, backgroundColor: "red" }}
+        theme={{
+          colors: {
+            primary: "red",
+            accent: "red",
+          },
+        }}
+        
+      />
       <FlatList
         data={filteredContacts}
         keyExtractor={(item) => item.id ?? ""}

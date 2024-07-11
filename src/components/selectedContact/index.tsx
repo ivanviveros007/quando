@@ -27,7 +27,7 @@ const SelectedContactItem: React.FC<SelectedContactItemProps> = ({
             <MaterialIcons
               name="check-circle"
               size={24}
-              color={Colors.primary_black}
+              color={'#8767F2'}
             />
           </View>
         </View>
