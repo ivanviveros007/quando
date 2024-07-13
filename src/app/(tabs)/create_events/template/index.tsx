@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  ScrollView,
-  SafeAreaView,
-  ActivityIndicator,
-} from "react-native";
+import { View, ScrollView, SafeAreaView } from "react-native";
 import { Formik } from "formik";
 import DropDown from "react-native-paper-dropdown";
 import { TextInput as PaperTextInput } from "react-native-paper";
@@ -112,9 +107,16 @@ const CreatePlan: React.FC = () => {
           if (imageUris.length > 0) {
             setFieldValue("imageUri", imageUris[0]);
           }
-          console.log("values form", { ...values, imageUri: imageUris[0] });
+
           // Aquí puedes manejar el envío del formulario
-          await addPlan({ ...values, imageUri: imageUris[0] });
+
+          const planData = {
+            ...values,
+            imageUri: imageUris[0],
+          };
+          console.log("values form planData", planData);
+
+          await addPlan(planData);
 
           await navigateToConfirmation(values.title);
 

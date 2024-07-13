@@ -73,4 +73,9 @@ export const styles = StyleSheet.create({
   containerTwo: {
     flex: 1,
   },
+  containerFooterButtons: {
+    flexDirection: "column",
+    flex: 1,
+    gap: 5,
+  },
 });

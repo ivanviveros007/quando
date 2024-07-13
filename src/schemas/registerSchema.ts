@@ -11,6 +11,6 @@ export const validationSchema = Yup.object().shape({
     .required("El código de área es requerido"),
   phoneNumber: Yup.string()
     .matches(/^[0-9]+$/, "Solo números")
-    .min(10, "El número de teléfono debe tener al menos 10 dígitos")
+    // .min(10, "El número de teléfono debe tener al menos 10 dígitos")
     .required("El teléfono es requerido"),
 });

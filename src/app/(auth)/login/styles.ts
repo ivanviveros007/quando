@@ -5,7 +5,7 @@ import { verticalScale, horizontalScale, moderateScale } from "@/src/helpers";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+     justifyContent: "center",
     padding: moderateScale(20),
   },
   containerTitle: {

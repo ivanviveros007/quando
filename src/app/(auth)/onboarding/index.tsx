@@ -110,24 +110,24 @@ export default function OnboardingScreen() {
           style={lastStep ? styles.lastStepButtons : styles.containerButtons}
         >
           {lastStep ? (
-            <>
+            <View style={styles.containerFooterButtons}>
               <Button
                 title="Iniciar sesión"
                 onPress={goLogin}
                 mode="contained"
               />
 
-              <Button title="Registrarse" onPress={goSignUp} mode="outlined" />
-            </>
+              <Button title="Registrarse" onPress={goLogin} mode="outlined" />
+            </View>
           ) : (
-            <>
+            <View style={styles.containerFooterButtons}>
               <Button
                 title="Siguiente"
                 onPress={goToNextPage}
                 mode="contained"
               />
               <Button title="Saltar" onPress={skipSteps} mode="outlined" />
-            </>
+            </View>
           )}
         </View>
       </View>

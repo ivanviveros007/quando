@@ -135,7 +135,7 @@ const Register = () => {
                       placeholder={"Número de móvil"}
                       onBlur={handleBlur("phoneNumber")}
                       keyboardType={"phone-pad"}
-                      maxLength={10}
+                      // maxLength={values.areaCode === "+54" ? 10 : 9}
                       error={!!(touched.phoneNumber && errors.phoneNumber)}
                       theme={themeTextInput}
                       outlineStyle={styles.outlineStyle}
