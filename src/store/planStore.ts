@@ -230,29 +230,40 @@ const usePlansStore = create<PlansState>((set, get) => ({
 }));
 
 const addEventToCalendar = async (plan: Plan) => {
-  const { status } = await Calendar.requestCalendarPermissionsAsync();
-  if (status !== "granted") {
-    throw new Error("Permiso para acceder al calendario denegado.");
+  try {
+    const { status } = await Calendar.requestCalendarPermissionsAsync();
+    if (status !== "granted") {
+      throw new Error("Permiso para acceder al calendario denegado.");
+    }
+
+    const calendars = await Calendar.getCalendarsAsync(
+      Calendar.EntityTypes.EVENT
+    );
+    const defaultCalendar = calendars.find(
+      (cal) => cal.source.name === "Default" || cal.source.name === "Calendar"
+    );
+
+    if (!defaultCalendar) {
+      throw new Error("No se encontró un calendario predeterminado.");
+    }
+
+    const startDate = new Date(`${plan.date}T${plan.time}:00`);
+    const endDate = new Date(startDate.getTime() + 60 * 60 * 1000); // Duración de 1 hora
+
+    const details = {
+      title: plan.title,
+      startDate,
+      endDate,
+      location: plan.location,
+      notes: plan.description,
+      timeZone: Calendar.DEFAULT,
+    };
+
+    await Calendar.createEventAsync(defaultCalendar.id, details);
+  } catch (error) {
+    console.error("Error adding event to calendar:", error);
+    throw error;
   }
-
-  const calendars = await Calendar.getCalendarsAsync();
-  const defaultCalendar = calendars.find(
-    (cal) => cal.source.name === "Default"
-  );
-
-  const startDate = new Date(`${plan.date}T${plan.time}:00`);
-  const endDate = new Date(startDate.getTime() + 60 * 60 * 1000); // Duración de 1 hora
-
-  const details = {
-    title: plan.title,
-    startDate,
-    endDate,
-    location: plan.location,
-    notes: plan.description,
-    timeZone: Calendar.getCalendarsAsync.timeZone,
-  };
-
-  await Calendar.createEventAsync(defaultCalendar.id, details);
 };
 
 export { usePlansStore };

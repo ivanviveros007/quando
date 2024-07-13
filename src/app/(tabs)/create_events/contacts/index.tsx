@@ -70,14 +70,6 @@ const ContactsScreen: React.FC = () => {
     }
   }, [search, selectedFilter, contacts]);
 
-  // const handleSelectContact = (contact: Contacts.Contact) => {
-  //   if (selectedTempContacts.some((c) => c.id === contact.id)) {
-  //     Alert.alert("Error", "Este contacto ya ha sido seleccionado.");
-  //     return;
-  //   }
-  //   setSelectedTempContacts([...selectedTempContacts, contact]);
-  // };
-
   const handleFilterPress = (filter: string) => {
     if (selectedFilter === filter) {
       setSelectedFilter("");
@@ -143,16 +135,7 @@ const ContactsScreen: React.FC = () => {
           />
         ))}
       </ScrollView>
-      <Divider
-        style={{ bottom: 30, borderWidth: 0.3, backgroundColor: "red" }}
-        theme={{
-          colors: {
-            primary: "red",
-            accent: "red",
-          },
-        }}
-        
-      />
+      {selectedTempContacts.length > 0 && <Divider style={{ bottom: 30 }} />}
       <FlatList
         data={filteredContacts}
         keyExtractor={(item) => item.id ?? ""}

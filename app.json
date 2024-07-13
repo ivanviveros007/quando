@@ -17,7 +17,8 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.quandoapp",
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "This app needs access to your location to show your position on the map."
+        "NSLocationWhenInUseUsageDescription": "This app needs access to your location to show your position on the map.",
+        "NSCalendarsUsageDescription": "Esta aplicación necesita acceso a tu calendario para añadir eventos."
       },
       "config": {
         "googleMapsApiKey": "AIzaSyCIMQgM_9Ew_Z6LjdDsPhxY9pfPyyDRmag"
@@ -29,7 +30,8 @@
         "backgroundColor": "#ffffff"
       },
       "googleServicesFile": "./google-services.json",
-      "package": "com.quandoapp"
+      "package": "com.quandoapp",
+      "permissions": ["READ_CALENDAR", "WRITE_CALENDAR"]
     },
     "web": {
       "bundler": "metro",
