@@ -151,6 +151,8 @@ const styles = StyleSheet.create({
     backgroundColor: "grey",
     alignItems: "center",
     justifyContent: "center",
+    borderWidth: 2,
+    borderColor: Colors.white,
   },
   contactInitial: {
     fontSize: 18,
