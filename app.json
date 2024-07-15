@@ -2,7 +2,7 @@
   "expo": {
     "name": "quando-app",
     "slug": "quando-app",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -21,14 +21,16 @@
         "NSCalendarsUsageDescription": "Esta aplicación necesita acceso a tu calendario para añadir eventos.",
         "CFBundleURLTypes": [
           {
-            "CFBundleURLSchemes": ["myapp"]
+            "CFBundleURLSchemes": [
+              "myapp"
+            ]
           }
         ]
       },
       "config": {
         "googleMapsApiKey": "AIzaSyCIMQgM_9Ew_Z6LjdDsPhxY9pfPyyDRmag"
       },
-      "buildNumber": "2",
+      "buildNumber": "3",
       "associatedDomains": [
         "applinks:quandoapp.com",
         "applinks:*.quandoapp.com"
@@ -41,7 +43,10 @@
       },
       "googleServicesFile": "./google-services.json",
       "package": "com.quandoapp",
-      "permissions": ["READ_CALENDAR", "WRITE_CALENDAR"],
+      "permissions": [
+        "READ_CALENDAR",
+        "WRITE_CALENDAR"
+      ],
       "intentFilters": [
         {
           "action": "VIEW",
@@ -57,7 +62,10 @@
               "pathPrefix": "/"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },
