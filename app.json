@@ -15,7 +15,7 @@
     "ios": {
       "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": true,
-      "bundleIdentifier": "com.quandoapp",
+      "bundleIdentifier": "com.quandoapp.mobile",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "This app needs access to your location to show your position on the map.",
         "NSCalendarsUsageDescription": "Esta aplicación necesita acceso a tu calendario para añadir eventos.",

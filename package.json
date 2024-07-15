@@ -12,7 +12,7 @@
     "lint": "expo lint",
     "build-simulator": "eas build -p ios --profile development:simulator",
     "build-device-ios": "eas build -profile=development --platform=ios",
-    "build-production-ios": "eas build --platform=ios",
+    "build-production-ios": "npm version patch && eas build --platform=ios",
     "submit-ios": "eas submit -p ios"
   },
   "jest": {
