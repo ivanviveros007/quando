@@ -222,13 +222,13 @@ export default function Login() {
   );
 
   const handleLoginOrRegister = async () => {
-    // if (!isValidPhoneNumber(phoneNumber)) {
-    //   Alert.alert(
-    //     "Número Inválido",
-    //     "Por favor, ingresa un número de teléfono válido"
-    //   );
-    //   return;
-    // }
+    if (!isValidPhoneNumber(phoneNumber)) {
+      Alert.alert(
+        "Número Inválido",
+        "Por favor, ingresa un número de teléfono válido"
+      );
+      return;
+    }
 
     const fullPhoneNumber = areaCode + phoneNumber;
     const userExists = await checkUserExists(fullPhoneNumber);
@@ -243,7 +243,8 @@ export default function Login() {
           return;
         }
       }
-      router.push("otp");
+      // Redirigir directamente a la pantalla OTP
+      router.push("/auth/otp/index");
     } else {
       Alert.alert("Error", result.message);
     }

@@ -18,11 +18,21 @@
       "bundleIdentifier": "com.quandoapp",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "This app needs access to your location to show your position on the map.",
-        "NSCalendarsUsageDescription": "Esta aplicación necesita acceso a tu calendario para añadir eventos."
+        "NSCalendarsUsageDescription": "Esta aplicación necesita acceso a tu calendario para añadir eventos.",
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": ["myapp"]
+          }
+        ]
       },
       "config": {
         "googleMapsApiKey": "AIzaSyCIMQgM_9Ew_Z6LjdDsPhxY9pfPyyDRmag"
-      }
+      },
+      "buildNumber": "2",
+      "associatedDomains": [
+        "applinks:quandoapp.com",
+        "applinks:*.quandoapp.com"
+      ]
     },
     "android": {
       "adaptiveIcon": {
@@ -31,7 +41,25 @@
       },
       "googleServicesFile": "./google-services.json",
       "package": "com.quandoapp",
-      "permissions": ["READ_CALENDAR", "WRITE_CALENDAR"]
+      "permissions": ["READ_CALENDAR", "WRITE_CALENDAR"],
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "https",
+              "host": "quandoapp.com",
+              "pathPrefix": "/"
+            },
+            {
+              "scheme": "https",
+              "host": "*.quandoapp.com",
+              "pathPrefix": "/"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "bundler": "metro",
