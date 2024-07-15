@@ -103,12 +103,10 @@ const CreatePlan: React.FC = () => {
         }}
         validationSchema={validationSchema}
         onSubmit={async (values, { setFieldValue, resetForm }) => {
-          setLoaing(true);
+          setLoaing(true); // Asegúrate de que setLoaing esté definido y manejado correctamente
           if (imageUris.length > 0) {
             setFieldValue("imageUri", imageUris[0]);
           }
-
-          // Aquí puedes manejar el envío del formulario
 
           const planData = {
             ...values,
@@ -116,11 +114,15 @@ const CreatePlan: React.FC = () => {
           };
           console.log("values form planData", planData);
 
-          await addPlan(planData);
-
-          await navigateToConfirmation(values.title);
-
-          resetForm();
+          try {
+            await addPlan(planData);
+            await navigateToConfirmation(values.title); // Asegúrate de que navigateToConfirmation esté definido y manejado correctamente
+            resetForm();
+          } catch (error) {
+            console.error("Error submitting form:", error);
+          } finally {
+            setLoaing(false);
+          }
         }}
       >
         {({

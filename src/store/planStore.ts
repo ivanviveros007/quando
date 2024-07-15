@@ -240,7 +240,7 @@ const addEventToCalendar = async (plan: Plan) => {
       Calendar.EntityTypes.EVENT
     );
     const defaultCalendar = calendars.find(
-      (cal) => cal.source.name === "Default" || cal.source.name === "Calendar"
+      (cal) => cal.allowsModifications
     );
 
     if (!defaultCalendar) {
@@ -256,7 +256,7 @@ const addEventToCalendar = async (plan: Plan) => {
       endDate,
       location: plan.location,
       notes: plan.description,
-      timeZone: Calendar.DEFAULT,
+      timeZone: "UTC",
     };
 
     await Calendar.createEventAsync(defaultCalendar.id, details);
@@ -265,5 +265,6 @@ const addEventToCalendar = async (plan: Plan) => {
     throw error;
   }
 };
+
 
 export { usePlansStore };
