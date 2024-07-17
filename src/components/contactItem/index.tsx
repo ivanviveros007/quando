@@ -3,7 +3,6 @@ import {
   View,
   TouchableOpacity,
   Image,
-  Text,
   StyleSheet,
   Dimensions,
 } from "react-native";
@@ -11,7 +10,7 @@ import * as Contacts from "expo-contacts";
 import { moderateScale, verticalScale, horizontalScale } from "@/src/helpers";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Colors } from "@/src/constants";
-
+import { ThemedText } from "../ThemedText";
 const { width } = Dimensions.get("window");
 const numColumns = 3;
 const itemWidth = width / numColumns - 20;
@@ -33,22 +32,18 @@ const ContactItem: React.FC<ContactItemProps> = ({
         <Image source={{ uri: item.image.uri }} style={styles.image} />
       ) : (
         <View style={styles.placeholder}>
-          <Text style={styles.placeholderText}>
+          <ThemedText style={styles.placeholderText}>
             {item.name[0].toUpperCase()}
-          </Text>
+          </ThemedText>
           {isSelected && (
             <View style={styles.checkmark}>
-              <MaterialIcons
-                name="check-circle"
-                size={24}
-                color={'#8767F2'}
-              />
+              <MaterialIcons name="check-circle" size={24} color={"#8767F2"} />
             </View>
           )}
         </View>
       )}
 
-      <Text style={styles.contactName}>{item.name}</Text>
+      <ThemedText style={styles.contactName}>{item.name}</ThemedText>
     </TouchableOpacity>
   </View>
 );
@@ -59,9 +54,10 @@ const styles = StyleSheet.create({
     paddingVertical: horizontalScale(10),
   },
   contactName: {
-    fontSize: moderateScale(16),
+    fontSize: moderateScale(14),
     textAlign: "center",
     marginTop: verticalScale(5),
+    color: Colors.primary_black,
   },
   image: {
     width: horizontalScale(60),
@@ -78,7 +74,7 @@ const styles = StyleSheet.create({
   },
   placeholderText: {
     color: "#5B5B5B",
-    fontSize: moderateScale(24),
+    fontSize: moderateScale(20),
   },
   checkmark: {
     position: "absolute",

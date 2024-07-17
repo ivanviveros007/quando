@@ -1,11 +1,12 @@
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { View, StyleSheet, Pressable } from "react-native";
 import { ThemedText } from "../ThemedText";
 import { verticalScale, moderateScale, horizontalScale } from "@/src/helpers";
 import { Colors } from "@/src/constants";
 import { Ionicons } from "@expo/vector-icons";
 import { parse, format, parseISO } from "date-fns";
-import { Image } from "expo-image";
+import FastImage from "react-native-fast-image";
+import storage from "@react-native-firebase/storage";
 interface Guest {
   id: string;
   name: string;
@@ -37,6 +38,23 @@ export const CardEvent: FC<CardProps> = ({
   const parsedTime = parse(time, "HH:mm", new Date());
   const formattedTime = format(parsedTime, "HH:mm");
 
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (imageUri) {
+      const fetchImageUrl = async () => {
+        try {
+          const url = await storage().ref(imageUri).getDownloadURL();
+          setDownloadUrl(url);
+        } catch (error) {
+          console.error("Error getting image URL:", error);
+        }
+      };
+
+      fetchImageUrl();
+    }
+  }, [imageUri]);
+
   const renderGuests = () => {
     const maxGuestsToShow = 4;
     const guestsToShow = guests.slice(0, maxGuestsToShow);
@@ -47,10 +65,10 @@ export const CardEvent: FC<CardProps> = ({
         {guestsToShow.map((guest, index) => (
           <View key={guest.id} style={[styles.guest, { left: index * 20 }]}>
             {guest.imageAvailable ? (
-              <Image
+              <FastImage
                 source={{
                   uri: guest.image.uri,
-                  cacheKey: guest.image.uri,
+                  priority: FastImage.priority.normal,
                 }}
                 style={styles.guestImage}
               />
@@ -116,14 +134,14 @@ export const CardEvent: FC<CardProps> = ({
           </View>
         </View>
         <View style={styles.containerDate}>
-          {imageUri && (
-            <Image
+          {downloadUrl && (
+            <FastImage
               source={{
-                uri: imageUri,
-                cacheKey: imageUri,
+                uri: downloadUrl,
+                priority: FastImage.priority.high,
               }}
               style={styles.eventImage}
-              contentFit="cover"
+              resizeMode={FastImage.resizeMode.cover}
             />
           )}
           <View style={styles.date}>

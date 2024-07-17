@@ -8,13 +8,19 @@ export default function InitialScreen() {
   const checkUserToken = useAuthStore((state) => state.checkUserToken);
   const getUserData = useAuthStore((state) => state.getUserData);
   const user = useAuthStore((state) => state.user);
+
   useEffect(() => {
     const checkToken = async () => {
-      const tokenExists = await checkUserToken();
-      if (tokenExists) {
-        await getUserData();
-        setUserLoggedIn(true);
-      } else {
+      try {
+        const tokenExists = await checkUserToken();
+        if (tokenExists) {
+          await getUserData();
+          setUserLoggedIn(true);
+        } else {
+          setUserLoggedIn(false);
+        }
+      } catch (error) {
+        console.error("Error checking user token:", error);
         setUserLoggedIn(false);
       }
     };

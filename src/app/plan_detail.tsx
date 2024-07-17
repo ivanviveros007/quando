@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import {
   View,
@@ -6,38 +6,41 @@ import {
   SafeAreaView,
   FlatList,
   TouchableOpacity,
+  Image,
+  ActivityIndicator,
 } from "react-native";
 import { ThemedText } from "@/src/components/ThemedText";
 import { Colors } from "@/src/constants";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Image } from "expo-image";
+import { parseISO, format } from "date-fns";
+import storage from "@react-native-firebase/storage";
+import FastImage from "react-native-fast-image";
 
 const PlanDetail = () => {
-  const {
-    id,
-    title,
-    location,
-    time,
-    guests,
-    date,
-    imageUri,
-    organizerName,
-    organizerImage,
-    description,
-  } = useLocalSearchParams();
+  const { id, title, location, time, guests, date, imageUri, description } =
+    useLocalSearchParams();
 
-  console.log("PlanDetail", {
-    id,
-    title,
-    location,
-    time,
-    guests,
-    date,
-    imageUri,
-    organizerName,
-    organizerImage,
-    description,
-  });
+  const formattedDate = parseISO(date);
+  const day = format(formattedDate, "d");
+  const month = format(formattedDate, "MMM");
+
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (imageUri) {
+      const fetchImageUrl = async () => {
+        try {
+          const url = await storage().ref(imageUri).getDownloadURL();
+          setDownloadUrl(url);
+        } catch (error) {
+          console.error("Error getting image URL:", error);
+        }
+      };
+
+      fetchImageUrl();
+    }
+  }, [imageUri]);
 
   const parsedGuests = JSON.parse(guests); // Parsear guests de nuevo a un array
 
@@ -61,10 +64,10 @@ const PlanDetail = () => {
         {guestsToShow.map((guest, index) => (
           <View key={guest.id} style={[styles.guest, { left: index * 20 }]}>
             {guest.imageUri ? (
-              <Image
+              <FastImage
                 source={{
                   uri: guest.imageUri.toString(),
-                  cacheKey: guest.imageUri.toString(),
+                  priority: FastImage.priority.normal,
                 }}
                 style={styles.guestImage}
               />
@@ -95,39 +98,35 @@ const PlanDetail = () => {
       <ThemedText type="title" style={styles.title}>
         {title}
       </ThemedText>
-
       <View style={styles.imageContainer}>
-        {imageUri ? (
-          <Image
-            source={{
-              uri: imageUri.toString(),
-              cacheKey: imageUri.toString(),
-            }}
-            style={styles.image}
-          />
+        {downloadUrl ? (
+          <>
+            {loading && <ActivityIndicator size="large" color="#0000ff" />}
+            <FastImage
+              style={styles.image}
+              source={{
+                uri: downloadUrl,
+                priority: FastImage.priority.normal,
+              }}
+              resizeMode={FastImage.resizeMode.cover}
+              onLoadStart={() => setLoading(true)}
+              onLoadEnd={() => setLoading(false)}
+              onError={(error) => {
+                setLoading(false);
+                console.log("Error al cargar la imagen", error);
+              }}
+            />
+          </>
         ) : (
-          <View style={styles.imagePlaceholder}>
-            <ThemedText style={styles.imagePlaceholderText}>Imagen</ThemedText>
+          <View>
+            <ThemedText>Imagen</ThemedText>
           </View>
         )}
-        <View style={styles.dateContainer}>
-          <ThemedText style={styles.dateText}>15</ThemedText>
-          <ThemedText style={styles.monthText}>Abril</ThemedText>
-        </View>
-        <View style={styles.organizerContainer}>
-          {/* <Image
-            source={{ uri: organizerImage.toString() }}
-            style={styles.organizerImage}
-            onError={(error) =>
-              console.log(
-                "Organizer image load error:",
-                error.nativeEvent.error
-              )
-            }
-          /> */}
-          <ThemedText style={styles.organizerText}>
-            {organizerName} organizador
-          </ThemedText>
+        <View style={styles.date}>
+          <View style={{ flexDirection: "column" }}>
+            <ThemedText style={styles.number}>{day}</ThemedText>
+            <ThemedText style={styles.month}>{month}</ThemedText>
+          </View>
         </View>
       </View>
 
@@ -312,6 +311,28 @@ const styles = StyleSheet.create({
   guestPlaceholderText: {
     color: Colors.primary_black,
     fontSize: 12,
+  },
+  date: {
+    backgroundColor: "white",
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    bottom: 5,
+    right: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  number: {
+    fontSize: 25,
+    fontWeight: "bold",
+    fontFamily: "RobotoBold",
+    textAlign: "center",
+  },
+  month: {
+    fontSize: 16,
+    fontFamily: "RobotoRegular",
+    textAlign: "center",
   },
 });
 

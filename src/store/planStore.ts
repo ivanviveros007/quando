@@ -3,6 +3,7 @@
 // import firestore from "@react-native-firebase/firestore";
 // import storage from "@react-native-firebase/storage";
 // import * as FileSystem from "expo-file-system";
+// import * as Calendar from "expo-calendar";
 
 // interface Plan {
 //   id?: string;
@@ -50,15 +51,13 @@
 //       if (plan.imageUri) {
 //         const storageRef = storage().ref(`plans/${userId}/${Date.now()}.jpg`);
 
-//         // Verificar que el archivo existe
 //         const fileInfo = await FileSystem.getInfoAsync(plan.imageUri);
 //         if (!fileInfo.exists) {
 //           throw new Error("El archivo no existe en la ruta especificada.");
 //         }
 
-//         // Subir el archivo a Firebase Storage
 //         await storageRef.putFile(plan.imageUri);
-//         imageUrl = await storageRef.getDownloadURL();
+//         imageUrl = storageRef.fullPath; // Guardar la ruta completa sin el token
 //       }
 
 //       const planData = {
@@ -72,6 +71,8 @@
 //         .doc(userId)
 //         .collection("userPlans")
 //         .add(planData);
+
+//       await addEventToCalendar(plan);
 
 //       set((state) => ({
 //         plans: [...state.plans, planData],
@@ -111,6 +112,43 @@
 //     }
 //   },
 // }));
+
+// const addEventToCalendar = async (plan: Plan) => {
+//   try {
+//     const { status } = await Calendar.requestCalendarPermissionsAsync();
+//     if (status !== "granted") {
+//       throw new Error("Permiso para acceder al calendario denegado.");
+//     }
+
+//     const calendars = await Calendar.getCalendarsAsync(
+//       Calendar.EntityTypes.EVENT
+//     );
+//     const defaultCalendar = calendars.find(
+//       (cal) => cal.allowsModifications
+//     );
+
+//     if (!defaultCalendar) {
+//       throw new Error("No se encontró un calendario predeterminado.");
+//     }
+
+//     const startDate = new Date(`${plan.date}T${plan.time}:00`);
+//     const endDate = new Date(startDate.getTime() + 60 * 60 * 1000); // Duración de 1 hora
+
+//     const details = {
+//       title: plan.title,
+//       startDate,
+//       endDate,
+//       location: plan.location,
+//       notes: plan.description,
+//       timeZone: "UTC",
+//     };
+
+//     await Calendar.createEventAsync(defaultCalendar.id, details);
+//   } catch (error) {
+//     console.error("Error adding event to calendar:", error);
+//     throw error;
+//   }
+// };
 
 // export { usePlansStore };
 
@@ -173,7 +211,7 @@ const usePlansStore = create<PlansState>((set, get) => ({
         }
 
         await storageRef.putFile(plan.imageUri);
-        imageUrl = await storageRef.getDownloadURL();
+        imageUrl = storageRef.fullPath; // Guardar la ruta completa sin el token
       }
 
       const planData = {
@@ -239,9 +277,7 @@ const addEventToCalendar = async (plan: Plan) => {
     const calendars = await Calendar.getCalendarsAsync(
       Calendar.EntityTypes.EVENT
     );
-    const defaultCalendar = calendars.find(
-      (cal) => cal.allowsModifications
-    );
+    const defaultCalendar = calendars.find((cal) => cal.allowsModifications);
 
     if (!defaultCalendar) {
       throw new Error("No se encontró un calendario predeterminado.");
@@ -265,6 +301,5 @@ const addEventToCalendar = async (plan: Plan) => {
     throw error;
   }
 };
-
 
 export { usePlansStore };

@@ -29,6 +29,8 @@ export default function HomeScreen() {
   const [filteredPlans, setFilteredPlans] = useState([]);
   const animation = useRef(new Animated.Value(0)).current;
 
+  console.log("plans", plans);
+
   useEffect(() => {
     if (user) {
       fetchPlans();
@@ -38,9 +40,11 @@ export default function HomeScreen() {
   useEffect(() => {
     let filtered = plans;
     const today = new Date();
+    console.log("Filtering plans with filter:", filter);
 
     if (filter === "today") {
       filtered = plans.filter((plan) => isToday(parseISO(plan.date)));
+      console.log("Plans for today:", filtered);
     } else if (filter === "upcoming") {
       filtered = plans
         .filter((plan) => {
@@ -48,6 +52,7 @@ export default function HomeScreen() {
           return isAfter(planDate, today) && !isToday(planDate);
         })
         .sort((a, b) => compareAsc(parseISO(a.date), parseISO(b.date)));
+      console.log("Upcoming plans:", filtered);
     }
 
     setFilteredPlans(filtered);
@@ -85,6 +90,7 @@ export default function HomeScreen() {
   });
 
   const renderItem = ({ item }) => {
+    // console.log("item", item);
     const queryParams = {
       id: item.id,
       title: item.title,

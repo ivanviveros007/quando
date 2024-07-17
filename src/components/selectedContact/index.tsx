@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Colors } from "@/src/constants";
 import { horizontalScale, moderateScale, verticalScale } from "@/src/helpers";
+import { ThemedText } from "../ThemedText";
 
 interface SelectedContactItemProps {
   contact: Contacts.Contact;
@@ -13,6 +14,13 @@ const SelectedContactItem: React.FC<SelectedContactItemProps> = ({
   contact,
   onSelect,
 }) => {
+  const truncateName = (name: string, maxLength: number) => {
+    return name.length > maxLength
+      ? name.substring(0, maxLength) + "..."
+      : name;
+  };
+
+  const displayName = truncateName(contact.name, 7);
   return (
     <TouchableOpacity
       style={styles.container}
@@ -22,18 +30,18 @@ const SelectedContactItem: React.FC<SelectedContactItemProps> = ({
         <Image source={{ uri: contact.image.uri }} style={styles.image} />
       ) : (
         <View style={styles.placeholder}>
-          <Text style={styles.initial}>{contact.name.charAt(0)}</Text>
+          <ThemedText style={styles.initial}>
+            {contact.name.charAt(0)}
+          </ThemedText>
           <View style={styles.checkmark}>
-            <MaterialIcons
-              name="check-circle"
-              size={24}
-              color={'#8767F2'}
-            />
+            <MaterialIcons name="check-circle" size={24} color={"#8767F2"} />
           </View>
         </View>
       )}
 
-      <Text style={styles.name}>{contact.name}</Text>
+      <View style={styles.nameContainer}>
+        <ThemedText style={styles.name}>{displayName}</ThemedText>
+      </View>
     </TouchableOpacity>
   );
 };
@@ -58,7 +66,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   initial: {
-    fontSize: 24,
+    fontSize: moderateScale(20),
     color: "#fff",
   },
   checkmark: {
@@ -66,9 +74,15 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: -5,
   },
+  nameContainer: {
+    width: horizontalScale(70),
+    alignItems: "center",
+  },
   name: {
     marginTop: 5,
     textAlign: "center",
+    color: Colors.primary_black,
+    fontSize: moderateScale(14),
   },
 });
 

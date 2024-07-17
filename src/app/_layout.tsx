@@ -2,7 +2,6 @@ import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider,
-  NavigationContainer,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
@@ -53,48 +52,11 @@ export default function RootLayout() {
     headerShown: false,
   };
 
-  const linking = {
-    prefixes: [
-      "myapp://",
-      "https://quandoapp.page.link",
-      "https://quandoapp.com",
-      "https://*.quandoapp.com",
-    ],
-    config: {
-      screens: {
-        "(auth)": {
-          screens: {
-            onboarding: "onboarding/index",
-            login: "login/index",
-            otp: "otp/index",
-            register: "register/index",
-          },
-        },
-        "(tabs)": {
-          screens: {
-            home: "home/index",
-            profile: "profile/index",
-            calendar: "calendar/index",
-            create_events: "create_events/index",
-            invitations: "invitations/index",
-          },
-        },
-        confirmation: "confirmation",
-        plan_detail: "plan_detail",
-        not_found: "*",
-      },
-    },
-  };
-
   return (
     <PaperProvider theme={theme} settings={{ rippleEffectEnabled: false }}>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <Stack>
-          <Stack.Screen
-            name="index"
-            options={defaultScreenOptions}
-            linking={linking}
-          />
+          <Stack.Screen name="index" options={defaultScreenOptions} />
           {/* Auth Screens */}
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
           {/* App Screens */}

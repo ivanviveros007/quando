@@ -5,7 +5,6 @@ import {
   TextInput,
   FlatList,
   TouchableOpacity,
-  Alert,
   ScrollView,
   StyleSheet,
 } from "react-native";
@@ -122,20 +121,22 @@ const ContactsScreen: React.FC = () => {
           />
         ))}
       </ScrollView>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.selectedContactsContainer}
-      >
-        {selectedTempContacts.map((contact, index) => (
-          <SelectedContactItem
-            key={index}
-            contact={contact}
-            onSelect={handleSelectContact}
-          />
-        ))}
-      </ScrollView>
-      {selectedTempContacts.length > 0 && <Divider style={{ bottom: 30 }} />}
+      {selectedTempContacts.length > 0 && (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.selectedContactsContainer}
+        >
+          {selectedTempContacts.map((contact, index) => (
+            <SelectedContactItem
+              key={index}
+              contact={contact}
+              onSelect={handleSelectContact}
+            />
+          ))}
+        </ScrollView>
+      )}
+      {selectedTempContacts.length > 0 && <Divider style={{ bottom: 10 }} />}
       <FlatList
         data={filteredContacts}
         keyExtractor={(item) => item.id ?? ""}
@@ -180,10 +181,11 @@ const styles = StyleSheet.create({
   },
   chipsContainer: {
     flexDirection: "row",
-    marginBottom: 20,
+    marginBottom: 10,
+    height: 60,
   },
   contactList: {
-    paddingBottom: 100, // Ajusta este valor para mover la lista más cerca de los chips
+    paddingBottom: 500, // Ajusta este valor para mover la lista más cerca de los chips
   },
   button: {
     backgroundColor: "black",
@@ -197,7 +199,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   selectedContactsContainer: {
-    marginBottom: 20,
+    height: 240,
   },
 });
 
