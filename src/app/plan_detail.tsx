@@ -6,7 +6,6 @@ import {
   SafeAreaView,
   FlatList,
   TouchableOpacity,
-  Image,
   ActivityIndicator,
 } from "react-native";
 import { ThemedText } from "@/src/components/ThemedText";
@@ -15,6 +14,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { parseISO, format } from "date-fns";
 import storage from "@react-native-firebase/storage";
 import FastImage from "react-native-fast-image";
+import { moderateScale, horizontalScale, verticalScale } from "../helpers";
 
 const PlanDetail = () => {
   const { id, title, location, time, guests, date, imageUri, description } =
@@ -44,12 +44,6 @@ const PlanDetail = () => {
 
   const parsedGuests = JSON.parse(guests); // Parsear guests de nuevo a un array
 
-  const renderGuest = ({ item }) => (
-    <View style={styles.guestContainer}>
-      <Image source={{ uri: item.imageUri }} style={styles.guestImage} />
-    </View>
-  );
-
   const renderGuests = () => {
     const maxGuestsToShow = 4;
     const guestsToShow = Array.isArray(parsedGuests)
@@ -60,30 +54,31 @@ const PlanDetail = () => {
       : 0;
 
     return (
-      <View style={styles.guestContainer}>
+      <View style={styles.contactsContainer}>
         {guestsToShow.map((guest, index) => (
-          <View key={guest.id} style={[styles.guest, { left: index * 20 }]}>
-            {guest.imageUri ? (
+          <View key={`${guest.id}-${index}`} style={styles.contactWrapper}>
+            {guest.imageAvailable ? (
               <FastImage
                 source={{
-                  uri: guest.imageUri.toString(),
+                  uri: guest.image.uri,
                   priority: FastImage.priority.normal,
                 }}
-                style={styles.guestImage}
+                style={styles.contactImage}
+                resizeMode={FastImage.resizeMode.cover}
               />
             ) : (
-              <View style={styles.guestPlaceholder}>
-                <ThemedText style={styles.guestPlaceholderText}>
-                  {guest.name[0].toUpperCase()}
+              <View style={styles.contactPlaceholder}>
+                <ThemedText style={styles.contactInitial}>
+                  {guest.name.charAt(0)}
                 </ThemedText>
               </View>
             )}
           </View>
         ))}
         {extraGuestsCount > 0 && (
-          <View style={[styles.guest, { left: guestsToShow.length * 20 }]}>
-            <View style={styles.guestPlaceholder}>
-              <ThemedText style={styles.guestPlaceholderText}>
+          <View key="extra-contacts" style={styles.contactWrapper}>
+            <View style={styles.contactPlaceholder}>
+              <ThemedText style={styles.contactInitial}>
                 +{extraGuestsCount}
               </ThemedText>
             </View>
@@ -93,235 +88,188 @@ const PlanDetail = () => {
     );
   };
 
+  const renderGuest = ({ item }) => (
+    <View style={styles.guestContainer}>
+      <FastImage source={{ uri: item.imageUri }} style={styles.guestImage} />
+    </View>
+  );
+
+  const chunkLocation = (location: string) => {
+    if (location.length > 20) {
+      return location.slice(0, 35) + "...";
+    }
+    return location;
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <ThemedText type="title" style={styles.title}>
-        {title}
-      </ThemedText>
-      <View style={styles.imageContainer}>
-        {downloadUrl ? (
-          <>
-            {loading && <ActivityIndicator size="large" color="#0000ff" />}
-            <FastImage
-              style={styles.image}
-              source={{
-                uri: downloadUrl,
-                priority: FastImage.priority.normal,
-              }}
-              resizeMode={FastImage.resizeMode.cover}
-              onLoadStart={() => setLoading(true)}
-              onLoadEnd={() => setLoading(false)}
-              onError={(error) => {
-                setLoading(false);
-                console.log("Error al cargar la imagen", error);
-              }}
-            />
-          </>
-        ) : (
-          <View>
-            <ThemedText>Imagen</ThemedText>
+      <View style={styles.paddingScreen}>
+        <ThemedText type="title" style={styles.title}>
+          {title}
+        </ThemedText>
+
+        <View style={styles.card1}>
+          <View style={styles.imageContainer}>
+            {downloadUrl ? (
+              <>
+                {loading && <ActivityIndicator size="large" color="#0000ff" />}
+                <FastImage
+                  style={styles.image}
+                  source={{
+                    uri: downloadUrl,
+                    priority: FastImage.priority.high,
+                    cache: FastImage.cacheControl.immutable,
+                  }}
+                  resizeMode={FastImage.resizeMode.cover}
+                  onLoadStart={() => setLoading(true)}
+                  onLoadEnd={() => setLoading(false)}
+                  onError={(error) => {
+                    setLoading(false);
+                    console.log("Error al cargar la imagen", error);
+                  }}
+                />
+              </>
+            ) : (
+              <View style={styles.placeholderImage} />
+            )}
+            <View style={styles.date}>
+              <View style={{ flexDirection: "column" }}>
+                <ThemedText style={styles.number}>{day}</ThemedText>
+                <ThemedText style={styles.month}>{month}</ThemedText>
+              </View>
+            </View>
           </View>
-        )}
-        <View style={styles.date}>
-          <View style={{ flexDirection: "column" }}>
-            <ThemedText style={styles.number}>{day}</ThemedText>
-            <ThemedText style={styles.month}>{month}</ThemedText>
+
+          <View style={styles.containerOrganizer}>
+            <View style={styles.placeholderOrganizer} />
+            <ThemedText style={{ fontSize: moderateScale(10) }}>
+              Organizador
+            </ThemedText>
+          </View>
+
+          <View style={styles.containerFooterDetail}>
+            <View style={styles.detail}>
+              <MaterialIcons
+                name="location-on"
+                size={20}
+                color={Colors.primary_black}
+              />
+              <ThemedText style={{ fontSize: moderateScale(12) }}>
+                {location ? chunkLocation(location) : "Ubicación no disponible"}
+              </ThemedText>
+            </View>
+            <View style={styles.detail}>
+              <MaterialIcons
+                name="access-time"
+                size={20}
+                color={Colors.primary_black}
+              />
+              <ThemedText style={{ fontSize: moderateScale(12) }}>
+                {time}
+              </ThemedText>
+            </View>
           </View>
         </View>
-      </View>
 
-      <View style={styles.detailsContainer}>
-        <View style={styles.detailRow}>
-          <MaterialIcons
-            name="location-on"
-            size={20}
-            color={Colors.primary_black}
-          />
-          <ThemedText style={styles.detailText}>{location}</ThemedText>
+        <View style={styles.card2}>
+          <ThemedText style={{ fontSize: moderateScale(12) }}>
+            {description? description : "Descripción no disponible"}
+          </ThemedText>
         </View>
-        <View style={styles.detailRow}>
-          <MaterialIcons
-            name="access-time"
-            size={20}
-            color={Colors.primary_black}
-          />
-          <ThemedText style={styles.detailText}>{time}</ThemedText>
-        </View>
-      </View>
 
-      <View style={styles.descriptionContainer}>
-        <ThemedText style={styles.descriptionText}>{description}</ThemedText>
-      </View>
-
-      <View style={styles.guestsContainer}>
-        <View style={styles.guestsHeader}>
-          <ThemedText style={styles.guestsTitle}>Invitados</ThemedText>
-          <TouchableOpacity
-            onPress={() => {
-              /* navega al detalle de invitados */
-            }}
+        <View style={styles.card2}>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            <ThemedText style={styles.guestsDetailLink}>Ver detalle</ThemedText>
-          </TouchableOpacity>
+            <ThemedText style={{ fontSize: moderateScale(12) }}>
+              Invitados
+            </ThemedText>
+
+            <TouchableOpacity>
+              <ThemedText
+                style={{
+                  fontSize: moderateScale(12),
+                  color: Colors.purple_dark,
+                }}
+              >
+                Ver detalle
+              </ThemedText>
+            </TouchableOpacity>
+          </View>
+
+          <FlatList
+            horizontal
+            data={Array.isArray(parsedGuests) ? parsedGuests : []} // Asegurar que guests es un array
+            renderItem={renderGuest}
+            keyExtractor={(item, index) =>
+              item.id?.toString() || index.toString()
+            } // Usar id o índice como clave
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.guestList}
+          />
+          {renderGuests()}
         </View>
-        <FlatList
-          horizontal
-          data={Array.isArray(parsedGuests) ? parsedGuests : []} // Asegurar que guests es un array
-          renderItem={renderGuest}
-          keyExtractor={(item, index) =>
-            item.id?.toString() || index.toString()
-          } // Usar id o índice como clave
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.guestList}
-        />
-        {renderGuests()}
       </View>
     </SafeAreaView>
   );
+};
+
+const shadow = {
+  shadowColor: "#000",
+  shadowOffset: {
+    width: 0,
+    height: 2,
+  },
+  shadowOpacity: 0.25,
+  shadowRadius: 3.84,
+
+  elevation: 5,
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.white,
-    padding: 16,
   },
-  backButton: {
-    position: "absolute",
-    top: 16,
-    left: 16,
-    zIndex: 1,
+  paddingScreen: {
+    paddingHorizontal: horizontalScale(20),
   },
   title: {
     textAlign: "center",
     fontWeight: "bold",
-    marginVertical: 16,
+    marginVertical: verticalScale(16),
   },
+
+  card1: {
+    width: "100%",
+    backgroundColor: "white",
+    borderRadius: 8,
+    ...shadow,
+  },
+
   imageContainer: {
     position: "relative",
-    marginBottom: 16,
     backgroundColor: "lightgray",
     width: "100%",
-    height: 200,
+    height: verticalScale(132),
   },
   image: {
-    width: 300,
-    height: 200,
-    borderRadius: 8,
-  },
-  dateContainer: {
-    position: "absolute",
-    top: 16,
-    left: 16,
-    backgroundColor: Colors.white,
-    padding: 8,
-    borderRadius: 4,
-    alignItems: "center",
-  },
-  dateText: {
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-  monthText: {
-    fontSize: 16,
-  },
-  organizerContainer: {
-    position: "absolute",
-    bottom: 16,
-    left: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: Colors.white,
-    padding: 8,
-    borderRadius: 4,
-  },
-  organizerImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 8,
-  },
-  organizerText: {
-    fontSize: 16,
-  },
-  detailsContainer: {
-    marginBottom: 16,
-  },
-  detailRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  detailText: {
-    marginLeft: 8,
-    fontSize: 16,
-  },
-  descriptionContainer: {
-    marginBottom: 16,
-  },
-  descriptionText: {
-    fontSize: 16,
-  },
-  guestsContainer: {
-    marginBottom: 16,
-  },
-  guestsHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  guestsTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  guestsDetailLink: {
-    fontSize: 14,
-    color: Colors.primary_pruple,
-  },
-  guestList: {
-    paddingLeft: 16,
-  },
-  guestContainer: {
-    marginRight: 8,
-  },
-  guestImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-  },
-  guest: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    overflow: "hidden",
-    position: "absolute",
-  },
-  // guestImage: {
-  //   width: "100%",
-  //   height: "100%",
-  // },
-  guestPlaceholder: {
     width: "100%",
     height: "100%",
-    backgroundColor: "#EBEBEB",
-    justifyContent: "center",
-    alignItems: "center",
+    borderRadius: 8,
   },
-  guestPlaceholderText: {
-    color: Colors.primary_black,
-    fontSize: 12,
-  },
+
   date: {
     backgroundColor: "white",
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
     position: "absolute",
-    bottom: 5,
-    right: 10,
+    bottom: -30,
+    left: 20,
     paddingVertical: 10,
     paddingHorizontal: 20,
+    ...shadow,
   },
   number: {
     fontSize: 25,
@@ -333,6 +281,81 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "RobotoRegular",
     textAlign: "center",
+  },
+  containerFooterDetail: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    marginTop: 50,
+    marginBottom: 20,
+  },
+  detail: {
+    flexDirection: "row",
+    gap: 5,
+    alignItems: "center",
+  },
+  placeholderImage: {
+    flex: 1,
+    backgroundColor: "lightgrey",
+  },
+
+  containerOrganizer: {
+    width: horizontalScale(146),
+    backgroundColor: Colors.primary_pruple,
+    borderRadius: 100,
+    height: verticalScale(24),
+    alignSelf: "flex-end",
+    top: verticalScale(5),
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 30,
+    right: 10,
+  },
+  placeholderOrganizer: {
+    width: moderateScale(24),
+    height: moderateScale(24),
+    borderRadius: moderateScale(12),
+    backgroundColor: "grey",
+  },
+
+  card2: {
+    width: "100%",
+    backgroundColor: "white",
+    borderRadius: 8,
+    ...shadow,
+    marginTop: verticalScale(20),
+    minHeight: verticalScale(100),
+    paddingHorizontal: horizontalScale(20),
+    paddingVertical: verticalScale(10),
+  },
+
+  contactsContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
+  },
+  contactWrapper: {
+    marginHorizontal: -10, // Ajusta este valor según sea necesario para el solapamiento
+  },
+  contactImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  contactPlaceholder: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: "grey",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 2,
+    borderColor: "#FFF",
+  },
+  contactInitial: {
+    fontSize: 18,
+    color: "#FFF",
   },
 });
 

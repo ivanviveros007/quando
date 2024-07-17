@@ -139,6 +139,7 @@ export const CardEvent: FC<CardProps> = ({
               source={{
                 uri: downloadUrl,
                 priority: FastImage.priority.high,
+                cache: FastImage.cacheControl.immutable,
               }}
               style={styles.eventImage}
               resizeMode={FastImage.resizeMode.cover}

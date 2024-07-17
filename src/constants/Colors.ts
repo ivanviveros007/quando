@@ -27,4 +27,5 @@ export const Colors = {
   primary_black: "#5B5B5B",
   primary_pruple: "#825FF142",
   white: "#FDF9FC",
+  purple_dark: "#825FF1",
 };
