@@ -1,18 +1,23 @@
 import { StyleSheet } from "react-native";
 import { theme } from "@/src/theme";
 import { verticalScale, horizontalScale, moderateScale } from "@/src/helpers";
+import { IS_IOS } from "@/src/constants";
 
 export const styles = StyleSheet.create({
+  containerLogo: {
+    alignSelf: "center",
+    marginTop: verticalScale(60),
+  },
   container: {
     flex: 1,
-     justifyContent: "center",
-    padding: moderateScale(20),
+    justifyContent: "center",
+    paddingHorizontal: horizontalScale(20),
+    marginBottom: IS_IOS ? verticalScale(200) : verticalScale(0),
   },
   containerTitle: {
     alignSelf: "center",
     marginTop: verticalScale(30),
-    flex: 1,
-    marginBottom: verticalScale(40),
+    marginBottom: verticalScale(80),
   },
   title: {
     fontFamily: "RobotoBold",
@@ -55,7 +60,7 @@ export const styles = StyleSheet.create({
     marginTop: verticalScale(10),
   },
   login: {
-    flex: 0.1,
+    marginBottom: 70,
   },
   labelLogin: {
     fontFamily: "RobotoMedium",

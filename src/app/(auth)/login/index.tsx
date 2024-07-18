@@ -1,14 +1,10 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import {
   View,
   Text,
-  SafeAreaView,
   TextInput as RNTextInput,
-  ScrollView,
   Alert,
   Keyboard,
-  KeyboardAvoidingView,
-  Platform,
 } from "react-native";
 import { Background } from "@/src/components/container";
 import { Button } from "@/src/components/button";
@@ -18,6 +14,9 @@ import { styles } from "./styles";
 import { router, useFocusEffect } from "expo-router";
 import { useAuthStore } from "@/src/store/authStore";
 import { parsePhoneNumberFromString, CountryCode } from "libphonenumber-js";
+import { Images } from "@/src/constants";
+import { ThemedText } from "@/src/components/ThemedText";
+import { moderateScale } from "@/src/helpers";
 
 export default function Login() {
   const [menuVisible, setMenuVisible] = useState(false);
@@ -100,98 +99,98 @@ export default function Login() {
 
   return (
     <Background>
-      <SafeAreaView>
-        <ScrollView automaticallyAdjustKeyboardInsets>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
+      <View style={styles.containerLogo}>
+        <Images.General.LogoWhite
+          width={moderateScale(97)}
+          height={moderateScale(22)}
+        />
+      </View>
+
+      <View style={styles.container}>
+        <View style={styles.containerTitle}>
+          <Text style={styles.title}>Iniciar sesión</Text>
+          <ThemedText
+            style={styles.subtitle}
+          >{`Tan simple como loguearte \ncon tu número de móvil`}</ThemedText>
+        </View>
+
+        <View style={styles.row}>
+          <Menu
+            visible={menuVisible}
+            onDismiss={closeMenu}
+            anchor={
+              <RNPButton
+                mode="outlined"
+                onPress={openMenu}
+                style={styles.areaButton}
+                textColor="white"
+              >
+                {areaCode}
+              </RNPButton>
+            }
           >
-            <View style={styles.containerTitle}>
-              <Text style={styles.title}>Iniciar sesión</Text>
-              <Text
-                style={styles.subtitle}
-              >{`Tan simple como loguearte \ncon tu número de móvil`}</Text>
-            </View>
-            <View style={styles.container}>
-              <View style={styles.row}>
-                <Menu
-                  visible={menuVisible}
-                  onDismiss={closeMenu}
-                  anchor={
-                    <RNPButton
-                      mode="outlined"
-                      onPress={openMenu}
-                      style={styles.areaButton}
-                      textColor="white"
-                    >
-                      {areaCode}
-                    </RNPButton>
-                  }
-                >
-                  <Menu.Item
-                    onPress={() => {
-                      setAreaCode("+34");
-                      closeMenu();
-                    }}
-                    title="+34 España"
-                    titleStyle={{
-                      fontFamily: "RobotoBold",
-                    }}
-                  />
-                  <Menu.Item
-                    onPress={() => {
-                      setAreaCode("+54");
-                      closeMenu();
-                    }}
-                    title="+54 Argentina"
-                    titleStyle={{
-                      fontFamily: "RobotoBold",
-                    }}
-                  />
-                </Menu>
-                <TextInput
-                  ref={textInputRef}
-                  style={styles.input}
-                  mode="outlined"
-                  focusable={true}
-                  value={phoneNumber}
-                  label={""}
-                  onChangeText={(text) => setPhoneNumber(text)}
-                  placeholder={"Número de móvil"}
-                  autoFocus={true}
-                  onSubmitEditing={() => console.log("Login Process")}
-                  keyboardType={"phone-pad"}
-                  // maxLength={areaCode === "+54" ? 10 : 9}
-                  theme={{
-                    colors: {
-                      primary: theme.colors.white,
-                      background: "transparent",
-                      placeholder: theme.colors.white,
-                      text: theme.colors.white,
-                    },
-                    roundness: 10,
-                  }}
-                  placeholderTextColor={theme.colors.white}
-                  activeOutlineColor={theme.colors.white}
-                  outlineColor={theme.colors.white}
-                  textColor={theme.colors.white}
-                  keyboardAppearance="dark"
-                  outlineStyle={{ borderWidth: 0.9 }}
-                />
-              </View>
-              <View style={styles.login}>
-                <Button
-                  mode="contained"
-                  onPress={handleLoginOrRegister}
-                  title={"Iniciar sesión"}
-                  labelStyle={styles.labelLogin}
-                  disabled={loading}
-                  loading={loading}
-                />
-              </View>
-            </View>
-          </KeyboardAvoidingView>
-        </ScrollView>
-      </SafeAreaView>
+            <Menu.Item
+              onPress={() => {
+                setAreaCode("+34");
+                closeMenu();
+              }}
+              title="+34 España"
+              titleStyle={{
+                fontFamily: "RobotoBold",
+              }}
+            />
+            <Menu.Item
+              onPress={() => {
+                setAreaCode("+54");
+                closeMenu();
+              }}
+              title="+54 Argentina"
+              titleStyle={{
+                fontFamily: "RobotoBold",
+              }}
+            />
+          </Menu>
+          <TextInput
+            ref={textInputRef}
+            style={styles.input}
+            mode="outlined"
+            focusable={true}
+            value={phoneNumber}
+            label={""}
+            onChangeText={(text) => setPhoneNumber(text)}
+            placeholder={"Número de móvil"}
+            autoFocus={true}
+            onSubmitEditing={() => console.log("Login Process")}
+            keyboardType={"phone-pad"}
+            // maxLength={areaCode === "+54" ? 10 : 9}
+            theme={{
+              colors: {
+                primary: theme.colors.white,
+                background: "transparent",
+                placeholder: theme.colors.white,
+                text: theme.colors.white,
+              },
+              roundness: 10,
+            }}
+            placeholderTextColor={theme.colors.white}
+            activeOutlineColor={theme.colors.white}
+            outlineColor={theme.colors.white}
+            textColor={theme.colors.white}
+            keyboardAppearance="dark"
+            outlineStyle={{ borderWidth: 1 }}
+          />
+        </View>
+        <View style={styles.login}>
+          <Button
+            mode="contained"
+            onPress={handleLoginOrRegister}
+            title={"Iniciar sesión"}
+            labelStyle={styles.labelLogin}
+            disabled={loading}
+            loading={loading}
+          />
+        </View>
+      </View>
     </Background>
   );
 }

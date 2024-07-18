@@ -1,4 +1,4 @@
-import { Dimensions } from "react-native";
+import { Dimensions, Platform } from "react-native";
 import { moderateScale } from "@/src/helpers";
 import { Images } from "./Images";
 
@@ -54,3 +54,6 @@ export const planTypes = [
   { label: "Cita", value: "date" },
   { label: "Otro", value: "other" },
 ];
+
+export const IS_IOS = Platform.OS === "ios";
+export const IS_ANDROID = Platform.OS === "android";

@@ -1,63 +1,36 @@
-import React, { useState, useRef, useCallback } from "react";
-import {
-  View,
-  Text,
-  TextInput as RNTextInput,
-  ActivityIndicator,
-} from "react-native";
+import React, { useState, useCallback } from "react";
+import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { Button } from "@/src/components/button";
-import { TextInput } from "react-native-paper";
 import { theme } from "@/src/theme";
-import { styles } from "./styles";
 import { useAuthStore } from "@/src/store/authStore";
-4;
 import { useRouter } from "expo-router";
+import OTPInputView from "@twotalltotems/react-native-otp-input";
+import { moderateScale, verticalScale, horizontalScale } from "@/src/helpers";
+import { Colors } from "@/src/constants";
 
 export default function Otp() {
-  const [otp, setOtp] = useState(Array(6).fill(""));
-  const textInputRefs = useRef(Array(6).fill(null));
+  const [otp, setOtp] = useState("");
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const { setCode, confirmCode, loading, areaCode, phoneNumber } =
     useAuthStore();
-  console.log("phoneNumber", phoneNumber);
+  console.log("phoneNumber desde otp", phoneNumber);
+
+  console.log("OTP", otp);
+
   useFocusEffect(
     useCallback(() => {
-      if (textInputRefs.current[0]) {
-        textInputRefs.current[0].focus();
+      if (otp.length === 0) {
+        // Auto-focus on load is handled by the OTPInputView
       }
     }, [])
   );
 
-  const handleOtpChange = (index: number, value: string) => {
-    const newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
-
-    if (value && index < 5) {
-      textInputRefs.current[index + 1].focus();
-    }
-  };
-
-  const handleKeyPress = (index: number, key: string) => {
-    if (key === "Backspace" && otp[index] === "" && index > 0) {
-      textInputRefs.current[index - 1]?.focus();
-    }
-  };
-
   const handleContinue = async () => {
-    const otpCode = otp.join("");
-    setCode(otpCode);
+    setCode(otp);
     const result = await confirmCode();
-    // if (result?.status === "EXISTING_USER") {
-    //   router.push("(tabs)/create_events");
-    // } else if (result.status === "NEW_USER") {
-    //   router.push("register");
-    // } else if (result.status === "ERROR") {
-    //   setErrorMessage(result?.message);
-    // }
     if (result) {
       router.push("(tabs)/home");
     }
@@ -76,30 +49,18 @@ export default function Otp() {
           {`Te enviamos un SMS a \n ${areaCode} ${phoneNumber} con un \ncódigo de acceso. Ingrésalo abajo.`}
         </Text>
       </View>
-      <View style={styles.otpContainer}>
-        {otp.map((digit, index) => (
-          <TextInput
-            key={index}
-            ref={(ref) => (textInputRefs.current[index] = ref)}
-            style={styles.otpInput}
-            value={digit}
-            onChangeText={(value) => handleOtpChange(index, value)}
-            onKeyPress={({ nativeEvent }) =>
-              handleKeyPress(index, nativeEvent.key)
-            }
-            keyboardType="number-pad"
-            maxLength={1}
-            theme={{
-              colors: {
-                primary: theme.colors.purple,
-                text: theme.colors.purple,
-                accent: theme.colors.purple,
-              },
-            }}
-            underlineStyle={styles.underlineStyle}
-          />
-        ))}
-      </View>
+      <OTPInputView
+        style={styles.otpInputView}
+        pinCount={6}
+        code={otp}
+        onCodeChanged={(code) => setOtp(code)}
+        autoFocusOnLoad
+        codeInputFieldStyle={styles.otpInput}
+        codeInputHighlightStyle={styles.otpInputHighlight}
+        onCodeFilled={(code) => {
+          console.log(`Code is ${code}, you are good to go!`);
+        }}
+      />
       {errorMessage && <Text style={styles.errorText}>{errorMessage}</Text>}
       <View style={styles.buttonContainer}>
         <View style={styles.button}>
@@ -113,13 +74,6 @@ export default function Otp() {
           />
         </View>
 
-        {loading && (
-          <ActivityIndicator
-            size="large"
-            color={theme.colors.light_blue}
-            style={{ marginTop: 20 }}
-          />
-        )}
         <Button
           mode="outlined"
           onPress={handleResendCode}
@@ -130,3 +84,58 @@ export default function Otp() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: theme.colors.white,
+  },
+  containerTitle: {
+    bottom: 10,
+    alignItems: "center",
+    top: 50,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+  subtitle: {
+    fontSize: 16,
+    textAlign: "center",
+    marginTop: 10,
+  },
+  otpInputView: {
+    width: "80%",
+    height: 200,
+    alignSelf: "center",
+    top: 50,
+  },
+  otpInput: {
+    width: 30,
+    height: 45,
+    borderWidth: 0,
+    borderBottomWidth: 3,
+    color: Colors.purple_dark,
+    fontSize: 24,
+  },
+  otpInputHighlight: {
+    borderColor: theme.colors.purple,
+  },
+  errorText: {
+    color: "red",
+    marginTop: 10,
+  },
+  buttonContainer: {
+    marginTop: 20,
+    width: "100%",
+    alignItems: "center",
+  },
+  button: {
+    width: "80%",
+    marginBottom: 10,
+  },
+  buttonLabel: {
+    fontSize: 16,
+  },
+});

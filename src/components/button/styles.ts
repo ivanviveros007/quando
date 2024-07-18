@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
     height: verticalScale(50),
     borderRadius: 10,
     justifyContent: "center",
-    flex: 1,
+ 
   },
   labelStyle: {
     letterSpacing: 0,

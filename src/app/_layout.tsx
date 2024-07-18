@@ -68,7 +68,7 @@ export default function RootLayout() {
               presentation: "containedModal",
             }}
           />
-          <Stack.Screen name="+not-found" />
+          {/* <Stack.Screen name="+not-found" /> */}
           <Stack.Screen
             name="plan_detail"
             options={{

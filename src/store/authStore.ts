@@ -3,6 +3,7 @@ import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+
 interface AuthState {
   phoneNumber: string;
   areaCode: string;
@@ -68,10 +69,10 @@ const useAuthStore = create<AuthState>((set, get) => ({
 
       // Obtener el ID del usuario actual autenticado
       const currentUser = auth().currentUser;
-      if (!currentUser) {
-        throw new Error("User not authenticated");
-      }
-      const userId = currentUser.uid;
+      // if (!currentUser) {
+      //   throw new Error("User not authenticated");
+      // }
+      const userId = currentUser?.uid;
       const userDocRef = firestore().collection("users").doc(userId);
       const userData = {
         phoneNumber: fullPhoneNumber,

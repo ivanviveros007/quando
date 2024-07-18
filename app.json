@@ -2,7 +2,7 @@
   "expo": {
     "name": "quando-app",
     "slug": "quando-app",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -17,20 +17,19 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.quandoapp.mobile",
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "This app needs access to your location to show your position on the map.",
-        "NSCalendarsUsageDescription": "Esta aplicación necesita acceso a tu calendario para añadir eventos.",
+        "NSLocationWhenInUseUsageDescription": "Quando-app aplicación necesita acceso a tu ubicación para mostrarte eventos cercanos.",
+        "NSCalendarsUsageDescription": "Quando-app necesita acceso a tu calendario para añadir eventos.",
         "CFBundleURLTypes": [
           {
-            "CFBundleURLSchemes": [
-              "myapp"
-            ]
+            "CFBundleURLSchemes": ["myapp"]
           }
-        ]
+        ],
+        "FirebaseAppDelegateProxyEnabled": true
       },
       "config": {
         "googleMapsApiKey": "AIzaSyCIMQgM_9Ew_Z6LjdDsPhxY9pfPyyDRmag"
       },
-      "buildNumber": "3",
+      "buildNumber": "1",
       "associatedDomains": [
         "applinks:quandoapp.com",
         "applinks:*.quandoapp.com"
@@ -45,7 +44,9 @@
       "package": "com.quandoapp",
       "permissions": [
         "READ_CALENDAR",
-        "WRITE_CALENDAR"
+        "WRITE_CALENDAR",
+        "RECEIVE_SMS",
+        "READ_SMS"
       ],
       "intentFilters": [
         {
@@ -62,10 +63,7 @@
               "pathPrefix": "/"
             }
           ],
-          "category": [
-            "BROWSABLE",
-            "DEFAULT"
-          ]
+          "category": ["BROWSABLE", "DEFAULT"]
         }
       ]
     },
