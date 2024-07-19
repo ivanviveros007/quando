@@ -16,11 +16,18 @@ const InviteContacts: FC<InviteContactsProps> = ({ setFieldValue }) => {
   const selectedContacts = useContactsStore((state) => state.selectedContacts);
 
   const handleAddContact = () => {
-    router.push("(tabs)/create_events/contacts");
+    try {
+      router.push("(tabs)/create_events/contacts");
+    } catch (error) {
+      console.error("Error navigating to contacts:", error);
+    }
   };
-
   useEffect(() => {
-    setFieldValue("guests", selectedContacts);
+    try {
+      setFieldValue("guests", selectedContacts);
+    } catch (error) {
+      console.error("Error setting field value:", error);
+    }
   }, [selectedContacts, setFieldValue]);
 
   return (
