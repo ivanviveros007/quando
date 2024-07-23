@@ -2,7 +2,7 @@ import { create } from "zustand";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import * as Sentry from "@sentry/react-native";
 
 interface AuthState {
   phoneNumber: string;
@@ -88,6 +88,10 @@ const useAuthStore = create<AuthState>((set, get) => ({
       set({ loading: false });
       return { status: "SUCCESS" };
     } catch (error) {
+      Sentry.captureException({
+        message: "Error al registrar el usuario",
+        error,
+      });
       console.error("Error al registrar el usuario:", error);
       set({ loading: false });
       return { status: "ERROR", message: error.message };
@@ -104,6 +108,11 @@ const useAuthStore = create<AuthState>((set, get) => ({
       set({ confirm: confirmation, loading: false });
       return { success: true };
     } catch (error) {
+      Sentry.captureException({
+        message: "Error al enviar el código de verificación",
+        error,
+      });
+
       set({ loading: false });
       console.error("Error al enviar el código de verificación:", error);
       if (error?.code === "auth/too-many-requests") {
@@ -171,6 +180,10 @@ const useAuthStore = create<AuthState>((set, get) => ({
       return { status: "SUCCESS" };
     } catch (error) {
       set({ loading: false });
+      Sentry.captureException({
+        message: "Error al confirmar el código",
+        error,
+      });
       console.error("Error al confirmar el código:", error);
       return { status: "ERROR", message: error.message };
     }
@@ -207,6 +220,7 @@ const useAuthStore = create<AuthState>((set, get) => ({
       return !usersSnapshot.empty;
     } catch (error) {
       console.error("Error al verificar si el usuario existe:", error);
+      
       set({ loading: false });
       return false;
     }

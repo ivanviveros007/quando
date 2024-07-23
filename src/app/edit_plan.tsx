@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, ScrollView, SafeAreaView } from "react-native";
+import { View, ScrollView, SafeAreaView, StyleSheet } from "react-native";
 import { Formik } from "formik";
 import DropDown from "react-native-paper-dropdown";
 import { TextInput as PaperTextInput } from "react-native-paper";
@@ -25,104 +25,161 @@ import { usePlansStore } from "@/src/store/planStore";
 import { LoadingScreen } from "@/src/components/loading";
 import { format } from "date-fns";
 
-import { styles } from "./styles";
-import * as Sentry from "@sentry/react-native";
+import { useLocalSearchParams } from "expo-router";
 
-const CreatePlan: React.FC = () => {
+import { verticalScale, horizontalScale } from "@/src/helpers";
+
+interface Contact {
+  id: string;
+  name: string;
+  contactType?: string;
+  firstName?: string;
+  lastName?: string;
+  phoneNumbers?: { number: string }[];
+  imageAvailable?: boolean;
+}
+
+interface Plan {
+  id?: string;
+  planType: string;
+  title: string;
+  date: string;
+  time: string;
+  location: string;
+  description: string;
+  guests: Contact[];
+  imageUri?: string;
+}
+
+const initialPlanValues: Omit<Plan, "id"> = {
+  planType: "",
+  title: "",
+  date: new Date().toISOString().split("T")[0], // Fecha actual
+  time: format(new Date(), "HH:mm"), // Hora actual
+  location: "",
+  description: "",
+  guests: [],
+  imageUri: "",
+};
+
+const EditPlan: React.FC = () => {
+  const { edit, planId } = useLocalSearchParams();
+  const plans = usePlansStore((state) => state.plans);
+  const addPlan = usePlansStore((state) => state.addPlan);
+  const updatePlan = usePlansStore((state) => state.updatePlan);
+  const selectedLocation = useLocationStore((state) => state.selectedLocation);
+  const address = useLocationStore((state) => state.address);
+
   const [showDropDown, setShowDropDown] = useState(false);
   const [imageUris, setImageUris] = useState<string[]>([]);
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
   const [loading, setLoading] = useState(false);
+  const [initialValues, setInitialValues] =
+    useState<Omit<Plan, "id">>(initialPlanValues);
 
-  const selectedLocation = useLocationStore((state) => state.selectedLocation);
-  const address = useLocationStore((state) => state.address);
-  const addPlan = usePlansStore((state) => state.addPlan);
+  useEffect(() => {
+    if (edit && planId) {
+      const planToEdit = plans.find((plan) => plan.id === planId);
+      if (planToEdit) {
+        setInitialValues({
+          planType: planToEdit.planType,
+          title: planToEdit.title,
+          date: planToEdit.date || new Date().toISOString().split("T")[0],
+          time: planToEdit.time || format(new Date(), "HH:mm"),
+          location:
+            planToEdit.location ||
+            (selectedLocation
+              ? `${selectedLocation.latitude}, ${selectedLocation.longitude}`
+              : ""),
+          description: planToEdit.description,
+          guests: planToEdit.guests || [],
+          imageUri: planToEdit.imageUri || "",
+        });
+        setImageUris(planToEdit.imageUri ? [planToEdit.imageUri] : []);
+        setDate(new Date(planToEdit.date));
+        setTime(new Date(`1970-01-01T${planToEdit.time}:00`));
+      }
+    }
+  }, [edit, planId, plans, selectedLocation]);
 
   const handleDateChange = (
     event: DateTimePickerEvent,
     selectedDate: Date | undefined
   ) => {
-    try {
-      const currentDate = selectedDate || date;
-      setDate(currentDate);
-    } catch (error) {
-      console.error("[handleDateChange] ", error);
-      Sentry.captureException({
-        message: "Error al cambiar la fecha",
-        error,
-      });
-    }
+    const currentDate = selectedDate || date;
+    setDate(currentDate);
+    setInitialValues({
+      ...initialValues,
+      date: currentDate.toISOString().split("T")[0],
+    });
   };
 
   const handleTimeChange = (
     event: DateTimePickerEvent,
     selectedTime: Date | undefined
   ) => {
-    try {
-      const currentTime = selectedTime || time;
-      setTime(currentTime);
-    } catch (error) {
-      console.error("[handleTimeChange] ", error);
-      Sentry.captureException({
-        message: "Error al cambiar la hora",
-        error,
-      });
-    }
+    const currentTime = selectedTime || time;
+    setTime(currentTime);
+    setInitialValues({ ...initialValues, time: format(currentTime, "HH:mm") });
   };
-
   const handleLocationPress = () => {
     router.push("(tabs)/create_events/map");
   };
 
   const selectImage = async () => {
-    try {
-      const result = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (result.granted === false) {
-        alert("Permiso para acceder a la galería es requerido!");
-        return;
-      }
+    const result = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (result.granted === false) {
+      alert("Permiso para acceder a la galería es requerido!");
+      return;
+    }
 
-      const pickerResult = await ImagePicker.launchImageLibraryAsync({
-        allowsMultipleSelection: false, // Asegura que solo se pueda seleccionar una imagen
-      });
-
-      if (
-        !pickerResult.canceled &&
-        pickerResult.assets &&
-        pickerResult.assets.length === 1 // Verifica que solo se haya seleccionado una imagen
-      ) {
-        setImageUris([pickerResult.assets[0].uri]);
-      } else {
-        alert("Por favor, selecciona una única imagen.");
-      }
-    } catch (error) {
-      console.error("[selectImage] ", error);
-      Sentry.captureException({
-        message: "Error al seleccionar una imagen",
-        error,
-      });
-      alert(
-        "Hubo un error al seleccionar la imagen. Por favor, inténtalo de nuevo."
-      );
+    const pickerResult = await ImagePicker.launchImageLibraryAsync();
+    if (
+      !pickerResult.canceled &&
+      pickerResult.assets &&
+      pickerResult.assets.length > 0
+    ) {
+      setImageUris([pickerResult.assets[0].uri]);
     }
   };
 
-  const navigateToConfirmation = async (planName) => {
+  const navigateToConfirmation = async (planName: string) => {
+    const queryParam = { planName };
+    await router.push({
+      pathname: "confirmation",
+      params: queryParam,
+    });
+    setLoading(false);
+  };
+
+  const handleSubmitForm = async (
+    values: Omit<Plan, "id">,
+    resetForm: () => void,
+    setFieldValue: (field: string, value: any) => void
+  ) => {
+    setLoading(true);
+    if (imageUris.length > 0) {
+      setFieldValue("imageUri", imageUris[0]);
+    }
+
+    const planData = {
+      ...values,
+      imageUri: imageUris[0],
+    };
+
     try {
-      const queryParam = { planName };
-      await router.push({
-        pathname: "confirmation",
-        params: queryParam,
-      });
-      setLoading(false);
+      if (edit) {
+        await updatePlan(planId, planData);
+      } else {
+        await addPlan(planData);
+      }
+      await navigateToConfirmation(values.title);
+      resetForm();
     } catch (error) {
-      console.error("[navigateToConfirmation] ", error);
+      console.error("Error submitting form:", error);
+    } finally {
       setLoading(false);
-      Sentry.captureException({
-        message: "Error al navegar a la confirmación",
-        error,
-      });
     }
   };
 
@@ -131,45 +188,12 @@ const CreatePlan: React.FC = () => {
       {loading && <LoadingScreen />}
 
       <Formik
-        initialValues={{
-          planType: "",
-          title: "",
-          date: "",
-          time: "",
-          location: selectedLocation
-            ? `${selectedLocation.latitude}, ${selectedLocation.longitude}`
-            : "",
-          description: "",
-          guests: [],
-          imageUris: "",
-        }}
+        initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={async (values, { setFieldValue, resetForm }) => {
-          setLoading(true); // Asegúrate de que setLoaing esté definido y manejado correctamente
-          if (imageUris.length > 0) {
-            setFieldValue("imageUri", imageUris[0]);
-          }
-
-          const planData = {
-            ...values,
-            imageUri: imageUris[0],
-          };
-          // console.log("values form planData", planData);
-
-          try {
-            await addPlan(planData);
-            await navigateToConfirmation(values.title); // Asegúrate de que navigateToConfirmation esté definido y manejado correctamente
-            resetForm();
-          } catch (error) {
-            console.error("Error submitting form:", error);
-            Sentry.captureException({
-              message: "Error al enviar el formulario",
-              error,
-            });
-          } finally {
-            setLoading(false);
-          }
-        }}
+        enableReinitialize
+        onSubmit={(values, { setFieldValue, resetForm }) =>
+          handleSubmitForm(values, resetForm, setFieldValue)
+        }
       >
         {({
           handleChange,
@@ -200,7 +224,7 @@ const CreatePlan: React.FC = () => {
               automaticallyAdjustKeyboardInsets
             >
               <ThemedText type="title" style={styles.title}>
-                Crea tu plan
+                {edit ? "Editar plan" : "Crea tu plan"}
               </ThemedText>
 
               <View style={styles.dropAndTitle}>
@@ -383,7 +407,7 @@ const CreatePlan: React.FC = () => {
 
               <Button
                 onPress={handleSubmit}
-                title="Enviar invitaciones"
+                title={edit ? "Actualizar" : "Enviar invitaciones"}
                 mode="contained"
                 disabled={loading}
               />
@@ -395,4 +419,87 @@ const CreatePlan: React.FC = () => {
   );
 };
 
-export default CreatePlan;
+export default EditPlan;
+
+const styles = StyleSheet.create({
+  backgroundSafeArea: {
+    backgroundColor: "#FDF9FC",
+  },
+  title: {
+    textAlign: "center",
+    marginBottom: verticalScale(30),
+    fontFamily: "RobotoBold",
+  },
+  dropAndTitle: {
+    flexDirection: "column",
+    gap: moderateScale(20),
+  },
+  positionArrow: {
+    position: "absolute",
+    right: horizontalScale(10),
+    top: verticalScale(20),
+  },
+  container: {
+    paddingTop: verticalScale(16),
+    paddingBottom: verticalScale(106),
+    paddingHorizontal: horizontalScale(20),
+    backgroundColor: "#FDF9FC",
+  },
+  containerDateTime: {
+    flexDirection: "row",
+    gap: moderateScale(20),
+    marginBottom: verticalScale(10),
+  },
+  date: {
+    width: "50%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    height: verticalScale(50),
+    alignItems: "center",
+    borderWidth: moderateScale(0.5),
+    borderColor: Colors.primary_pruple,
+    borderRadius: moderateScale(10),
+    paddingHorizontal: horizontalScale(5),
+    backgroundColor: "white",
+  },
+  errorsDate: {
+    flexDirection: "row",
+    gap: moderateScale(55),
+  },
+  label: {
+    fontSize: moderateScale(16),
+    marginBottom: verticalScale(8),
+  },
+  input: {
+    marginBottom: verticalScale(16),
+  },
+  inputContainer: {
+    borderWidth: moderateScale(1),
+    borderColor: "#ddd",
+    borderRadius: moderateScale(5),
+    padding: moderateScale(10),
+    justifyContent: "center",
+  },
+  datePicker: {
+    width: "100%",
+  },
+  error: {
+    color: "red",
+    marginBottom: verticalScale(5),
+  },
+  imageCount: {
+    fontSize: moderateScale(14),
+    marginBottom: verticalScale(16),
+    color: "grey",
+  },
+  descriptionInput: {
+    height: verticalScale(100),
+  },
+  selectedContacts: {
+    marginTop: verticalScale(10),
+  },
+  outlineStyle: {
+    borderWidth: 1,
+    borderColor: Colors.primary_pruple,
+  },
+});

@@ -7,6 +7,7 @@ import {
   FlatList,
   TouchableOpacity,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import { ThemedText } from "@/src/components/ThemedText";
 import { Colors } from "@/src/constants";
@@ -15,6 +16,8 @@ import { parseISO, format } from "date-fns";
 import storage from "@react-native-firebase/storage";
 import FastImage from "react-native-fast-image";
 import { moderateScale, horizontalScale, verticalScale } from "../helpers";
+import { usePlansStore } from "../store/planStore";
+import { router } from "expo-router";
 
 const PlanDetail = () => {
   const { id, title, location, time, guests, date, imageUri, description } =
@@ -101,12 +104,68 @@ const PlanDetail = () => {
     return location;
   };
 
+  const confirmDelete = () => {
+    try {
+      Alert.alert(
+        "Eliminar plan",
+        "¿Estás seguro de que deseas eliminar este plan?",
+        [
+          {
+            text: "Cancelar",
+            style: "cancel",
+          },
+          {
+            text: "Eliminar",
+            onPress: async () => {
+              await usePlansStore.getState().deletePlan(id); // Asegúrate de llamar al método correcto
+              router.back();
+            },
+          },
+        ]
+      );
+    } catch (error) {
+      console.error("Error deleting plan:", error);
+    }
+  };
+
+  const handleEditPress = (planId: string | string[] | undefined) => {
+    router.push({
+      pathname: "edit_plan",
+      params: {
+        planId,
+      },
+    });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.paddingScreen}>
-        <ThemedText type="title" style={styles.title}>
-          {title}
-        </ThemedText>
+        <View>
+          <ThemedText type="title" style={styles.title}>
+            {title}
+          </ThemedText>
+          <View
+            style={{
+              flexDirection: "row",
+              gap: 20,
+              alignSelf: "flex-end",
+              top: -30,
+            }}
+          >
+            <MaterialIcons
+              name="edit"
+              size={24}
+              color={Colors.primary_black}
+              onPress={() => handleEditPress(id)}
+            />
+            <MaterialIcons
+              name="delete"
+              size={24}
+              color={Colors.primary_black}
+              onPress={confirmDelete}
+            />
+          </View>
+        </View>
 
         <View style={styles.card1}>
           <View style={styles.imageContainer}>
@@ -173,7 +232,7 @@ const PlanDetail = () => {
 
         <View style={styles.card2}>
           <ThemedText style={{ fontSize: moderateScale(12) }}>
-            {description? description : "Descripción no disponible"}
+            {description ? description : "Descripción no disponible"}
           </ThemedText>
         </View>
 
@@ -237,7 +296,6 @@ const styles = StyleSheet.create({
   title: {
     textAlign: "center",
     fontWeight: "bold",
-    marginVertical: verticalScale(16),
   },
 
   card1: {

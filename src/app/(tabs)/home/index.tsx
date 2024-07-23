@@ -17,6 +17,7 @@ import { usePlansStore } from "@/src/store/planStore";
 import { isToday, isAfter, parseISO, compareAsc } from "date-fns";
 import { EmptyStatePlan } from "@/src/components/emptyState";
 import { router } from "expo-router";
+import * as Sentry from "@sentry/react-native";
 
 export default function HomeScreen() {
   const fetchPlans = usePlansStore((state) => state.fetchPlans);
@@ -29,8 +30,6 @@ export default function HomeScreen() {
   const [filteredPlans, setFilteredPlans] = useState([]);
   const animation = useRef(new Animated.Value(0)).current;
 
-  console.log("plans", plans);
-
   useEffect(() => {
     if (user) {
       fetchPlans();
@@ -38,30 +37,35 @@ export default function HomeScreen() {
   }, [user]);
 
   useEffect(() => {
-    let filtered = plans;
-    const today = new Date();
-    console.log("Filtering plans with filter:", filter);
+    try {
+      let filtered = plans;
+      const today = new Date();
 
-    if (filter === "today") {
-      filtered = plans.filter((plan) => isToday(parseISO(plan.date)));
-      console.log("Plans for today:", filtered);
-    } else if (filter === "upcoming") {
-      filtered = plans
-        .filter((plan) => {
-          const planDate = parseISO(plan.date);
-          return isAfter(planDate, today) && !isToday(planDate);
-        })
-        .sort((a, b) => compareAsc(parseISO(a.date), parseISO(b.date)));
-      console.log("Upcoming plans:", filtered);
+      if (filter === "today") {
+        filtered = plans.filter((plan) => isToday(parseISO(plan.date)));
+      } else if (filter === "upcoming") {
+        filtered = plans
+          .filter((plan) => {
+            const planDate = parseISO(plan.date);
+            return isAfter(planDate, today) && !isToday(planDate);
+          })
+          .sort((a, b) => compareAsc(parseISO(a.date), parseISO(b.date)));
+      }
+
+      setFilteredPlans(filtered);
+
+      Animated.timing(animation, {
+        toValue: filter === "today" ? 0 : 1,
+        duration: 300,
+        useNativeDriver: false,
+      }).start();
+    } catch (error) {
+      console.error("[useEffect - filter plans] ", error);
+      Sentry.captureException({
+        message: "Error al filtrar los planes [filter plans]",
+        error,
+      });
     }
-
-    setFilteredPlans(filtered);
-
-    Animated.timing(animation, {
-      toValue: filter === "today" ? 0 : 1,
-      duration: 300,
-      useNativeDriver: false,
-    }).start();
   }, [filter, plans]);
 
   useEffect(() => {
@@ -90,7 +94,6 @@ export default function HomeScreen() {
   });
 
   const renderItem = ({ item }) => {
-    // console.log("item", item);
     const queryParams = {
       id: item.id,
       title: item.title,

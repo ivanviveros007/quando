@@ -7,6 +7,9 @@ import { Ionicons } from "@expo/vector-icons";
 import { parse, format, parseISO } from "date-fns";
 import FastImage from "react-native-fast-image";
 import storage from "@react-native-firebase/storage";
+import * as Sentry from "@sentry/react-native";
+
+
 interface Guest {
   id: string;
   name: string;
@@ -48,6 +51,10 @@ export const CardEvent: FC<CardProps> = ({
           setDownloadUrl(url);
         } catch (error) {
           console.error("Error getting image URL:", error);
+          Sentry.captureException({
+            message: "Error al obtener la URL de la imagen",
+            error,
+          });
         }
       };
 

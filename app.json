@@ -21,9 +21,7 @@
         "NSCalendarsUsageDescription": "Quando-app necesita acceso a tu calendario para añadir eventos.",
         "CFBundleURLTypes": [
           {
-            "CFBundleURLSchemes": [
-              "myapp"
-            ]
+            "CFBundleURLSchemes": ["myapp"]
           }
         ],
         "FirebaseAppDelegateProxyEnabled": true
@@ -32,7 +30,7 @@
         "googleMapsApiKey": "AIzaSyCIMQgM_9Ew_Z6LjdDsPhxY9pfPyyDRmag",
         "useNonExemptEncryption": false
       },
-      "buildNumber": "1",
+      "buildNumber": "2",
       "associatedDomains": [
         "applinks:quandoapp.com",
         "applinks:*.quandoapp.com"
@@ -66,10 +64,7 @@
               "pathPrefix": "/"
             }
           ],
-          "category": [
-            "BROWSABLE",
-            "DEFAULT"
-          ]
+          "category": ["BROWSABLE", "DEFAULT"]
         }
       ]
     },
@@ -94,6 +89,13 @@
         "expo-image-picker",
         {
           "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ],
+      [
+        "@sentry/react-native/expo",
+        {
+          "organization": "Quando",
+          "project": "quando-app-sentry"
         }
       ]
     ],

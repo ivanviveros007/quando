@@ -6,6 +6,7 @@ import { ThemedText } from "../ThemedText";
 
 import { Colors } from "@/src/constants";
 import { horizontalScale, moderateScale, verticalScale } from "@/src/helpers";
+import * as Sentry from "@sentry/react-native";
 
 interface InviteContactsProps {
   setFieldValue: (field: string, value: any) => void;
@@ -27,6 +28,10 @@ const InviteContacts: FC<InviteContactsProps> = ({ setFieldValue }) => {
       setFieldValue("guests", selectedContacts);
     } catch (error) {
       console.error("Error setting field value:", error);
+      Sentry.captureException({
+        message: "Error al presionar el botón de añadir contacto",
+        error,
+      });
     }
   }, [selectedContacts, setFieldValue]);
 

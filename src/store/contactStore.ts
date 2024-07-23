@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import * as Contacts from "expo-contacts";
 
+
 interface ContactsState {
   contacts: Contacts.Contact[];
   selectedContacts: Contacts.Contact[];

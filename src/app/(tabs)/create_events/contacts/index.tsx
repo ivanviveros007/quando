@@ -15,6 +15,7 @@ import ContactItem from "@/src/components/contactItem";
 import SelectedContactItem from "@/src/components/selectedContact";
 import ChipComponent from "@/src/components/chip";
 import { Divider } from "react-native-paper";
+import * as Sentry from "@sentry/react-native";
 
 const numColumns = 3;
 
@@ -36,44 +37,70 @@ const ContactsScreen: React.FC = () => {
   const router = useRouter();
 
   useEffect(() => {
-    (async () => {
-      const { status } = await Contacts.requestPermissionsAsync();
-      if (status === "granted") {
-        const { data } = await Contacts.getContactsAsync({
-          fields: [
-            Contacts.Fields.Name,
-            Contacts.Fields.PhoneNumbers,
-            Contacts.Fields.ImageAvailable,
-            Contacts.Fields.Image,
-          ],
+    const fetchContacts = async () => {
+      try {
+        const { status } = await Contacts.requestPermissionsAsync();
+        if (status === "granted") {
+          const { data } = await Contacts.getContactsAsync({
+            fields: [
+              Contacts.Fields.Name,
+              Contacts.Fields.PhoneNumbers,
+              Contacts.Fields.ImageAvailable,
+              Contacts.Fields.Image,
+            ],
+          });
+          setContacts(data);
+          setFilteredContacts(data);
+        }
+      } catch (error) {
+        console.error("[useEffect - fetchContacts] ", error);
+        Sentry.captureException({
+          message: "Error al obtener los contactos [fetchContacts]",
+          error,
         });
-        setContacts(data);
-        setFilteredContacts(data);
       }
-    })();
+    };
+
+    fetchContacts();
   }, []);
 
   useEffect(() => {
-    if (search) {
-      const filtered = contacts.filter((contact) =>
-        contact.name.toLowerCase().includes(search.toLowerCase())
-      );
-      setFilteredContacts(filtered);
-    } else if (selectedFilter) {
-      const filtered = contacts.filter((contact) =>
-        contact.name.toLowerCase().includes(selectedFilter.toLowerCase())
-      );
-      setFilteredContacts(filtered);
-    } else {
-      setFilteredContacts(contacts);
+    try {
+      if (search) {
+        const filtered = contacts.filter((contact) =>
+          contact.name.toLowerCase().includes(search.toLowerCase())
+        );
+        setFilteredContacts(filtered);
+      } else if (selectedFilter) {
+        const filtered = contacts.filter((contact) =>
+          contact.name.toLowerCase().includes(selectedFilter.toLowerCase())
+        );
+        setFilteredContacts(filtered);
+      } else {
+        setFilteredContacts(contacts);
+      }
+    } catch (error) {
+      console.error("[useEffect - filterContacts] ", error);
+      Sentry.captureException({
+        message: "Error al filtrar los contactos [filterContacts]",
+        error,
+      });
     }
   }, [search, selectedFilter, contacts]);
 
   const handleFilterPress = (filter: string) => {
-    if (selectedFilter === filter) {
-      setSelectedFilter("");
-    } else {
-      setSelectedFilter(filter);
+    try {
+      if (selectedFilter === filter) {
+        setSelectedFilter("");
+      } else {
+        setSelectedFilter(filter);
+      }
+    } catch (error) {
+      console.error("[handleFilterPress] ", error);
+      Sentry.captureException({
+        message: "Error al seleccionar un filtro [handleFilterPress]",
+        error,
+      });
     }
   };
 

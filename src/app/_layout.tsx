@@ -82,6 +82,19 @@ export default function RootLayout() {
               headerTransparent: true,
             }}
           />
+          <Stack.Screen
+            name="edit_plan"
+            options={{
+              headerShown: true,
+              headerBackTitleVisible: false,
+              // headerBackTitle: "",
+              title: "",
+              headerTitle: "",
+              headerTitleStyle: { fontFamily: "RobotoMedium" },
+              headerTintColor: theme.colors.black,
+              headerTransparent: true,
+            }}
+          />
         </Stack>
       </ThemeProvider>
     </PaperProvider>
