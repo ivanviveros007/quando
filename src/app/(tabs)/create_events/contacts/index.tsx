@@ -16,6 +16,8 @@ import SelectedContactItem from "@/src/components/selectedContact";
 import ChipComponent from "@/src/components/chip";
 import { Divider } from "react-native-paper";
 import * as Sentry from "@sentry/react-native";
+import { IS_ANDROID } from "@/src/constants";
+import { verticalScale, moderateScale, horizontalScale } from "@/src/helpers";
 
 const numColumns = 3;
 
@@ -190,43 +192,44 @@ const ContactsScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: moderateScale(20),
     backgroundColor: "white",
   },
   title: {
-    fontSize: 24,
+    fontSize: moderateScale(24),
     fontWeight: "bold",
-    marginBottom: 20,
+    marginBottom: verticalScale(20),
     textAlign: "center",
   },
   searchBar: {
-    padding: 10,
+    padding: moderateScale(10),
     borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 10,
-    marginBottom: 20,
+    borderWidth: moderateScale(1),
+    borderRadius: moderateScale(10),
+    marginBottom: verticalScale(20),
   },
   chipsContainer: {
     flexDirection: "row",
-    marginBottom: 10,
-    height: 60,
+    height: verticalScale(80),
+    top: -10,
   },
   contactList: {
-    paddingBottom: 500, // Ajusta este valor para mover la lista más cerca de los chips
+    paddingBottom: verticalScale(500),
   },
   button: {
     backgroundColor: "black",
-    padding: 15,
-    borderRadius: 10,
+    padding: moderateScale(15),
+    borderRadius: moderateScale(10),
     alignItems: "center",
-    marginTop: 20,
+    marginTop: verticalScale(20),
+    marginBottom: IS_ANDROID ? verticalScale(50) : verticalScale(20),
   },
   buttonText: {
     color: "white",
-    fontSize: 16,
+    fontSize: moderateScale(16),
   },
   selectedContactsContainer: {
-    height: 240,
+    height: verticalScale(240),
   },
 });
 

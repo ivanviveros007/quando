@@ -1,5 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { View, ScrollView, SafeAreaView, StyleSheet } from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  View,
+  ScrollView,
+  SafeAreaView,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import { Formik } from "formik";
 import DropDown from "react-native-paper-dropdown";
 import { TextInput as PaperTextInput } from "react-native-paper";
@@ -28,6 +34,7 @@ import { format } from "date-fns";
 import { useLocalSearchParams } from "expo-router";
 
 import { verticalScale, horizontalScale } from "@/src/helpers";
+import { IS_ANDROID } from "@/src/constants/Global";
 
 interface Contact {
   id: string;
@@ -78,6 +85,12 @@ const EditPlan: React.FC = () => {
   const [initialValues, setInitialValues] =
     useState<Omit<Plan, "id">>(initialPlanValues);
 
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
+
+  const dateRef = useRef(date);
+  const timeRef = useRef(time);
+
   useEffect(() => {
     if (edit && planId) {
       const planToEdit = plans.find((plan) => plan.id === planId);
@@ -108,7 +121,9 @@ const EditPlan: React.FC = () => {
     selectedDate: Date | undefined
   ) => {
     const currentDate = selectedDate || date;
+    currentDate.setHours(0, 0, 0, 0); // Ajustar el tiempo a las 00:00:00 para evitar cambiar el día
     setDate(currentDate);
+    setShowDatePicker(false);
     setInitialValues({
       ...initialValues,
       date: currentDate.toISOString().split("T")[0],
@@ -121,6 +136,7 @@ const EditPlan: React.FC = () => {
   ) => {
     const currentTime = selectedTime || time;
     setTime(currentTime);
+    setShowTimePicker(false);
     setInitialValues({ ...initialValues, time: format(currentTime, "HH:mm") });
   };
   const handleLocationPress = () => {
@@ -223,194 +239,295 @@ const EditPlan: React.FC = () => {
               contentContainerStyle={styles.container}
               automaticallyAdjustKeyboardInsets
             >
-              <ThemedText type="title" style={styles.title}>
-                {edit ? "Editar plan" : "Crea tu plan"}
-              </ThemedText>
+              <View style={{ marginTop: IS_ANDROID ? verticalScale(60) : 0 }}>
+                <ThemedText type="title" style={styles.title}>
+                  Editar plan
+                </ThemedText>
 
-              <View style={styles.dropAndTitle}>
-                <View>
-                  <DropDown
-                    label={"Tipo de plan *"}
-                    mode={"outlined"}
-                    visible={showDropDown}
-                    showDropDown={() => setShowDropDown(true)}
-                    onDismiss={() => setShowDropDown(false)}
-                    value={values.planType}
-                    setValue={handleChange("planType")}
-                    list={planTypes}
+                <View style={styles.dropAndTitle}>
+                  <View>
+                    <DropDown
+                      label={"Tipo de plan *"}
+                      mode={"outlined"}
+                      visible={showDropDown}
+                      showDropDown={() => setShowDropDown(true)}
+                      onDismiss={() => setShowDropDown(false)}
+                      value={values.planType}
+                      setValue={handleChange("planType")}
+                      list={planTypes}
+                      theme={themeTemplate}
+                      placeholder="Tipo de plan *"
+                    />
+
+                    <MaterialIcons
+                      name={
+                        showDropDown
+                          ? "keyboard-arrow-up"
+                          : "keyboard-arrow-down"
+                      }
+                      size={moderateScale(24)}
+                      color="black"
+                      style={styles.positionArrow}
+                    />
+                  </View>
+
+                  <View style={{ bottom: 15 }}>
+                    {touched.planType && errors.planType && (
+                      <ThemedText style={styles.error}>
+                        {errors.planType}
+                      </ThemedText>
+                    )}
+                  </View>
+
+                  <PaperTextInput
+                    style={styles.input}
+                    mode="outlined"
+                    onChangeText={handleChange("title")}
+                    onBlur={handleBlur("title")}
+                    value={values.title}
+                    label="Título *"
+                    placeholder="Título *"
                     theme={themeTemplate}
-                    placeholder="Tipo de plan *"
+                    activeOutlineColor={Colors.primary_black}
+                    outlineColor={Colors.primary_pruple}
+                    outlineStyle={styles.outlineStyle}
                   />
 
-                  <MaterialIcons
-                    name={
-                      showDropDown ? "keyboard-arrow-up" : "keyboard-arrow-down"
-                    }
-                    size={moderateScale(24)}
-                    color="black"
-                    style={styles.positionArrow}
-                  />
+                  <View style={{ bottom: 30 }}>
+                    {touched.title && errors.title && (
+                      <ThemedText style={styles.error}>
+                        {errors.title}
+                      </ThemedText>
+                    )}
+                  </View>
                 </View>
 
-                <View style={{ bottom: 15 }}>
-                  {touched.planType && errors.planType && (
-                    <ThemedText style={styles.error}>
-                      {errors.planType}
-                    </ThemedText>
+                <View style={styles.containerDateTime}>
+                  <View style={styles.date}>
+                    {IS_ANDROID ? (
+                      <TouchableOpacity
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          gap: 10,
+                          paddingHorizontal: 10,
+                        }}
+                        onPress={() => setShowDatePicker(true)}
+                      >
+                        <ThemedText style={styles.dateText}>
+                          {format(date, "MM-dd-yyyy")}
+                        </ThemedText>
+                        <MaterialIcons
+                          name="date-range"
+                          size={moderateScale(24)}
+                          color="black"
+                        />
+                      </TouchableOpacity>
+                    ) : (
+                      <>
+                        <DateTimePicker
+                          value={date}
+                          mode="date"
+                          display="default"
+                          onChange={(event, selectedDate) => {
+                            handleDateChange(event, selectedDate);
+                            setFieldValue(
+                              "date",
+                              selectedDate?.toISOString().split("T")[0]
+                            );
+                          }}
+                          accentColor={Colors.primary_light_blue}
+                        />
+                        <MaterialIcons
+                          name="date-range"
+                          size={moderateScale(24)}
+                          color="black"
+                        />
+                      </>
+                    )}
+                    {showDatePicker && IS_ANDROID && (
+                      <DateTimePicker
+                        value={date}
+                        mode="date"
+                        display="calendar"
+                        onChange={(event, selectedDate) => {
+                          handleDateChange(event, selectedDate);
+                          if (
+                            selectedDate &&
+                            selectedDate !== dateRef.current
+                          ) {
+                            dateRef.current = selectedDate;
+                            setFieldValue(
+                              "date",
+                              selectedDate.toISOString().split("T")[0]
+                            );
+                          }
+                        }}
+                        accentColor={Colors.primary_light_blue}
+                      />
+                    )}
+                  </View>
+
+                  <View style={[styles.date, { width: "45%" }]}>
+                    {IS_ANDROID ? (
+                      <TouchableOpacity
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          gap: 10,
+                          paddingHorizontal: 10,
+                        }}
+                        onPress={() => setShowTimePicker(true)}
+                      >
+                        <ThemedText style={styles.dateText}>
+                          {format(time, "HH:mm")}
+                        </ThemedText>
+                        <MaterialIcons
+                          name="access-time"
+                          size={moderateScale(24)}
+                          color="black"
+                        />
+                      </TouchableOpacity>
+                    ) : (
+                      <>
+                        <DateTimePicker
+                          value={time}
+                          mode="time"
+                          display="default"
+                          onChange={(event, selectedTime) => {
+                            handleTimeChange(event, selectedTime);
+                            setFieldValue(
+                              "time",
+                              selectedTime
+                                ? format(selectedTime, "HH:mm")
+                                : time
+                            );
+                          }}
+                          accentColor={Colors.primary_light_blue}
+                        />
+                        <MaterialIcons
+                          name="access-time"
+                          size={moderateScale(24)}
+                          color="black"
+                        />
+                      </>
+                    )}
+
+                    {showTimePicker && IS_ANDROID && (
+                      <DateTimePicker
+                        value={time}
+                        mode="time"
+                        display="default"
+                        onChange={(event, selectedTime) => {
+                          handleTimeChange(event, selectedTime);
+                          if (
+                            selectedTime &&
+                            selectedTime !== timeRef.current
+                          ) {
+                            timeRef.current = selectedTime;
+                            setFieldValue(
+                              "time",
+                              format(selectedTime, "HH:mm")
+                            );
+                          }
+                        }}
+                        accentColor={Colors.primary_light_blue}
+                      />
+                    )}
+                  </View>
+                </View>
+                <View style={styles.errorsDate}>
+                  {touched.date && errors.date && (
+                    <ThemedText style={styles.error}>{errors.date}</ThemedText>
+                  )}
+                  {touched.time && errors.time && (
+                    <ThemedText style={styles.error}>{errors.time}</ThemedText>
                   )}
                 </View>
 
                 <PaperTextInput
-                  style={styles.input}
+                  style={[styles.input, { height: 50 }]}
                   mode="outlined"
-                  onChangeText={handleChange("title")}
-                  onBlur={handleBlur("title")}
-                  value={values.title}
-                  label="Título *"
-                  placeholder="Título *"
+                  onChangeText={handleChange("location")}
+                  onBlur={handleBlur("location")}
+                  value={address ? address : values.location}
+                  label="¿Dónde? *"
+                  placeholder="¿Dónde?"
+                  right={
+                    <PaperTextInput.Icon
+                      icon="map-marker"
+                      onPress={handleLocationPress}
+                    />
+                  }
                   theme={themeTemplate}
                   activeOutlineColor={Colors.primary_black}
                   outlineColor={Colors.primary_pruple}
                   outlineStyle={styles.outlineStyle}
                 />
-
-                <View style={{ bottom: 30 }}>
-                  {touched.title && errors.title && (
-                    <ThemedText style={styles.error}>{errors.title}</ThemedText>
-                  )}
-                </View>
-              </View>
-
-              <View style={styles.containerDateTime}>
-                <View style={styles.date}>
-                  <DateTimePicker
-                    value={date}
-                    mode="date"
-                    display="default"
-                    onChange={(event, selectedDate) => {
-                      handleDateChange(event, selectedDate);
-                      setFieldValue(
-                        "date",
-                        selectedDate?.toISOString().split("T")[0]
-                      );
-                    }}
-                    accentColor={Colors.primary_light_blue}
-                  />
-                  <MaterialIcons
-                    name="date-range"
-                    size={moderateScale(24)}
-                    color="black"
-                  />
-                </View>
-
-                <View style={[styles.date, { width: "45%" }]}>
-                  <DateTimePicker
-                    value={time}
-                    mode="time"
-                    display="default"
-                    onChange={(event, selectedTime) => {
-                      handleTimeChange(event, selectedTime);
-                      setFieldValue(
-                        "time",
-                        selectedTime ? format(selectedTime, "HH:mm") : time
-                      );
-                    }}
-                    accentColor={Colors.primary_light_blue}
-                  />
-                  <MaterialIcons
-                    name="access-time"
-                    size={moderateScale(24)}
-                    color="black"
-                  />
-                </View>
-              </View>
-              <View style={styles.errorsDate}>
-                {touched.date && errors.date && (
-                  <ThemedText style={styles.error}>{errors.date}</ThemedText>
+                {touched.location && errors.location && (
+                  <ThemedText style={styles.error}>
+                    {errors.location}
+                  </ThemedText>
                 )}
-                {touched.time && errors.time && (
-                  <ThemedText style={styles.error}>{errors.time}</ThemedText>
+
+                <InviteContacts setFieldValue={setFieldValue} />
+
+                {touched.guests && errors.guests && (
+                  <ThemedText style={[styles.error]}>
+                    {errors.guests}
+                  </ThemedText>
                 )}
+
+                <PaperTextInput
+                  style={styles.input}
+                  mode="outlined"
+                  label="Agregar imagen"
+                  placeholder="Agregar imagen"
+                  editable={false}
+                  right={
+                    <PaperTextInput.Icon
+                      icon="attachment"
+                      onPress={selectImage}
+                      style={{ transform: [{ rotate: "-45deg" }] }}
+                    />
+                  }
+                  theme={themeTemplate}
+                  activeOutlineColor={Colors.primary_black}
+                  outlineColor={Colors.primary_pruple}
+                  outlineStyle={styles.outlineStyle}
+                />
+                {imageUris.length > 0 && (
+                  <ThemedText style={styles.imageCount}>
+                    {imageUris.length} imagen(es) adjunta(s)
+                  </ThemedText>
+                )}
+
+                <PaperTextInput
+                  style={[styles.input, styles.descriptionInput]}
+                  mode="outlined"
+                  onChangeText={handleChange("description")}
+                  onBlur={handleBlur("description")}
+                  value={values.description}
+                  multiline
+                  label="Descripción"
+                  theme={themeTemplate}
+                  activeOutlineColor={Colors.primary_black}
+                  outlineColor={Colors.primary_pruple}
+                  outlineStyle={styles.outlineStyle}
+                />
+                {touched.description && errors.description && (
+                  <ThemedText style={styles.error}>
+                    {errors.description}
+                  </ThemedText>
+                )}
+
+                <Button
+                  onPress={handleSubmit}
+                  title={"Actualizar"}
+                  mode="contained"
+                  disabled={loading}
+                />
               </View>
-
-              <PaperTextInput
-                style={[styles.input, { height: 50 }]}
-                mode="outlined"
-                onChangeText={handleChange("location")}
-                onBlur={handleBlur("location")}
-                value={address ? address : values.location}
-                label="¿Dónde? *"
-                placeholder="¿Dónde?"
-                right={
-                  <PaperTextInput.Icon
-                    icon="map-marker"
-                    onPress={handleLocationPress}
-                  />
-                }
-                theme={themeTemplate}
-                activeOutlineColor={Colors.primary_black}
-                outlineColor={Colors.primary_pruple}
-                outlineStyle={styles.outlineStyle}
-              />
-              {touched.location && errors.location && (
-                <ThemedText style={styles.error}>{errors.location}</ThemedText>
-              )}
-
-              <InviteContacts setFieldValue={setFieldValue} />
-
-              {touched.guests && errors.guests && (
-                <ThemedText style={[styles.error]}>{errors.guests}</ThemedText>
-              )}
-
-              <PaperTextInput
-                style={styles.input}
-                mode="outlined"
-                label="Agregar imagen"
-                placeholder="Agregar imagen"
-                editable={false}
-                right={
-                  <PaperTextInput.Icon
-                    icon="attachment"
-                    onPress={selectImage}
-                    style={{ transform: [{ rotate: "-45deg" }] }}
-                  />
-                }
-                theme={themeTemplate}
-                activeOutlineColor={Colors.primary_black}
-                outlineColor={Colors.primary_pruple}
-                outlineStyle={styles.outlineStyle}
-              />
-              {imageUris.length > 0 && (
-                <ThemedText style={styles.imageCount}>
-                  {imageUris.length} imagen(es) adjunta(s)
-                </ThemedText>
-              )}
-
-              <PaperTextInput
-                style={[styles.input, styles.descriptionInput]}
-                mode="outlined"
-                onChangeText={handleChange("description")}
-                onBlur={handleBlur("description")}
-                value={values.description}
-                multiline
-                label="Descripción"
-                theme={themeTemplate}
-                activeOutlineColor={Colors.primary_black}
-                outlineColor={Colors.primary_pruple}
-                outlineStyle={styles.outlineStyle}
-              />
-              {touched.description && errors.description && (
-                <ThemedText style={styles.error}>
-                  {errors.description}
-                </ThemedText>
-              )}
-
-              <Button
-                onPress={handleSubmit}
-                title={edit ? "Actualizar" : "Enviar invitaciones"}
-                mode="contained"
-                disabled={loading}
-              />
             </ScrollView>
           );
         }}
@@ -501,5 +618,8 @@ const styles = StyleSheet.create({
   outlineStyle: {
     borderWidth: 1,
     borderColor: Colors.primary_pruple,
+  },
+  dateText: {
+    fontFamily: "RobotoRegular",
   },
 });

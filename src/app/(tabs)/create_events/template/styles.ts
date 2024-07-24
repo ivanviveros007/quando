@@ -43,6 +43,9 @@ export const styles = StyleSheet.create({
     paddingHorizontal: horizontalScale(5),
     backgroundColor: "white",
   },
+  dateText:{
+    fontFamily:'RobotoRegular'
+  },
   errorsDate: {
     flexDirection: "row",
     gap: moderateScale(55),

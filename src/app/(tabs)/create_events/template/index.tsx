@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { View, ScrollView, SafeAreaView } from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import { View, ScrollView, SafeAreaView, TouchableOpacity } from "react-native";
 import { Formik } from "formik";
 import DropDown from "react-native-paper-dropdown";
 import { TextInput as PaperTextInput } from "react-native-paper";
@@ -27,6 +27,7 @@ import { format } from "date-fns";
 
 import { styles } from "./styles";
 import * as Sentry from "@sentry/react-native";
+import { IS_ANDROID } from "@/src/constants/Global";
 
 const CreatePlan: React.FC = () => {
   const [showDropDown, setShowDropDown] = useState(false);
@@ -34,6 +35,11 @@ const CreatePlan: React.FC = () => {
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
   const [loading, setLoading] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
+
+  const dateRef = useRef(date);
+  const timeRef = useRef(time);
 
   const selectedLocation = useLocationStore((state) => state.selectedLocation);
   const address = useLocationStore((state) => state.address);
@@ -45,7 +51,9 @@ const CreatePlan: React.FC = () => {
   ) => {
     try {
       const currentDate = selectedDate || date;
+      currentDate.setHours(0, 0, 0, 0); // Ajustar el tiempo a las 00:00:00 para evitar cambiar el día
       setDate(currentDate);
+      setShowDatePicker(false); // Ocultar el selector de fecha después de la selección
     } catch (error) {
       console.error("[handleDateChange] ", error);
       Sentry.captureException({
@@ -62,6 +70,7 @@ const CreatePlan: React.FC = () => {
     try {
       const currentTime = selectedTime || time;
       setTime(currentTime);
+      setShowTimePicker(false); // Ocultar el selector de tiempo después de la selección
     } catch (error) {
       console.error("[handleTimeChange] ", error);
       Sentry.captureException({
@@ -158,7 +167,7 @@ const CreatePlan: React.FC = () => {
 
           try {
             await addPlan(planData);
-            await navigateToConfirmation(values.title); // Asegúrate de que navigateToConfirmation esté definido y manejado correctamente
+            await navigateToConfirmation(values.title);
             resetForm();
           } catch (error) {
             console.error("Error submitting form:", error);
@@ -259,45 +268,125 @@ const CreatePlan: React.FC = () => {
 
               <View style={styles.containerDateTime}>
                 <View style={styles.date}>
-                  <DateTimePicker
-                    value={date}
-                    mode="date"
-                    display="default"
-                    onChange={(event, selectedDate) => {
-                      handleDateChange(event, selectedDate);
-                      setFieldValue(
-                        "date",
-                        selectedDate?.toISOString().split("T")[0]
-                      );
-                    }}
-                    accentColor={Colors.primary_light_blue}
-                  />
-                  <MaterialIcons
-                    name="date-range"
-                    size={moderateScale(24)}
-                    color="black"
-                  />
+                  {IS_ANDROID ? (
+                    <TouchableOpacity
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 10,
+                        paddingHorizontal: 10,
+                      }}
+                      onPress={() => setShowDatePicker(true)}
+                    >
+                      <ThemedText style={styles.dateText}>
+                        {format(date, "MM-dd-yyyy")}
+                      </ThemedText>
+                      <MaterialIcons
+                        name="date-range"
+                        size={moderateScale(24)}
+                        color="black"
+                      />
+                    </TouchableOpacity>
+                  ) : (
+                    <>
+                      <DateTimePicker
+                        value={date}
+                        mode="date"
+                        display="default"
+                        onChange={(event, selectedDate) => {
+                          handleDateChange(event, selectedDate);
+                          setFieldValue(
+                            "date",
+                            selectedDate?.toISOString().split("T")[0]
+                          );
+                        }}
+                        accentColor={Colors.primary_light_blue}
+                      />
+                      <MaterialIcons
+                        name="date-range"
+                        size={moderateScale(24)}
+                        color="black"
+                      />
+                    </>
+                  )}
+                  {showDatePicker && IS_ANDROID && (
+                    <DateTimePicker
+                      value={date}
+                      mode="date"
+                      display="calendar"
+                      onChange={(event, selectedDate) => {
+                        handleDateChange(event, selectedDate);
+                        if (selectedDate && selectedDate !== dateRef.current) {
+                          dateRef.current = selectedDate;
+                          setFieldValue(
+                            "date",
+                            selectedDate.toISOString().split("T")[0]
+                          );
+                        }
+                      }}
+                      accentColor={Colors.primary_light_blue}
+                    />
+                  )}
                 </View>
 
                 <View style={[styles.date, { width: "45%" }]}>
-                  <DateTimePicker
-                    value={time}
-                    mode="time"
-                    display="default"
-                    onChange={(event, selectedTime) => {
-                      handleTimeChange(event, selectedTime);
-                      setFieldValue(
-                        "time",
-                        selectedTime ? format(selectedTime, "HH:mm") : time
-                      );
-                    }}
-                    accentColor={Colors.primary_light_blue}
-                  />
-                  <MaterialIcons
-                    name="access-time"
-                    size={moderateScale(24)}
-                    color="black"
-                  />
+                  {IS_ANDROID ? (
+                    <TouchableOpacity
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 10,
+                        paddingHorizontal: 10,
+                      }}
+                      onPress={() => setShowTimePicker(true)}
+                    >
+                      <ThemedText style={styles.dateText}>
+                        {format(time, "HH:mm")}
+                      </ThemedText>
+                      <MaterialIcons
+                        name="access-time"
+                        size={moderateScale(24)}
+                        color="black"
+                      />
+                    </TouchableOpacity>
+                  ) : (
+                    <>
+                      <DateTimePicker
+                        value={time}
+                        mode="time"
+                        display="default"
+                        onChange={(event, selectedTime) => {
+                          handleTimeChange(event, selectedTime);
+                          setFieldValue(
+                            "time",
+                            selectedTime ? format(selectedTime, "HH:mm") : time
+                          );
+                        }}
+                        accentColor={Colors.primary_light_blue}
+                      />
+                      <MaterialIcons
+                        name="access-time"
+                        size={moderateScale(24)}
+                        color="black"
+                      />
+                    </>
+                  )}
+
+                  {showTimePicker && IS_ANDROID && (
+                    <DateTimePicker
+                      value={time}
+                      mode="time"
+                      display="default"
+                      onChange={(event, selectedTime) => {
+                        handleTimeChange(event, selectedTime);
+                        if (selectedTime && selectedTime !== timeRef.current) {
+                          timeRef.current = selectedTime;
+                          setFieldValue("time", format(selectedTime, "HH:mm"));
+                        }
+                      }}
+                      accentColor={Colors.primary_light_blue}
+                    />
+                  )}
                 </View>
               </View>
               <View style={styles.errorsDate}>

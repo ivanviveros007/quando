@@ -7,6 +7,7 @@ import { ThemedText } from "../ThemedText";
 import { Colors } from "@/src/constants";
 import { horizontalScale, moderateScale, verticalScale } from "@/src/helpers";
 import * as Sentry from "@sentry/react-native";
+import { IS_ANDROID } from "@/src/constants";
 
 interface InviteContactsProps {
   setFieldValue: (field: string, value: any) => void;
@@ -143,7 +144,7 @@ const styles = StyleSheet.create({
     fontWeight: "200",
     textAlign: "center",
     zIndex: 1,
-    top: -8,
+    top: IS_ANDROID ? null : -8,
   },
 });
 

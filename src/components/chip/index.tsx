@@ -2,6 +2,7 @@ import React from "react";
 import { Chip } from "react-native-paper";
 import { StyleSheet } from "react-native";
 import { moderateScale, horizontalScale, verticalScale } from "@/src/helpers";
+import { IS_ANDROID } from "@/src/constants";
 
 interface ChipComponentProps {
   name: string;
@@ -20,7 +21,6 @@ const ChipComponent: React.FC<ChipComponentProps> = ({
     textStyle={{
       color: isSelected ? "#fff" : "rgba(91, 91, 91, 1)",
       fontSize: moderateScale(10),
-      bottom: 2,
     }}
     theme={{ roundness: 6 }}
   >
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   chip: {
     marginRight: horizontalScale(10),
     backgroundColor: "white",
-    height: verticalScale(30),
+    height: IS_ANDROID ? verticalScale(35) : verticalScale(30),
     borderWidth: 1,
     borderColor: "#8767F2",
   },
