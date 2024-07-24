@@ -18,6 +18,7 @@ import FastImage from "react-native-fast-image";
 import { moderateScale, horizontalScale, verticalScale } from "../helpers";
 import { usePlansStore } from "../store/planStore";
 import { router } from "expo-router";
+import { IS_ANDROID } from "@/src/constants";
 
 const PlanDetail = () => {
   const { id, title, location, time, guests, date, imageUri, description } =
@@ -140,30 +141,33 @@ const PlanDetail = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.paddingScreen}>
-        <View>
+        <View style={styles.header}>
           <ThemedText type="title" style={styles.title}>
             {title}
           </ThemedText>
           <View
             style={{
               flexDirection: "row",
-              gap: 20,
+              gap: 30,
               alignSelf: "flex-end",
               top: -30,
             }}
           >
-            <MaterialIcons
-              name="edit"
-              size={24}
-              color={Colors.primary_black}
-              onPress={() => handleEditPress(id)}
-            />
-            <MaterialIcons
-              name="delete"
-              size={24}
-              color={Colors.primary_black}
-              onPress={confirmDelete}
-            />
+            <TouchableOpacity onPress={() => handleEditPress(id)}>
+              <MaterialIcons
+                name="edit"
+                size={24}
+                color={Colors.primary_black}
+              />
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={confirmDelete}>
+              <MaterialIcons
+                name="delete"
+                size={24}
+                color={Colors.primary_black}
+              />
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -293,6 +297,9 @@ const styles = StyleSheet.create({
   paddingScreen: {
     paddingHorizontal: horizontalScale(20),
   },
+  header: {
+    marginTop: IS_ANDROID ? verticalScale(60) : 0,
+  },
   title: {
     textAlign: "center",
     fontWeight: "bold",
@@ -414,6 +421,9 @@ const styles = StyleSheet.create({
   contactInitial: {
     fontSize: 18,
     color: "#FFF",
+  },
+  guestList: {
+    marginTop: 10,
   },
 });
 

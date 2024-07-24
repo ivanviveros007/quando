@@ -18,6 +18,8 @@ import { isToday, isAfter, parseISO, compareAsc } from "date-fns";
 import { EmptyStatePlan } from "@/src/components/emptyState";
 import { router } from "expo-router";
 import * as Sentry from "@sentry/react-native";
+import { IS_ANDROID } from "@/src/constants";
+import { verticalScale } from "@/src/helpers";
 
 export default function HomeScreen() {
   const fetchPlans = usePlansStore((state) => state.fetchPlans);
@@ -205,6 +207,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    marginTop: IS_ANDROID ? verticalScale(40) : 0,
   },
   containerTitle: {
     marginTop: 40,

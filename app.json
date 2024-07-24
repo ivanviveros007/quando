@@ -2,7 +2,7 @@
   "expo": {
     "name": "quando-app",
     "slug": "quando-app",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -21,7 +21,9 @@
         "NSCalendarsUsageDescription": "Quando-app necesita acceso a tu calendario para añadir eventos.",
         "CFBundleURLTypes": [
           {
-            "CFBundleURLSchemes": ["myapp"]
+            "CFBundleURLSchemes": [
+              "myapp"
+            ]
           }
         ],
         "FirebaseAppDelegateProxyEnabled": true
@@ -64,7 +66,10 @@
               "pathPrefix": "/"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },

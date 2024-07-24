@@ -1,29 +1,41 @@
 import React, { useState, useCallback } from "react";
-import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Platform } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { Button } from "@/src/components/button";
 import { theme } from "@/src/theme";
 import { useAuthStore } from "@/src/store/authStore";
 import { useRouter } from "expo-router";
-import OTPInputView from "@twotalltotems/react-native-otp-input";
-import { moderateScale, verticalScale, horizontalScale } from "@/src/helpers";
+import {
+  CodeField,
+  Cursor,
+  useBlurOnFulfill,
+  useClearByFocusCell,
+} from "react-native-confirmation-code-field";
+import { TextInput } from "react-native-paper";
+import { ThemedText } from "@/src/components/ThemedText";
+
 import { Colors } from "@/src/constants";
+
+const CELL_COUNT = 6;
 
 export default function Otp() {
   const [otp, setOtp] = useState("");
+  const ref = useBlurOnFulfill({ value: otp, cellCount: CELL_COUNT });
+  const [props, getCellOnLayoutHandler] = useClearByFocusCell({
+    value: otp,
+    setValue: setOtp,
+  });
+
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const { setCode, confirmCode, loading, areaCode, phoneNumber } =
     useAuthStore();
-  console.log("phoneNumber desde otp", phoneNumber);
-
-  console.log("OTP", otp);
 
   useFocusEffect(
     useCallback(() => {
       if (otp.length === 0) {
-        // Auto-focus on load is handled by the OTPInputView
+        // Auto-focus on load is handled by the CodeField component
       }
     }, [])
   );
@@ -45,21 +57,35 @@ export default function Otp() {
     <View style={styles.safeArea}>
       <View style={styles.containerTitle}>
         <Text style={styles.title}>Iniciar sesión</Text>
-        <Text style={styles.subtitle}>
+        <ThemedText style={styles.subtitle}>
           {`Te enviamos un SMS a \n ${areaCode} ${phoneNumber} con un \ncódigo de acceso. Ingrésalo abajo.`}
-        </Text>
+        </ThemedText>
       </View>
-      <OTPInputView
-        style={styles.otpInputView}
-        pinCount={6}
-        code={otp}
-        onCodeChanged={(code) => setOtp(code)}
-        autoFocusOnLoad
-        codeInputFieldStyle={styles.otpInput}
-        codeInputHighlightStyle={styles.otpInputHighlight}
-        onCodeFilled={(code) => {
-          console.log(`Code is ${code}, you are good to go!`);
-        }}
+      <CodeField
+        ref={ref}
+        {...props}
+        value={otp}
+        onChangeText={setOtp}
+        cellCount={CELL_COUNT}
+        rootStyle={styles.codeFieldRoot}
+        keyboardType="number-pad"
+        textContentType="oneTimeCode"
+        autoComplete={Platform.select({
+          android: "sms-otp",
+          default: "one-time-code",
+        })}
+        renderCell={({ index, symbol, isFocused }) => (
+          <View
+            key={index}
+            onLayout={getCellOnLayoutHandler(index)}
+            style={[styles.cellRoot, isFocused && styles.focusCell]}
+          >
+            <Text style={styles.cell}>
+              {symbol || (isFocused ? <Cursor /> : null)}
+            </Text>
+          </View>
+        )}
+        InputComponent={TextInput}
       />
       {errorMessage && <Text style={styles.errorText}>{errorMessage}</Text>}
       <View style={styles.buttonContainer}>
@@ -105,29 +131,36 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 10,
   },
-  otpInputView: {
+  codeFieldRoot: {
+    marginTop: 80,
+    marginBottom: 20,
     width: "80%",
-    height: 200,
     alignSelf: "center",
     top: 50,
   },
-  otpInput: {
-    width: 30,
+  cellRoot: {
+    width: 40,
     height: 45,
-    borderWidth: 0,
-    borderBottomWidth: 3,
-    color: Colors.purple_dark,
-    fontSize: 24,
+    justifyContent: "center",
+    alignItems: "center",
+    borderBottomWidth: 2,
+    borderColor: "#00000030",
   },
-  otpInputHighlight: {
-    borderColor: theme.colors.purple,
+  cell: {
+    fontSize: 24,
+    textAlign: "center",
+    paddingVertical: Platform.OS === "android" ? 0 : 10,
+    color: Colors.purple_dark,
+  },
+  focusCell: {
+    borderColor: "#000",
   },
   errorText: {
     color: "red",
     marginTop: 10,
   },
   buttonContainer: {
-    marginTop: 20,
+    marginTop: 80,
     width: "100%",
     alignItems: "center",
   },

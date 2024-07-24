@@ -8,7 +8,7 @@ import { parse, format, parseISO } from "date-fns";
 import FastImage from "react-native-fast-image";
 import storage from "@react-native-firebase/storage";
 import * as Sentry from "@sentry/react-native";
-
+import { IS_ANDROID } from "@/src/constants";
 
 interface Guest {
   id: string;
@@ -167,7 +167,7 @@ export const CardEvent: FC<CardProps> = ({
 const styles = StyleSheet.create({
   container: {
     width: horizontalScale(282),
-    height: verticalScale(135),
+    height: IS_ANDROID ? verticalScale(160) : verticalScale(135),
     backgroundColor: "white",
     shadowColor: Colors.primary_black,
     shadowOffset: {
@@ -184,13 +184,14 @@ const styles = StyleSheet.create({
   },
   eventImage: {
     width: horizontalScale(104),
-    height: verticalScale(132),
+    height: IS_ANDROID ? verticalScale(158) : verticalScale(132),
     position: "absolute",
     top: 0,
     left: 0,
     zIndex: -1,
     borderEndEndRadius: 10,
     borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
   },
   containerData: {
     flex: 1.5,
@@ -253,8 +254,8 @@ const styles = StyleSheet.create({
     left: -1,
   },
   guest: {
-    width: 30,
-    height: 30,
+    width: moderateScale(30),
+    height: moderateScale(30),
     borderRadius: 15,
     overflow: "hidden",
     position: "absolute",
