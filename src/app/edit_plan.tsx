@@ -70,7 +70,7 @@ const initialPlanValues: Omit<Plan, "id"> = {
 };
 
 const EditPlan: React.FC = () => {
-  const { edit, planId } = useLocalSearchParams();
+  const { planId } = useLocalSearchParams();
   const plans = usePlansStore((state) => state.plans);
   const addPlan = usePlansStore((state) => state.addPlan);
   const updatePlan = usePlansStore((state) => state.updatePlan);
@@ -92,7 +92,7 @@ const EditPlan: React.FC = () => {
   const timeRef = useRef(time);
 
   useEffect(() => {
-    if (edit && planId) {
+    if (planId) {
       const planToEdit = plans.find((plan) => plan.id === planId);
       if (planToEdit) {
         setInitialValues({
@@ -114,7 +114,7 @@ const EditPlan: React.FC = () => {
         setTime(new Date(`1970-01-01T${planToEdit.time}:00`));
       }
     }
-  }, [edit, planId, plans, selectedLocation]);
+  }, [planId, plans, selectedLocation]);
 
   const handleDateChange = (
     event: DateTimePickerEvent,
@@ -185,11 +185,7 @@ const EditPlan: React.FC = () => {
     };
 
     try {
-      if (edit) {
-        await updatePlan(planId, planData);
-      } else {
-        await addPlan(planData);
-      }
+      await updatePlan(planId, planData);
       await navigateToConfirmation(values.title);
       resetForm();
     } catch (error) {
