@@ -10,6 +10,7 @@ interface ContactsState {
   addContacts: (contacts: Contacts.Contact[]) => void; // Nueva acción
   updateContactAtIndex: (index: number, contact: Contacts.Contact) => void;
   resetContacts: () => void;
+  clearSelectedContacts: () => void;
 }
 
 const useContactsStore = create<ContactsState>((set) => ({
@@ -31,6 +32,7 @@ const useContactsStore = create<ContactsState>((set) => ({
       return { selectedContacts: updatedContacts };
     }),
   resetContacts: () => set({ selectedContacts: [] }),
+  clearSelectedContacts: () => set({ selectedContacts: [] }),
 }));
 
 export default useContactsStore;

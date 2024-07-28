@@ -195,6 +195,25 @@ const EditPlan: React.FC = () => {
     }
   };
 
+  const renderGuests = (guests) => (
+    <View
+      style={{ flexDirection: "row", flexWrap: "wrap", marginVertical: 10 }}
+    >
+      {guests.map((guest, index) => (
+        <View
+          key={index}
+          style={{
+            margin: 5,
+            backgroundColor: "#e0e0e0",
+            padding: 10,
+            borderRadius: 5,
+          }}
+        >
+          <ThemedText>{guest.name}</ThemedText>
+        </View>
+      ))}
+    </View>
+  );
   return (
     <SafeAreaView style={[globalStyles.container, styles.backgroundSafeArea]}>
       {loading && <LoadingScreen />}
@@ -466,7 +485,11 @@ const EditPlan: React.FC = () => {
                   </ThemedText>
                 )}
 
-                <InviteContacts setFieldValue={setFieldValue} />
+                <InviteContacts
+                  setFieldValue={setFieldValue}
+                  initialGuests={values.guests}
+                  isEditMode={true}
+                />
 
                 {touched.guests && errors.guests && (
                   <ThemedText style={[styles.error]}>

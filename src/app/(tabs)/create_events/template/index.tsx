@@ -421,7 +421,7 @@ const CreatePlan: React.FC = () => {
                 <ThemedText style={styles.error}>{errors.location}</ThemedText>
               )}
 
-              <InviteContacts setFieldValue={setFieldValue} />
+              <InviteContacts setFieldValue={setFieldValue} isEditMode={false}/>
 
               {touched.guests && errors.guests && (
                 <ThemedText style={[styles.error]}>{errors.guests}</ThemedText>

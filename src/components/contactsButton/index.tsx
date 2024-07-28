@@ -1,21 +1,56 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useRef } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { useRouter } from "expo-router";
 import useContactsStore from "@/src/store/contactStore";
 import { ThemedText } from "../ThemedText";
-
 import { Colors } from "@/src/constants";
 import { horizontalScale, moderateScale, verticalScale } from "@/src/helpers";
 import * as Sentry from "@sentry/react-native";
 import { IS_ANDROID } from "@/src/constants";
+import { Contact } from "@/src/store/planStore"; // Asegúrate de importar correctamente
 
 interface InviteContactsProps {
   setFieldValue: (field: string, value: any) => void;
+  isEditMode?: boolean;
+  initialGuests?: Contact[];
 }
 
-const InviteContacts: FC<InviteContactsProps> = ({ setFieldValue }) => {
+const InviteContacts: FC<InviteContactsProps> = ({
+  setFieldValue,
+  isEditMode = false,
+  initialGuests = [],
+}) => {
   const router = useRouter();
   const selectedContacts = useContactsStore((state) => state.selectedContacts);
+  const clearSelectedContacts = useContactsStore(
+    (state) => state.clearSelectedContacts
+  );
+  const addContacts = useContactsStore((state) => state.addContacts);
+  const hasInitialized = useRef(false);
+
+  useEffect(() => {
+    if (!hasInitialized.current) {
+      if (isEditMode) {
+        addContacts(initialGuests);
+        setFieldValue("guests", initialGuests);
+      } else {
+        clearSelectedContacts();
+      }
+      hasInitialized.current = true;
+    }
+  }, [
+    isEditMode,
+    initialGuests,
+    addContacts,
+    clearSelectedContacts,
+    setFieldValue,
+  ]);
+
+  useEffect(() => {
+    if (!isEditMode) {
+      setFieldValue("guests", selectedContacts);
+    }
+  }, [selectedContacts, setFieldValue, isEditMode]);
 
   const handleAddContact = () => {
     try {
@@ -24,26 +59,16 @@ const InviteContacts: FC<InviteContactsProps> = ({ setFieldValue }) => {
       console.error("Error navigating to contacts:", error);
     }
   };
-  useEffect(() => {
-    try {
-      setFieldValue("guests", selectedContacts);
-    } catch (error) {
-      console.error("Error setting field value:", error);
-      Sentry.captureException({
-        message: "Error al presionar el botón de añadir contacto",
-        error,
-      });
-    }
-  }, [selectedContacts, setFieldValue]);
+
+  const contactsToShow = isEditMode ? initialGuests : selectedContacts;
 
   return (
     <View style={styles.container}>
       <View style={{ top: 5 }}>
         <ThemedText style={styles.label}>Invitados{"  "}</ThemedText>
       </View>
-
       <View style={styles.contactsContainer}>
-        {selectedContacts.slice(0, 4).map((contact, index) => (
+        {contactsToShow.slice(0, 4).map((contact, index) => (
           <View key={index} style={styles.contact}>
             {contact.imageAvailable ? (
               <Image
@@ -59,10 +84,10 @@ const InviteContacts: FC<InviteContactsProps> = ({ setFieldValue }) => {
             )}
           </View>
         ))}
-        {selectedContacts.length > 4 && (
+        {contactsToShow.length > 4 && (
           <View style={styles.moreContacts}>
             <ThemedText style={styles.moreContactsText}>
-              +{selectedContacts.length - 4}
+              +{contactsToShow.length - 4}
             </ThemedText>
           </View>
         )}
