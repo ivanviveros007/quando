@@ -51,9 +51,9 @@ const CreatePlan: React.FC = () => {
   ) => {
     try {
       const currentDate = selectedDate || date;
-      currentDate.setHours(0, 0, 0, 0); // Ajustar el tiempo a las 00:00:00 para evitar cambiar el día
+      currentDate.setHours(0, 0, 0, 0);
       setDate(currentDate);
-      setShowDatePicker(false); // Ocultar el selector de fecha después de la selección
+      setShowDatePicker(false);
     } catch (error) {
       console.error("[handleDateChange] ", error);
       Sentry.captureException({
@@ -154,7 +154,7 @@ const CreatePlan: React.FC = () => {
         }}
         validationSchema={validationSchema}
         onSubmit={async (values, { setFieldValue, resetForm }) => {
-          setLoading(true); // Asegúrate de que setLoaing esté definido y manejado correctamente
+          setLoading(true);
           if (imageUris.length > 0) {
             setFieldValue("imageUri", imageUris[0]);
           }

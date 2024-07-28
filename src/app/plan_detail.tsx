@@ -48,6 +48,8 @@ const PlanDetail = () => {
 
   const parsedGuests = JSON.parse(guests); // Parsear guests de nuevo a un array
 
+  console.log('pasrsedGuests en plan detail', parsedGuests);
+
   const renderGuests = () => {
     const maxGuestsToShow = 4;
     const guestsToShow = Array.isArray(parsedGuests)
@@ -137,6 +139,17 @@ const PlanDetail = () => {
       },
     });
   };
+
+
+  const viewDetailGuests = () => {
+    router.push({
+      pathname: "guests_detail",
+      params: {
+         guests: JSON.stringify(parsedGuests)
+        // guests
+      },
+    });
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -248,7 +261,7 @@ const PlanDetail = () => {
               Invitados
             </ThemedText>
 
-            <TouchableOpacity>
+            <TouchableOpacity onPress={viewDetailGuests}>
               <ThemedText
                 style={{
                   fontSize: moderateScale(12),
@@ -262,7 +275,7 @@ const PlanDetail = () => {
 
           <FlatList
             horizontal
-            data={Array.isArray(parsedGuests) ? parsedGuests : []} // Asegurar que guests es un array
+            data={Array.isArray(parsedGuests) ? parsedGuests : []} 
             renderItem={renderGuest}
             keyExtractor={(item, index) =>
               item.id?.toString() || index.toString()

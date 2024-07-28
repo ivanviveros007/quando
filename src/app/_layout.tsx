@@ -95,6 +95,19 @@ export default function RootLayout() {
               headerTransparent: true,
             }}
           />
+          <Stack.Screen
+            name="guests_detail"
+            options={{
+              headerShown: true,
+              headerBackTitleVisible: false,
+              // headerBackTitle: "",
+              title: "Detalle de invitados",
+              headerTitle: "Detalle de invitados",
+              headerTitleStyle: { fontFamily: "RobotoMedium" },
+              headerTintColor: theme.colors.black,
+              headerTransparent: true,
+            }}
+          />
         </Stack>
       </ThemeProvider>
     </PaperProvider>

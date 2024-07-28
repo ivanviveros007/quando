@@ -17,7 +17,7 @@ import ChipComponent from "@/src/components/chip";
 import { Divider } from "react-native-paper";
 import * as Sentry from "@sentry/react-native";
 import { IS_ANDROID } from "@/src/constants";
-import { verticalScale, moderateScale, horizontalScale } from "@/src/helpers";
+import { verticalScale, moderateScale } from "@/src/helpers";
 
 const numColumns = 3;
 
@@ -32,7 +32,6 @@ const ContactsScreen: React.FC = () => {
   >([]);
 
   const contacts = useContactsStore((state) => state.contacts);
-  const selectedContacts = useContactsStore((state) => state.selectedContacts);
   const setContacts = useContactsStore((state) => state.setContacts);
   const addContacts = useContactsStore((state) => state.addContacts);
 
