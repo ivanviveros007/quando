@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  ScrollView
 } from "react-native";
 import { ThemedText } from "@/src/components/ThemedText";
 import { Colors } from "@/src/constants";
@@ -150,7 +151,7 @@ const PlanDetail = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.paddingScreen}>
+      <ScrollView style={styles.paddingScreen}>
         <View style={styles.header}>
           <ThemedText type="title" style={styles.title}>
             {title}
@@ -282,7 +283,7 @@ const PlanDetail = () => {
           />
           {renderGuests()}
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
