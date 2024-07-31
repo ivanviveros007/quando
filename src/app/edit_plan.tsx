@@ -94,6 +94,7 @@ const EditPlan: React.FC = () => {
   useEffect(() => {
     if (planId) {
       const planToEdit = plans.find((plan) => plan.id === planId);
+      
       if (planToEdit) {
         setInitialValues({
           planType: planToEdit.planType,

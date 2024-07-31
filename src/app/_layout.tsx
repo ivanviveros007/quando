@@ -14,7 +14,7 @@ import { useColorScheme } from "@/src/hooks/useColorScheme";
 import { Provider as PaperProvider } from "react-native-paper";
 
 import { theme } from "@/src/theme";
-import {Colors} from '@constants'
+import { Colors } from "@constants";
 
 export const unstable_settings = {
   initialRouteName: "index",
@@ -110,6 +110,23 @@ export default function RootLayout() {
               headerStyle: {
                 backgroundColor: Colors.white,
               },
+            }}
+          />
+          <Stack.Screen
+            name="edit_contacts"
+            options={{
+              headerShown: true,
+              headerBackTitleVisible: false,
+              // headerBackTitle: "",
+              title: "Detalle de invitados",
+              headerTitle: "Detalle de invitados",
+              headerTitleStyle: { fontFamily: "RobotoMedium" },
+              headerTintColor: theme.colors.black,
+              headerTransparent: true,
+              headerStyle: {
+                backgroundColor: Colors.white,
+              },
+              presentation: "modal",
             }}
           />
         </Stack>

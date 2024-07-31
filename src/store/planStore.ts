@@ -6,6 +6,14 @@ import * as FileSystem from "expo-file-system";
 import * as Calendar from "expo-calendar";
 import * as Sentry from "@sentry/react-native";
 
+export interface Contact {
+  id: string;
+  name: string;
+  contactType?: string; // Agrega esta propiedad para que coincida con la interfaz de `expo-contacts`
+  phoneNumbers?: { number: string; label?: string }[]; // Agrega `label`
+  imageAvailable?: boolean;
+  image?: { uri: string };
+}
 interface Plan {
   id?: string;
   planType: string;
@@ -18,13 +26,6 @@ interface Plan {
   imageUri?: string;
 }
 
-export interface Contact {
-  id: string;
-  name: string;
-  phoneNumbers?: { number: string }[];
-  imageAvailable?: boolean;
-  image?: { uri: string };
-}
 
 interface PlansState {
   plans: Plan[];
@@ -177,6 +178,7 @@ const usePlansStore = create<PlansState>((set, get) => ({
       });
     }
   },
+
   updatePlan: async (planId: string, updatedPlan: Plan) => {
     set({ loading: true });
     try {
@@ -187,17 +189,22 @@ const usePlansStore = create<PlansState>((set, get) => ({
       const userId = currentUser.uid;
 
       let imageUrl = updatedPlan.imageUri;
+
+      // Verificar si la URI de la imagen es una ruta local y si el archivo existe
       if (
         updatedPlan.imageUri &&
         !updatedPlan.imageUri.startsWith("https://")
       ) {
-        const storageRef = storage().ref(`plans/${userId}/${Date.now()}.jpg`);
         const fileInfo = await FileSystem.getInfoAsync(updatedPlan.imageUri);
-        if (!fileInfo.exists) {
-          throw new Error("El archivo no existe en la ruta especificada.");
+        console.log("File info:", fileInfo);
+
+        if (fileInfo.exists) {
+          const storageRef = storage().ref(`plans/${userId}/${Date.now()}.jpg`);
+          await storageRef.putFile(updatedPlan.imageUri);
+          imageUrl = storageRef.fullPath;
+        } else {
+          console.log("El archivo no existe en la ruta especificada.");
         }
-        await storageRef.putFile(updatedPlan.imageUri);
-        imageUrl = storageRef.fullPath;
       }
 
       const planData = {
@@ -205,6 +212,8 @@ const usePlansStore = create<PlansState>((set, get) => ({
         imageUri: imageUrl,
         updatedAt: firestore.FieldValue.serverTimestamp(),
       };
+
+      console.log("Final plan data to update:", planData);
 
       await firestore()
         .collection("plans")

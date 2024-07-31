@@ -1,4 +1,4 @@
-import { useLocalSearchParams, router } from "expo-router";
+import { useGlobalSearchParams, router } from "expo-router";
 import { View, TouchableOpacity, StyleSheet, Image, Text } from "react-native";
 import { ThemedText } from "@/src/components/ThemedText";
 import { Background } from "@/src/components/container";
@@ -10,7 +10,7 @@ import { useLocationStore } from "../store/locationStore";
 const Confirmation = () => {
   const selectedContacts = useContactsStore((state) => state.selectedContacts);
 
-  const { planName } = useLocalSearchParams();
+  const { planName, editPlan } = useGlobalSearchParams();
 
   const resetLocation = useLocationStore((state) => state.resetLocation);
   const resetContacts = useContactsStore((state) => state.resetContacts);
