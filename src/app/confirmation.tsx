@@ -17,9 +17,9 @@ const Confirmation = () => {
 
   const goHome = async () => {
     try {
-      router.replace("(tabs)/home");
       await resetLocation();
       await resetContacts();
+      router.replace("(tabs)/home");
     } catch (error) {
       console.error("Error al restablecer los contactos y la ubicación", error);
     }

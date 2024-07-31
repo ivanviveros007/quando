@@ -29,7 +29,7 @@ import { geocodeCoordinates } from "@/src/services";
 import { usePlansStore } from "@/src/store/planStore";
 
 import { LoadingScreen } from "@/src/components/loading";
-import { format } from "date-fns";
+import { format, addMinutes, parseISO } from "date-fns";
 
 import { useLocalSearchParams } from "expo-router";
 
@@ -61,8 +61,8 @@ interface Plan {
 const initialPlanValues: Omit<Plan, "id"> = {
   planType: "",
   title: "",
-  date: new Date().toISOString().split("T")[0], // Fecha actual
-  time: format(new Date(), "HH:mm"), // Hora actual
+  date: format(new Date(), "yyyy-MM-dd"), // Fecha actual en formato local
+  time: format(new Date(), "HH:mm"),
   location: "",
   description: "",
   guests: [],
@@ -96,11 +96,13 @@ const EditPlan: React.FC = () => {
       const planToEdit = plans.find((plan) => plan.id === planId);
 
       if (planToEdit) {
+        const planDate = parseISO(planToEdit.date);
+        const planTime = new Date(`1970-01-01T${planToEdit.time}:00`);
         setInitialValues({
           planType: planToEdit.planType,
           title: planToEdit.title,
-          date: planToEdit.date || new Date().toISOString().split("T")[0],
-          time: planToEdit.time || format(new Date(), "HH:mm"),
+          date: planToEdit.date,
+          time: format(planTime, "HH:mm"),
           location:
             planToEdit.location ||
             (selectedLocation
@@ -111,8 +113,8 @@ const EditPlan: React.FC = () => {
           imageUri: planToEdit.imageUri || "",
         });
         setImageUris(planToEdit.imageUri ? [planToEdit.imageUri] : []);
-        setDate(new Date(planToEdit.date));
-        setTime(new Date(`1970-01-01T${planToEdit.time}:00`));
+        setDate(planDate);
+        setTime(planTime);
       }
     }
   }, [planId, plans, selectedLocation]);
