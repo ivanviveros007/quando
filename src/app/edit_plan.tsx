@@ -94,7 +94,7 @@ const EditPlan: React.FC = () => {
   useEffect(() => {
     if (planId) {
       const planToEdit = plans.find((plan) => plan.id === planId);
-      
+
       if (planToEdit) {
         setInitialValues({
           planType: planToEdit.planType,
@@ -141,7 +141,7 @@ const EditPlan: React.FC = () => {
     setInitialValues({ ...initialValues, time: format(currentTime, "HH:mm") });
   };
   const handleLocationPress = () => {
-    router.push("(tabs)/create_events/map");
+    router.push("edit_location");
   };
 
   const selectImage = async () => {
@@ -196,25 +196,6 @@ const EditPlan: React.FC = () => {
     }
   };
 
-  const renderGuests = (guests) => (
-    <View
-      style={{ flexDirection: "row", flexWrap: "wrap", marginVertical: 10 }}
-    >
-      {guests.map((guest, index) => (
-        <View
-          key={index}
-          style={{
-            margin: 5,
-            backgroundColor: "#e0e0e0",
-            padding: 10,
-            borderRadius: 5,
-          }}
-        >
-          <ThemedText>{guest.name}</ThemedText>
-        </View>
-      ))}
-    </View>
-  );
   return (
     <SafeAreaView style={[globalStyles.container, styles.backgroundSafeArea]}>
       {loading && <LoadingScreen />}

@@ -129,6 +129,24 @@ export default function RootLayout() {
               presentation: "modal",
             }}
           />
+
+          <Stack.Screen
+            name="edit_location"
+            options={{
+              headerShown: true,
+              headerBackTitleVisible: false,
+              // headerBackTitle: "",
+              title: "Detalle de invitados",
+              headerTitle: "Detalle de invitados",
+              headerTitleStyle: { fontFamily: "RobotoMedium" },
+              headerTintColor: theme.colors.black,
+              headerTransparent: true,
+              headerStyle: {
+                backgroundColor: Colors.white,
+              },
+              presentation: "modal",
+            }}
+          />
         </Stack>
       </ThemeProvider>
     </PaperProvider>
