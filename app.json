@@ -2,7 +2,7 @@
   "expo": {
     "name": "quando-app",
     "slug": "quando-app",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -94,13 +94,6 @@
         "expo-image-picker",
         {
           "photosPermission": "The app accesses your photos to let you share them with your friends."
-        }
-      ],
-      [
-        "@sentry/react-native/expo",
-        {
-          "organization": "Quando",
-          "project": "quando-app-sentry"
         }
       ]
     ],
