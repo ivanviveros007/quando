@@ -15,7 +15,7 @@ import ContactItem from "@/src/components/contactItem";
 import SelectedContactItem from "@/src/components/selectedContact";
 // import ChipComponent from "@/src/components/chip";
 import { Divider } from "react-native-paper";
-import * as Sentry from "@sentry/react-native";
+// import * as Sentry from "@sentry/react-native";
 import { IS_ANDROID } from "@/src/constants";
 import { verticalScale, moderateScale } from "@/src/helpers";
 const numColumns = 3;
@@ -57,10 +57,10 @@ const EditContacts: React.FC = () => {
         }
       } catch (error) {
         console.error("[useEffect - fetchContacts] ", error);
-        Sentry.captureException({
-          message: "Error al obtener los contactos [fetchContacts]",
-          error,
-        });
+        // Sentry.captureException({
+        //   message: "Error al obtener los contactos [fetchContacts]",
+        //   error,
+        // });
       }
     };
 
@@ -79,10 +79,10 @@ const EditContacts: React.FC = () => {
       }
     } catch (error) {
       console.error("[useEffect - filterContacts] ", error);
-      Sentry.captureException({
-        message: "Error al filtrar los contactos [filterContacts]",
-        error,
-      });
+      // Sentry.captureException({
+      //   message: "Error al filtrar los contactos [filterContacts]",
+      //   error,
+      // });
     }
   }, [search, contacts]);
 
@@ -127,10 +127,10 @@ const EditContacts: React.FC = () => {
       }
     } catch (error) {
       console.error("[handleFilterPress] ", error);
-      Sentry.captureException({
-        message: "Error al seleccionar un filtro [handleFilterPress]",
-        error,
-      });
+      // Sentry.captureException({
+      //   message: "Error al seleccionar un filtro [handleFilterPress]",
+      //   error,
+      // });
     }
   };
 

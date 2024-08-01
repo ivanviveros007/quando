@@ -2,7 +2,7 @@ import { create } from "zustand";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Sentry from "@sentry/react-native";
+// import * as Sentry from "@sentry/react-native";
 
 interface AuthState {
   phoneNumber: string;
@@ -108,10 +108,10 @@ const useAuthStore = create<AuthState>((set, get) => ({
       set({ confirm: confirmation, loading: false });
       return { success: true };
     } catch (error) {
-      Sentry.captureException({
-        message: "Error al enviar el código de verificación",
-        error,
-      });
+      // Sentry.captureException({
+      //   message: "Error al enviar el código de verificación",
+      //   error,
+      // });
 
       set({ loading: false });
       console.error("Error al enviar el código de verificación:", error);

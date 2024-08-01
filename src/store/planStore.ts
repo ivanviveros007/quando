@@ -4,7 +4,7 @@ import firestore from "@react-native-firebase/firestore";
 import storage from "@react-native-firebase/storage";
 import * as FileSystem from "expo-file-system";
 import * as Calendar from "expo-calendar";
-import * as Sentry from "@sentry/react-native";
+// import * as Sentry from "@sentry/react-native";
 
 export interface Contact {
   id: string;
@@ -86,10 +86,10 @@ const usePlansStore = create<PlansState>((set, get) => ({
     } catch (error) {
       console.error("Error adding plan:", error);
       set({ loading: false, error: error.message });
-      Sentry.captureException({
-        message: "Error al agregar el plan",
-        error,
-      });
+      // Sentry.captureException({
+      //   message: "Error al agregar el plan",
+      //   error,
+      // });
     }
   },
 
@@ -117,10 +117,10 @@ const usePlansStore = create<PlansState>((set, get) => ({
     } catch (error) {
       console.error("Error fetching plans:", error);
       set({ loading: false, error: error.message });
-      Sentry.captureException({
-        message: "Error al obtener los planes",
-        error,
-      });
+      // Sentry.captureException({
+      //   message: "Error al obtener los planes",
+      //   error,
+      // });
     }
   },
 
@@ -172,10 +172,10 @@ const usePlansStore = create<PlansState>((set, get) => ({
     } catch (error) {
       console.error("Error deleting plan:", error);
       set({ loading: false, error: error.message });
-      Sentry.captureException({
-        message: "Error al eliminar el plan",
-        error,
-      });
+      // Sentry.captureException({
+      //   message: "Error al eliminar el plan",
+      //   error,
+      // });
     }
   },
 
@@ -232,10 +232,10 @@ const usePlansStore = create<PlansState>((set, get) => ({
     } catch (error) {
       console.error("Error updating plan:", error);
       set({ loading: false, error: error.message });
-      Sentry.captureException({
-        message: "Error al actualizar el plan",
-        error,
-      });
+      // Sentry.captureException({
+      //   message: "Error al actualizar el plan",
+      //   error,
+      // });
     }
   },
 }));
@@ -270,10 +270,10 @@ const addEventToCalendar = async (plan: Plan) => {
 
     await Calendar.createEventAsync(defaultCalendar.id, details);
   } catch (error) {
-    Sentry.captureException({
-      message: "Error al agregar evento al calendario",
-      error,
-    });
+    // Sentry.captureException({
+    //   message: "Error al agregar evento al calendario",
+    //   error,
+    // });
 
     console.error("Error adding event to calendar:", error);
     throw error;
@@ -308,10 +308,10 @@ const removeEventFromCalendar = async (planId: string) => {
       await Calendar.deleteEventAsync(eventToDelete.id);
     }
   } catch (error) {
-    Sentry.captureException({
-      message: "Error al eliminar evento del calendario",
-      error,
-    });
+    // Sentry.captureException({
+    //   message: "Error al eliminar evento del calendario",
+    //   error,
+    // });
     console.error("Error deleting event from calendar:", error);
     throw error;
   }

@@ -3,7 +3,7 @@ import firestore from "@react-native-firebase/firestore";
 import auth from "@react-native-firebase/auth";
 import storage from "@react-native-firebase/storage";
 import * as FileSystem from "expo-file-system";
-import * as Sentry from "@sentry/react-native";
+// import * as Sentry from "@sentry/react-native";
 interface UserState {
   additionalInfo: Record<string, any>;
   loading: boolean;
@@ -35,10 +35,10 @@ const useUserStore = create<UserState>((set, get) => ({
       } catch (error) {
         console.error("Error fetching additional user info:", error);
         set({ loading: false });
-        Sentry.captureException({
-          message: "Error al obtener la información adicional del usuario",
-          error,
-        });
+        // Sentry.captureException({
+        //   message: "Error al obtener la información adicional del usuario",
+        //   error,
+        // });
       }
     }
   },
@@ -90,10 +90,10 @@ const useUserStore = create<UserState>((set, get) => ({
         console.error("Error uploading profile picture:", error);
         set({ loading: false });
 
-        Sentry.captureException({
-          message: "Error al subir la foto de perfil",
-          error,
-        });
+        // Sentry.captureException({
+        //   message: "Error al subir la foto de perfil",
+        //   error,
+        // });
       }
     }
   },
