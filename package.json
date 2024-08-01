@@ -73,7 +73,9 @@
     "react-native-tab-view": "^3.5.2",
     "react-native-web": "~0.19.10",
     "yup": "^1.4.0",
-    "zustand": "^4.5.2"
+    "zustand": "^4.5.2",
+    "expo-notifications": "~0.28.14",
+    "expo-device": "~6.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
