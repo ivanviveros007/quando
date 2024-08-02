@@ -26,7 +26,7 @@ import { LoadingScreen } from "@/src/components/loading";
 import { format } from "date-fns";
 
 import { styles } from "./styles";
-import * as Sentry from "@sentry/react-native";
+// import * as Sentry from "@sentry/react-native";
 import { IS_ANDROID } from "@/src/constants/Global";
 
 const CreatePlan: React.FC = () => {
@@ -56,10 +56,10 @@ const CreatePlan: React.FC = () => {
       setShowDatePicker(false);
     } catch (error) {
       console.error("[handleDateChange] ", error);
-      Sentry.captureException({
-        message: "Error al cambiar la fecha",
-        error,
-      });
+      // Sentry.captureException({
+      //   message: "Error al cambiar la fecha",
+      //   error,
+      // });
     }
   };
 
@@ -73,10 +73,10 @@ const CreatePlan: React.FC = () => {
       setShowTimePicker(false); // Ocultar el selector de tiempo después de la selección
     } catch (error) {
       console.error("[handleTimeChange] ", error);
-      Sentry.captureException({
-        message: "Error al cambiar la hora",
-        error,
-      });
+      // Sentry.captureException({
+      //   message: "Error al cambiar la hora",
+      //   error,
+      // });
     }
   };
 
@@ -107,10 +107,10 @@ const CreatePlan: React.FC = () => {
       }
     } catch (error) {
       console.error("[selectImage] ", error);
-      Sentry.captureException({
-        message: "Error al seleccionar una imagen",
-        error,
-      });
+      // Sentry.captureException({
+      //   message: "Error al seleccionar una imagen",
+      //   error,
+      // });
       alert(
         "Hubo un error al seleccionar la imagen. Por favor, inténtalo de nuevo."
       );
@@ -128,10 +128,10 @@ const CreatePlan: React.FC = () => {
     } catch (error) {
       console.error("[navigateToConfirmation] ", error);
       setLoading(false);
-      Sentry.captureException({
-        message: "Error al navegar a la confirmación",
-        error,
-      });
+      // Sentry.captureException({
+      //   message: "Error al navegar a la confirmación",
+      //   error,
+      // });
     }
   };
 
@@ -171,10 +171,10 @@ const CreatePlan: React.FC = () => {
             resetForm();
           } catch (error) {
             console.error("Error submitting form:", error);
-            Sentry.captureException({
-              message: "Error al enviar el formulario",
-              error,
-            });
+            // Sentry.captureException({
+            //   message: "Error al enviar el formulario",
+            //   error,
+            // });
           } finally {
             setLoading(false);
           }
