@@ -17,7 +17,7 @@ import { usePlansStore } from "@/src/store/planStore";
 import { isToday, isAfter, parseISO, compareAsc } from "date-fns";
 import { EmptyStatePlan } from "@/src/components/emptyState";
 import { router } from "expo-router";
-import * as Sentry from "@sentry/react-native";
+// import * as Sentry from "@sentry/react-native";
 import { IS_ANDROID } from "@/src/constants";
 import { verticalScale } from "@/src/helpers";
 
@@ -63,10 +63,10 @@ export default function HomeScreen() {
       }).start();
     } catch (error) {
       console.error("[useEffect - filter plans] ", error);
-      Sentry.captureException({
-        message: "Error al filtrar los planes [filter plans]",
-        error,
-      });
+      // Sentry.captureException({
+      //   message: "Error al filtrar los planes [filter plans]",
+      //   error,
+      // });
     }
   }, [filter, plans]);
 
