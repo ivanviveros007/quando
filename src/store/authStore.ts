@@ -88,10 +88,10 @@ const useAuthStore = create<AuthState>((set, get) => ({
       set({ loading: false });
       return { status: "SUCCESS" };
     } catch (error) {
-      Sentry.captureException({
-        message: "Error al registrar el usuario",
-        error,
-      });
+      // Sentry.captureException({
+      //   message: "Error al registrar el usuario",
+      //   error,
+      // });
       console.error("Error al registrar el usuario:", error);
       set({ loading: false });
       return { status: "ERROR", message: error.message };
@@ -104,27 +104,46 @@ const useAuthStore = create<AuthState>((set, get) => ({
     set({ loading: true });
     try {
       const fullPhoneNumber = areaCode + phoneNumber;
+      console.log(
+        "Intentando enviar código de verificación a:",
+        fullPhoneNumber
+      );
+
       const confirmation = await auth().signInWithPhoneNumber(fullPhoneNumber);
       set({ confirm: confirmation, loading: false });
+
+      console.log("Código de verificación enviado exitosamente.");
       return { success: true };
     } catch (error) {
-      // Sentry.captureException({
-      //   message: "Error al enviar el código de verificación",
-      //   error,
-      // });
-
       set({ loading: false });
       console.error("Error al enviar el código de verificación:", error);
+
       if (error?.code === "auth/too-many-requests") {
         return {
           success: false,
           message: "Demasiadas Solicitudes. Por favor, inténtelo más tarde.",
         };
       }
+
+      if (error?.code === "auth/invalid-phone-number") {
+        return {
+          success: false,
+          message: "Número de teléfono inválido. Por favor verifica el número.",
+        };
+      }
+
+      if (error?.code === "auth/quota-exceeded") {
+        return {
+          success: false,
+          message:
+            "Se ha superado la cuota de SMS. Por favor, inténtelo más tarde.",
+        };
+      }
+
+      // Agrega aquí cualquier otro código de error que quieras manejar específicamente
       return {
         success: false,
-        message:
-          "Error al enviar el código de verificación. Por favor, intenta nuevamente.",
+        message: `Error al enviar el código de verificación: ${error.message}. Por favor, intenta nuevamente.`,
       };
     }
   },
@@ -180,10 +199,10 @@ const useAuthStore = create<AuthState>((set, get) => ({
       return { status: "SUCCESS" };
     } catch (error) {
       set({ loading: false });
-      Sentry.captureException({
-        message: "Error al confirmar el código",
-        error,
-      });
+      // Sentry.captureException({
+      //   message: "Error al confirmar el código",
+      //   error,
+      // });
       console.error("Error al confirmar el código:", error);
       return { status: "ERROR", message: error.message };
     }
@@ -220,7 +239,7 @@ const useAuthStore = create<AuthState>((set, get) => ({
       return !usersSnapshot.empty;
     } catch (error) {
       console.error("Error al verificar si el usuario existe:", error);
-      
+
       set({ loading: false });
       return false;
     }

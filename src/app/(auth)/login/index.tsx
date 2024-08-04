@@ -17,6 +17,8 @@ import { parsePhoneNumberFromString, CountryCode } from "libphonenumber-js";
 import { Images } from "@/src/constants";
 import { ThemedText } from "@/src/components/ThemedText";
 import { moderateScale } from "@/src/helpers";
+import firebase from "@react-native-firebase/app";
+import auth from "@react-native-firebase/auth";
 
 export default function Login() {
   const [menuVisible, setMenuVisible] = useState(false);
@@ -67,6 +69,36 @@ export default function Login() {
     return phoneNumber ? phoneNumber.isValid() : false;
   };
 
+  // const handleLoginOrRegister = async () => {
+  //   Keyboard.dismiss();
+  //   if (!isValidPhoneNumber(phoneNumber, areaCode)) {
+  //     Alert.alert(
+  //       "Número Inválido",
+  //       "Por favor, ingresa un número de teléfono válido"
+  //     );
+  //     return;
+  //   }
+
+  //   const fullPhoneNumber = areaCode + phoneNumber;
+  //   const userExists = await checkUserExists(fullPhoneNumber);
+
+  //   const result = await signInWithPhoneNumber();
+
+  //   if (result.success) {
+  //     if (!userExists) {
+  //       const registerResult = await registerUser();
+  //       if (registerResult.status !== "SUCCESS") {
+  //         Alert.alert("Error", registerResult.message);
+  //         return;
+  //       }
+  //     }
+  //     // Redirigir directamente a la pantalla OTP
+  //     router.push("otp");
+  //   } else {
+  //     Alert.alert("Error", result.message);
+  //   }
+  // };
+
   const handleLoginOrRegister = async () => {
     Keyboard.dismiss();
     if (!isValidPhoneNumber(phoneNumber, areaCode)) {
@@ -96,6 +128,23 @@ export default function Login() {
       Alert.alert("Error", result.message);
     }
   };
+
+  useEffect(() => {
+    // Verifica si Firebase está inicializado correctamente
+    // if (!firebase.apps.length) {
+    //   firebase.initializeApp();
+    // }
+
+    // Intenta obtener el token de autenticación actual
+    auth()
+      .currentUser?.getIdToken()
+      .then((token) => {
+        console.log("Firebase token obtenido:", token);
+      })
+      .catch((error) => {
+        console.error("Error al obtener el token de Firebase:", error);
+      });
+  }, []);
 
   return (
     <Background>
