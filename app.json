@@ -15,7 +15,7 @@
     "ios": {
       "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": true,
-      "bundleIdentifier": "com.quandoapp.mobile",
+      "bundleIdentifier": "com.quandoapp",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Quando-app aplicación necesita acceso a tu ubicación para mostrarte eventos cercanos.",
         "NSCalendarsUsageDescription": "Quando-app necesita acceso a tu calendario para añadir eventos.",

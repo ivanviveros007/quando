@@ -27,7 +27,7 @@ interface AuthState {
   setEmail: (email: string) => void;
   setName: (name: string) => void;
   registerUser: () => Promise<{ status: string; message?: string }>;
-  signInWithPhoneNumber: () => Promise<{ success: boolean; message?: string }>;
+  signInWithPhoneNumber: () => Promise<{ success: boolean }>;
   confirmCode: () => Promise<{ status: string; message?: string }>;
   checkUserToken: () => Promise<boolean>;
   logout: () => Promise<void>;
@@ -100,51 +100,29 @@ const useAuthStore = create<AuthState>((set, get) => ({
 
   signInWithPhoneNumber: async () => {
     const { phoneNumber, areaCode } = get();
-
     set({ loading: true });
-    try {
-      const fullPhoneNumber = areaCode + phoneNumber;
-      console.log(
-        "Intentando enviar código de verificación a:",
-        fullPhoneNumber
-      );
 
+    if (!phoneNumber || !areaCode) {
+      console.error("Número de teléfono o código de área no proporcionado.");
+      set({ loading: false });
+      return {
+        success: false,
+        message: "Número de teléfono o código de área no proporcionado.",
+      };
+    }
+
+    const fullPhoneNumber = `${areaCode}${phoneNumber}`; 
+    console.log("Intentando enviar código de verificación a:", fullPhoneNumber);
+
+    try {
       const confirmation = await auth().signInWithPhoneNumber(fullPhoneNumber);
       set({ confirm: confirmation, loading: false });
-
       console.log("Código de verificación enviado exitosamente.");
       return { success: true };
     } catch (error) {
       set({ loading: false });
       console.error("Error al enviar el código de verificación:", error);
-
-      if (error?.code === "auth/too-many-requests") {
-        return {
-          success: false,
-          message: "Demasiadas Solicitudes. Por favor, inténtelo más tarde.",
-        };
-      }
-
-      if (error?.code === "auth/invalid-phone-number") {
-        return {
-          success: false,
-          message: "Número de teléfono inválido. Por favor verifica el número.",
-        };
-      }
-
-      if (error?.code === "auth/quota-exceeded") {
-        return {
-          success: false,
-          message:
-            "Se ha superado la cuota de SMS. Por favor, inténtelo más tarde.",
-        };
-      }
-
-      // Agrega aquí cualquier otro código de error que quieras manejar específicamente
-      return {
-        success: false,
-        message: `Error al enviar el código de verificación: ${error.message}. Por favor, intenta nuevamente.`,
-      };
+      return { success: false, message: error.message };
     }
   },
 
