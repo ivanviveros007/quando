@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { StyleSheet, View, FlatList, Text } from "react-native";
+import { StyleSheet, View, FlatList, Text, SafeAreaView } from "react-native";
 import { ThemedText } from "@/src/components/ThemedText";
 import { ThemedView } from "@/src/components/ThemedView";
 import CalendarHeader from "@/src/components/calendar";
@@ -11,6 +11,7 @@ import { useAuthStore } from "@/src/store/authStore";
 import { CardEvent } from "@/src/components/cardEvent";
 import { parseISO } from "date-fns";
 import { router } from "expo-router";
+import { Colors } from "@/src/constants";
 
 export default function CalendarScreen() {
   const [currentDate, setCurrentDate] = useState<Date | null>(new Date());
@@ -113,7 +114,7 @@ export default function CalendarScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: Colors.white,
   },
   title: {
     fontSize: 20,

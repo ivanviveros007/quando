@@ -51,6 +51,13 @@ export default function TabLayout() {
           ),
           headerShadowVisible: false,
           headerShown: true,
+          headerStyle:{
+            backgroundColor: Colors.white,
+            shadowColor: "transparent",
+            elevation: 0,
+            shadowOpacity: 0,
+            borderBottomWidth: 0,
+          }
         }}
       />
       <Tabs.Screen
